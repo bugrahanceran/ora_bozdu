@@ -1,0 +1,47 @@
+const searchRoot = document.querySelector("[data-venue-search]");
+
+if (searchRoot) {
+  const input = searchRoot.querySelector("[data-search-input]");
+  const results = searchRoot.querySelector("[data-search-results]");
+  let requestId = 0;
+
+  input.addEventListener("input", async () => {
+    const query = input.value.trim();
+    const currentRequest = ++requestId;
+    if (query.length < 2) {
+      results.replaceChildren();
+      return;
+    }
+    const response = await fetch(`/api/venues?q=${encodeURIComponent(query)}`);
+    if (!response.ok || currentRequest !== requestId) return;
+    const venues = await response.json();
+    if (currentRequest !== requestId) return;
+    results.replaceChildren(
+      ...venues.map((venue) => {
+        const link = document.createElement("a");
+        link.href = `/venues/${venue.slug}`;
+        link.textContent = venue.name;
+        return link;
+      }),
+    );
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!searchRoot.contains(event.target)) results.replaceChildren();
+  });
+}
+
+const scoreboard = document.querySelector("[data-scoreboard]");
+const scoreFilters = document.querySelectorAll("[data-score-filter]");
+
+if (scoreboard && scoreFilters.length) {
+  scoreFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.scoreFilter;
+      scoreFilters.forEach((item) => item.classList.toggle("is-active", item === button));
+      scoreboard.querySelectorAll("[data-score-classification]").forEach((row) => {
+        row.hidden = filter !== "all" && row.dataset.scoreClassification !== filter;
+      });
+    });
+  });
+}

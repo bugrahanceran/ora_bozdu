@@ -1,0 +1,39 @@
+{
+  "html_attributions": [],
+  "result": {
+    "business_status": "OPERATIONAL",
+    "formatted_address": "Göksu Mahallesi, Eryaman, Ankara",
+    "geometry": {"location": {"lat": 39.989, "lng": 32.652}},
+    "name": "Fixture Cafe",
+    "place_id": "place-1",
+    "price_level": 2,
+    "rating": 4.4,
+    "reviews": [
+      {
+        "author_name": "Ayşe",
+        "author_url": "https://example.test/users/ayse",
+        "language": "tr",
+        "original_language": "tr",
+        "rating": 5,
+        "text": "Kahve taze ve servis hızlı.",
+        "time": 1750000000,
+        "translated": false
+      },
+      {
+        "author_name": "Mehmet",
+        "author_url": "https://example.test/users/mehmet",
+        "language": "tr",
+        "original_language": "tr",
+        "rating": 3,
+        "text": "Servis biraz yavaş.",
+        "time": 1740000000,
+        "translated": false
+      }
+    ],
+    "types": ["cafe", "restaurant"],
+    "url": "https://maps.google.com/?cid=fixture",
+    "user_ratings_total": 420,
+    "website": "https://fixture.test"
+  },
+  "status": "OK"
+}

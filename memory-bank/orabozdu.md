@@ -1,0 +1,1 @@
+mekanların zaman içindeki değişimini Google Maps datasını okuyarak, görselleştirmek. instagram postu hazırlama ve webapp olmak üzere 2 temek ayağı olacak.

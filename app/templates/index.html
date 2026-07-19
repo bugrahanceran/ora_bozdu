@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Mekan ara · ora_bozdu{% endblock %}
+{% block content %}
+  <section class="hero">
+    <p class="eyebrow">Mekan değişim radarı</p>
+    <h1>Bozdu mu,<br><em>Coştu mu?</em></h1>
+    <p class="hero-copy">
+      Eryaman’daki mekanların rating, review hızı, yorum dili ve istikrarını
+      periyodik snapshot’larla izliyoruz.
+    </p>
+
+    <form class="search" action="/" method="get" role="search" data-venue-search>
+      <label for="venue-query">Mekan adı</label>
+      <div class="search-row">
+        <input
+          id="venue-query"
+          name="q"
+          value="{{ query }}"
+          placeholder="Örn. mekan adı"
+          autocomplete="off"
+          maxlength="120"
+          data-search-input
+        >
+        <button type="submit">Ara</button>
+      </div>
+      <div class="search-results" data-search-results aria-live="polite"></div>
+    </form>
+  </section>
+
+  {% if query %}
+    <section class="results-section">
+      <p class="eyebrow">“{{ query }}” sonuçları</p>
+      {% if venues %}
+        <div class="venue-list">
+          {% for venue in venues %}
+            <a href="/venues/{{ venue.slug }}">
+              <span>{{ venue.display_name }}</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">DB’de eşleşen bir mekan bulunamadı.</p>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if overview.venues %}
+    <section class="overview-section" aria-labelledby="overview-title">
+      <div class="overview-heading">
+        <div>
+          <p class="eyebrow">İlk snapshot · {{ overview.snapshot_date.strftime('%d.%m.%Y') }}</p>
+          <h2 id="overview-title">Eryaman skor panosu</h2>
+          <p>
+            İlk dönemde skorlar ağırlıklı olarak mevcut yorumların sentiment ve
+            keyword sinyallerine dayanır. Confidence sınırlıdır; trajectory ve
+            stability snapshot biriktikçe devreye girer.
+          </p>
+        </div>
+        <div class="overview-legend" aria-label="Bozdu Coştu ekseni">
+          <span>−100 Bozdu</span><span>0</span><span>Coştu +100</span>
+        </div>
+      </div>
+
+      <div class="overview-stats" aria-label="Skor dağılımı">
+        <button class="stat-pill is-active" type="button" data-score-filter="all">
+          <strong>{{ overview.counts.total }}</strong><span>Tümü</span>
+        </button>
+        <button class="stat-pill stat-costu" type="button" data-score-filter="costu">
+          <strong>{{ overview.counts.costu }}</strong><span>Coştu</span>
+        </button>
+        <button class="stat-pill" type="button" data-score-filter="dengede">
+          <strong>{{ overview.counts.dengede }}</strong><span>Dengede</span>
+        </button>
+        <button class="stat-pill stat-bozdu" type="button" data-score-filter="bozdu">
+          <strong>{{ overview.counts.bozdu }}</strong><span>Bozdu</span>
+        </button>
+      </div>
+
+      <div class="scoreboard" data-scoreboard>
+        {% for item in overview.venues %}
+          <a
+            class="scoreboard-row"
+            href="/venues/{{ item.venue.slug }}"
+            data-score-classification="{{ item.score.classification }}"
+          >
+            <div class="scoreboard-name">
+              <strong>{{ item.venue.display_name }}</strong>
+              <span>
+                Rating {{ '%.1f'|format(item.snapshot.rating) if item.snapshot.rating is not none else '—' }}
+                · {{ item.snapshot.user_ratings_total or 0 }} değerlendirme
+              </span>
+            </div>
+            <div class="mini-axis" aria-label="Change score {{ item.score.change_score }}">
+              <span class="mini-midpoint" aria-hidden="true"></span>
+              <span class="mini-marker marker-{{ item.score.classification }}" style="left: {{ item.bar_position }}%" aria-hidden="true"></span>
+            </div>
+            <div class="scoreboard-result">
+              <strong>{{ '%+.1f'|format(item.score.change_score) }}</strong>
+              <span class="classification classification-{{ item.score.classification }}">{{ item.classification_label }}</span>
+              <small>Güven %{{ '%.0f'|format(item.score.confidence * 100) }}</small>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="method-strip" aria-label="Nasıl çalışır">
+    <div><strong>01</strong><span>Periyodik snapshot</span></div>
+    <div><strong>02</strong><span>Dört değişim sinyali</span></div>
+    <div><strong>03</strong><span>Açıklanabilir skor</span></div>
+  </section>
+{% endblock %}

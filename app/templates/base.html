@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Mekanların zaman içindeki Bozdu/Coştu değişimini görün.">
+    <title>{% block title %}ora_bozdu{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/app.css') }}">
+    <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="ora_bozdu ana sayfa">
+        <span class="brand-mark">o/b</span>
+        <span>ora_bozdu</span>
+      </a>
+      <span class="header-note">Eryaman · snapshot beta</span>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>
+      <span>Değişimi ölçer, tek bir güne hüküm vermez.</span>
+      <span class="google-attribution" translate="no">Google Maps</span>
+    </footer>
+  </body>
+</html>

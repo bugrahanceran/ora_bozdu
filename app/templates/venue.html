@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ venue.display_name }} · ora_bozdu{% endblock %}
+{% block content %}
+  <section class="venue-shell">
+    <a class="back-link" href="/">← Başka mekan ara</a>
+    <div class="venue-heading">
+      <div>
+        <p class="eyebrow">Eryaman değişim kartı</p>
+        <h1>{{ snapshot.provider_name if snapshot else venue.display_name }}</h1>
+        {% if snapshot %}
+          <p class="venue-meta">
+            Son snapshot {{ snapshot.snapshot_date.strftime('%d.%m.%Y') }}
+            {% if snapshot.rating is not none %}· Rating {{ '%.1f'|format(snapshot.rating) }}{% endif %}
+            {% if snapshot.user_ratings_total is not none %}· {{ snapshot.user_ratings_total }} değerlendirme{% endif %}
+          </p>
+        {% endif %}
+      </div>
+      {% if score %}
+        <div class="score-orb score-{{ score.classification }}">
+          <strong>{{ '%+.0f'|format(score.change_score) }}</strong>
+          <span>change score</span>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if score %}
+      <article class="score-card">
+        <div class="bar-labels"><span>BOZDU</span><span>COŞTU</span></div>
+        <div class="change-bar" role="img" aria-label="Bozdu Coştu skoru {{ score.change_score }}">
+          <span class="bar-midpoint" aria-hidden="true"></span>
+          <span class="bar-marker" style="left: {{ bar_position }}%" aria-hidden="true"></span>
+        </div>
+        <div class="card-status-row">
+          <span class="confidence">Veri güveni %{{ '%.0f'|format(score.confidence * 100) }}</span>
+        </div>
+      </article>
+
+      <section class="signals-section">
+        <p class="eyebrow">Skoru besleyen sinyaller</p>
+        <div class="signal-grid">
+          {% for signal in signals %}
+            <article class="signal-card {{ 'is-unavailable' if not signal.available else '' }}">
+              <div class="signal-topline">
+                <h2>{{ signal.label }}</h2>
+                {% if signal.available %}<strong>{{ '%+.2f'|format(signal.value) }}</strong>{% else %}<strong>—</strong>{% endif %}
+              </div>
+              <p>{{ signal.summary }}</p>
+              <small>Ağırlık %{{ '%.0f'|format(signal.configured_weight * 100) }} · Kanıt gücü %{{ '%.0f'|format(signal.reliability * 100) }}</small>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% elif snapshot %}
+      <section class="empty-card">
+        <p>Snapshot var, henüz score hesaplanmamış.</p>
+        <code>python -m app.scoring.recompute --region eryaman</code>
+      </section>
+    {% else %}
+      <section class="empty-card">
+        <p>Bu mekan için henüz snapshot yok. Periyodik fetch sonrasında kart burada oluşacak.</p>
+      </section>
+    {% endif %}
+
+    {% if snapshot and snapshot.google_maps_url %}
+      <a class="maps-link" href="{{ snapshot.google_maps_url }}" rel="noreferrer" target="_blank">
+        Mekanı <span translate="no">Google Maps</span>’te aç ↗
+      </a>
+    {% endif %}
+  </section>
+{% endblock %}

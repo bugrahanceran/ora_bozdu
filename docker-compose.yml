@@ -1,0 +1,43 @@
+services:
+  web:
+    build: .
+    environment:
+      DATABASE_URL: sqlite:///./data/ora_bozdu.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config:ro
+      - ./.env:/app/.env:ro
+
+  fetch:
+    build: .
+    profiles: ["jobs"]
+    environment:
+      DATABASE_URL: sqlite:///./data/ora_bozdu.db
+    command:
+      - sh
+      - -c
+      - >-
+        uv run alembic upgrade head &&
+        uv run python -m app.fetch --region eryaman
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config:ro
+      - ./.env:/app/.env:ro
+
+  discover:
+    build: .
+    profiles: ["jobs"]
+    entrypoint:
+      - uv
+      - run
+      - python
+      - -m
+      - app.discover
+    command:
+      - status
+    volumes:
+      - ./config:/app/config
+      - ./reports:/app/reports
+      - ./.env:/app/.env:ro

@@ -1,0 +1,34 @@
+{
+  "html_attributions": [],
+  "result": {
+    "business_status": "OPERATIONAL",
+    "name": "Fixture Cafe",
+    "place_id": "place-1",
+    "price_level": 2,
+    "rating": 4.4,
+    "reviews": [
+      {
+        "author_name": "Deniz",
+        "author_url": "https://example.test/users/deniz",
+        "language": "tr",
+        "original_language": "tr",
+        "rating": 4,
+        "text": "Temiz ve ilgili ekip.",
+        "time": 1751000000,
+        "translated": false
+      },
+      {
+        "author_name": "Ayşe",
+        "author_url": "https://example.test/users/ayse",
+        "language": "tr",
+        "original_language": "tr",
+        "rating": 5,
+        "text": "Kahve taze ve servis hızlı.",
+        "time": 1750000000,
+        "translated": false
+      }
+    ],
+    "user_ratings_total": 420
+  },
+  "status": "OK"
+}

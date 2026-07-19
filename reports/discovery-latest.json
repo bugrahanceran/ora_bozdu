@@ -1,0 +1,357 @@
+{
+  "as_of_date": "2026-07-19",
+  "target_count": 30,
+  "query_counts": {
+    "cafe": 8,
+    "restaurant": 22
+  },
+  "candidate_count": 30,
+  "unique_new_candidate_count": 30,
+  "existing_preserved": 0,
+  "rejected": {
+    "duplicate_or_existing": 0,
+    "business_status": 0,
+    "review_count": 0,
+    "brand_cap": 0,
+    "not_selected": 0
+  },
+  "freshness_checked": 30,
+  "selected_new": 30,
+  "catalog_total": 30,
+  "catalog_categories": {
+    "cafe": 8,
+    "restaurant": 22
+  },
+  "selected": [
+    {
+      "slug": "mrada-cafe",
+      "display_name": "MRADA CAFE",
+      "place_id": "ChIJt7iWx9420xQRFm5FJuuC-gA",
+      "category": "cafe",
+      "brand_key": "mrada-cafe",
+      "active": true,
+      "selection_score": 7.353722,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-19T11:30:53+00:00"
+    },
+    {
+      "slug": "patika-bistro-cafe",
+      "display_name": "Patika & Bistro Cafe",
+      "place_id": "ChIJV5pb3Mow0xQRej-0yyzAjLU",
+      "category": "cafe",
+      "brand_key": "patika-bistro-cafe",
+      "active": true,
+      "selection_score": 7.254885,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T22:49:30+00:00"
+    },
+    {
+      "slug": "elida-cafe",
+      "display_name": "Elida Cafe",
+      "place_id": "ChIJvYoBvN420xQRSX8RxF3l1Ls",
+      "category": "cafe",
+      "brand_key": "elida-cafe",
+      "active": true,
+      "selection_score": 7.239933,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-17T20:43:28+00:00"
+    },
+    {
+      "slug": "marina-cafe-goksu-park",
+      "display_name": "Marina Cafe - Göksu Park",
+      "place_id": "ChIJ0_7Tqxo30xQRatRMt5hdIqU",
+      "category": "cafe",
+      "brand_key": "marina-cafe-goksu-park",
+      "active": true,
+      "selection_score": 7.027315,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-17T13:44:46+00:00"
+    },
+    {
+      "slug": "salincak-cafe",
+      "display_name": "Salıncak Cafe",
+      "place_id": "ChIJSQFXI9420xQREalbMhjU5-k",
+      "category": "cafe",
+      "brand_key": "salincak-cafe",
+      "active": true,
+      "selection_score": 6.949856,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T04:10:19+00:00"
+    },
+    {
+      "slug": "katre-cafe",
+      "display_name": "Katre Cafe",
+      "place_id": "ChIJ-zJ4S9420xQReQQgllqIPjQ",
+      "category": "cafe",
+      "brand_key": "katre-cafe",
+      "active": true,
+      "selection_score": 6.267201,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-12T10:19:40+00:00"
+    },
+    {
+      "slug": "adem-doruk-eryaman-sube",
+      "display_name": "Adem Doruk Eryaman Şube",
+      "place_id": "ChIJkUTspUY30xQRXih0q7tnRps",
+      "category": "restaurant",
+      "brand_key": "adem-doruk-eryaman-sube",
+      "active": true,
+      "selection_score": 8.761393,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-18T19:22:57+00:00"
+    },
+    {
+      "slug": "hosta-doner-eryaman",
+      "display_name": "Hosta Döner Eryaman",
+      "place_id": "ChIJ2-DP-rEw0xQRMyO0ll6s60o",
+      "category": "restaurant",
+      "brand_key": "hosta-doner",
+      "active": true,
+      "selection_score": 8.022569,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-19T11:45:13+00:00"
+    },
+    {
+      "slug": "halimbey-eryaman-sube",
+      "display_name": "HALİMBEY ERYAMAN ŞUBE",
+      "place_id": "ChIJv059-tU20xQRoov8seESO4Y",
+      "category": "restaurant",
+      "brand_key": "halimbey-eryaman-sube",
+      "active": true,
+      "selection_score": 8.012681,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-19T09:19:09+00:00"
+    },
+    {
+      "slug": "hatayus",
+      "display_name": "HATAYUS",
+      "place_id": "ChIJTb9wpDI30xQRcV-T7VNBcSc",
+      "category": "restaurant",
+      "brand_key": "hatayus",
+      "active": true,
+      "selection_score": 7.36074,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T22:50:38+00:00"
+    },
+    {
+      "slug": "venice-italian-pizza-vip-pizza",
+      "display_name": "Venice Italian Pizza (VIP Pizza)",
+      "place_id": "ChIJ_9O62Low0xQRwU_iKlniRYg",
+      "category": "restaurant",
+      "brand_key": "venice-italian-pizza-vip-pizza",
+      "active": true,
+      "selection_score": 7.059618,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-11T20:44:12+00:00"
+    },
+    {
+      "slug": "china-wind-kasmir",
+      "display_name": "China Wind Kaşmir",
+      "place_id": "ChIJn6Bg8dg20xQRttIJ8OwBfcY",
+      "category": "restaurant",
+      "brand_key": "china-wind-kasmir",
+      "active": true,
+      "selection_score": 6.997596,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-18T17:45:44+00:00"
+    },
+    {
+      "slug": "pizza-il-forno-kasmir-center",
+      "display_name": "PIZZA IL FORNO KAŞMİR CENTER",
+      "place_id": "ChIJ7X9bbgE30xQRn8O2qZZ4ZLs",
+      "category": "restaurant",
+      "brand_key": "pizza-il-forno-kasmir-center",
+      "active": true,
+      "selection_score": 6.741701,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-18T12:59:40+00:00"
+    },
+    {
+      "slug": "senorita-chocolate-kasmir-center",
+      "display_name": "Senorita Chocolate Kaşmir Center",
+      "place_id": "ChIJaSTzV5E30xQROc59vfhyZGE",
+      "category": "restaurant",
+      "brand_key": "senorita-chocolate-kasmir-center",
+      "active": true,
+      "selection_score": 6.663133,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T17:55:10+00:00"
+    },
+    {
+      "slug": "dayi-kurek-lahmacun-eryaman",
+      "display_name": "Dayı Kürek Lahmacun (Eryaman)",
+      "place_id": "ChIJEyO4k40x0xQRpHryva7xg1Q",
+      "category": "restaurant",
+      "brand_key": "dayi-kurek-lahmacun",
+      "active": true,
+      "selection_score": 6.556778,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-18T15:46:44+00:00"
+    },
+    {
+      "slug": "food-homemade-burger-eryaman",
+      "display_name": "Food. Homemade Burger Eryaman",
+      "place_id": "ChIJu6mMM7ow0xQRVN9iiOXGiW0",
+      "category": "restaurant",
+      "brand_key": "food-homemade-burger",
+      "active": true,
+      "selection_score": 6.473891,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-14T15:48:55+00:00"
+    },
+    {
+      "slug": "kajun-kasmir",
+      "display_name": "Kajun Kaşmir",
+      "place_id": "ChIJWW6WGds30xQRZuTHcCX5wNg",
+      "category": "restaurant",
+      "brand_key": "kajun-kasmir",
+      "active": true,
+      "selection_score": 6.426488,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T15:37:35+00:00"
+    },
+    {
+      "slug": "oncu-kasmir",
+      "display_name": "Öncü Kaşmir",
+      "place_id": "ChIJ3aZpl4830xQRP3LN3f73cC4",
+      "category": "restaurant",
+      "brand_key": "oncu-kasmir",
+      "active": true,
+      "selection_score": 6.086775,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-11T18:14:14+00:00"
+    },
+    {
+      "slug": "eryaman-cagri-pide-ve-kebap",
+      "display_name": "Eryaman Çağrı Pide ve Kebap",
+      "place_id": "ChIJ-5i2r7Aw0xQRBwk9wTdyhPk",
+      "category": "restaurant",
+      "brand_key": "eryaman-cagri-pide-ve-kebap",
+      "active": true,
+      "selection_score": 6.018593,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-01T14:46:46+00:00"
+    },
+    {
+      "slug": "muazzam-etli-ekmek",
+      "display_name": "Muazzam Etli Ekmek",
+      "place_id": "ChIJ1-KbMQk30xQR7uUuglf4BeA",
+      "category": "restaurant",
+      "brand_key": "muazzam-etli-ekmek",
+      "active": true,
+      "selection_score": 5.981414,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-06-26T18:35:03+00:00"
+    },
+    {
+      "slug": "elmin-simit-cafe",
+      "display_name": "Elmin Simit Cafe",
+      "place_id": "ChIJuSxwBMsw0xQRUErY79EaRs8",
+      "category": "cafe",
+      "brand_key": "elmin-simit-cafe",
+      "active": true,
+      "selection_score": 5.888878,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-14T06:19:34+00:00"
+    },
+    {
+      "slug": "runik-board-game-cafe",
+      "display_name": "Runik Board Game Cafe",
+      "place_id": "ChIJS4sWTyA30xQRT-Y13tToLt0",
+      "category": "cafe",
+      "brand_key": "runik-board-game-cafe",
+      "active": true,
+      "selection_score": 5.765191,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T22:52:46+00:00"
+    },
+    {
+      "slug": "elif-pide-ve-kebap-salonu",
+      "display_name": "ELİF PİDE VE KEBAP SALONU",
+      "place_id": "ChIJb9UX2j030xQRghv7DHt0eCI",
+      "category": "restaurant",
+      "brand_key": "elif-pide-ve-kebap-salonu",
+      "active": true,
+      "selection_score": 5.765191,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T16:18:23+00:00"
+    },
+    {
+      "slug": "cajun-corner",
+      "display_name": "CAJUN CORNER",
+      "place_id": "ChIJsx6vpYAx0xQR1mevuJtJp04",
+      "category": "restaurant",
+      "brand_key": "cajun-corner",
+      "active": true,
+      "selection_score": 5.676754,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-06-18T19:51:18+00:00"
+    },
+    {
+      "slug": "koza-lounge-cafe-restaurant",
+      "display_name": "KOZA LOUNGE CAFE - RESTAURANT",
+      "place_id": "ChIJwzXdhoUx0xQR6DTwekKEaUM",
+      "category": "restaurant",
+      "brand_key": "koza-lounge-cafe-restaurant",
+      "active": true,
+      "selection_score": 5.278115,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-19T10:08:20+00:00"
+    },
+    {
+      "slug": "erciyes-borek-pastannecim-eryaman",
+      "display_name": "Erciyes Börek & Pastannecim Eryaman",
+      "place_id": "ChIJe8gl-Mww0xQRsCPmjoRJZB4",
+      "category": "restaurant",
+      "brand_key": "erciyes-borek-pastannecim",
+      "active": true,
+      "selection_score": 5.225747,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-06-15T10:15:10+00:00"
+    },
+    {
+      "slug": "komagene-etsiz-cig-kofte",
+      "display_name": "Komagene Etsiz Çiğ Köfte",
+      "place_id": "ChIJif2VIrox0xQRhfaYJ6yN8RA",
+      "category": "restaurant",
+      "brand_key": "komagene-etsiz-cig-kofte",
+      "active": true,
+      "selection_score": 4.997212,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-13T00:34:09+00:00"
+    },
+    {
+      "slug": "4carsi-pide",
+      "display_name": "4Çarşı Pide",
+      "place_id": "ChIJ52j0m9Mw0xQRlbGOXOQTSGQ",
+      "category": "restaurant",
+      "brand_key": "4carsi-pide",
+      "active": true,
+      "selection_score": 4.882802,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-18T15:34:28+00:00"
+    },
+    {
+      "slug": "eryaman-burger-pizza-house",
+      "display_name": "Eryaman Burger Pizza House",
+      "place_id": "ChIJndat6ug50xQRsImu_Lo-u_4",
+      "category": "restaurant",
+      "brand_key": "eryaman-burger-pizza-house",
+      "active": true,
+      "selection_score": 4.787492,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-07-16T16:59:27+00:00"
+    },
+    {
+      "slug": "kanatci-omer-eryaman",
+      "display_name": "Kanatçı ÖMER (ERYAMAN)",
+      "place_id": "ChIJdd_ijagx0xQREIscoRtvi7g",
+      "category": "restaurant",
+      "brand_key": "kanatci-omer",
+      "active": true,
+      "selection_score": 4.70953,
+      "freshness_state": "fresh",
+      "newest_review_at": "2026-06-29T23:08:07+00:00"
+    }
+  ]
+}
