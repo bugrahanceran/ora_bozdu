@@ -445,9 +445,12 @@ class ScoringEngine:
         candidates = [
             value for value in (last_growth_date, last_review_date) if value is not None
         ]
-        if not candidates:
-            return None
-        return (as_of - max(candidates)).days
+        if candidates:
+            return (as_of - max(candidates)).days
+        # No growth or review has ever been observed in the entire snapshot
+        # history -- this is itself evidence of inactivity, not a reason to
+        # skip the penalty. Anchor to the earliest snapshot we have.
+        return (as_of - snapshots[0].snapshot_date).days
 
     @staticmethod
     def _dormancy_penalty(

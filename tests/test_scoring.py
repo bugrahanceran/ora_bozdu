@@ -162,6 +162,22 @@ def test_growing_rating_count_prevents_dormancy_even_without_reviews() -> None:
     assert details["state"] == "stable_high"
 
 
+def test_never_active_venue_still_gets_dormancy_penalty() -> None:
+    # Rating count never grows even once (flat from the very first snapshot
+    # we have) and there is not a single review. This is total silence, not
+    # "no evidence" -- it must not be treated as fresh just because there is
+    # no reference activity date to measure from.
+    snapshots = make_snapshots([4.5] * 60, spacing_days=7, review_counts=[100] * 60)
+
+    result = ScoringEngine(load_scoring_config(CONFIG_PATH)).compute(snapshots, [])
+
+    details = result.signal_breakdown["stability"]["details"]
+    assert details["days_since_activity"] is not None
+    assert details["days_since_activity"] >= 365
+    assert details["state"] == "dormant"
+    assert result.signal_breakdown["stability"]["value"] < 0
+
+
 def test_dormancy_penalty_ramps_up_with_inactivity_duration() -> None:
     config = load_scoring_config(CONFIG_PATH).stability
 
