@@ -14,8 +14,10 @@ rating trajectory ve review velocity gibi zaman serileri snapshot’lar
 biriktikçe oluşur.
 
 İzlenecek mekanlar elle yazılmaz. `app.discover`, Places API (New) Text Search
-ile Eryaman’daki cafe/restoran adaylarını toplar; local filtre, brand sınırı,
-freshness kontrolü ve category kotalarıyla deterministik seçim yapar.
+ile Eryaman’daki cafe/restoran adaylarını tek genel sorguyla toplar; local
+filtre (durum + minimum review sayısı) ve freshness kontrolüyle deterministik
+seçim yapar. Aynı markanın tüm şubeleri (ör. 5 Starbucks varsa 5’i de) ayrı
+ayrı aday olabilir; şube sayısı sınırlanmaz.
 
 Her venue için Place Details (Legacy) iki kez çağrılır:
 
@@ -67,16 +69,16 @@ GOOGLE_MAPS_API_KEY=your-key
 DATABASE_URL=sqlite:///./data/ora_bozdu.db
 VENUE_CATALOG_PATH=config/catalog.yaml
 DATA_COLLECTION_CONFIG_PATH=config/data_collection.yaml
-SCORING_CONFIG_PATH=config/scoring.v4.toml
+SCORING_CONFIG_PATH=config/scoring.v5.toml
 ```
 
 API key kodda tutulmaz ve `.env` git’e girmez. Google Cloud project’te Places
 API (New) Text Search ve Places API Legacy erişimi açık olmalıdır. Legacy
 endpoint erişilemezse otomatik fallback yapılmaz.
 
-Mekan hedefi, minimum aday havuzu, cadence, Eryaman çemberi, filtre eşikleri,
-brand sınırı ve geçiş dönemindeki category kotaları
-[`config/data_collection.yaml`](config/data_collection.yaml) dosyasındadır.
+Mekan hedefi, minimum aday havuzu, cadence, Eryaman çemberi ve filtre eşikleri
+(minimum review sayısı dahil) [`config/data_collection.yaml`](config/data_collection.yaml)
+dosyasındadır.
 
 ## Bir kerelik discovery
 
@@ -110,10 +112,11 @@ sayısını verir. Bu sayı ayrıca onaylandıktan sonra:
 uv run python -m app.discover freshness --max-requests N --no-retries
 ```
 
-Task 1'in güncel hedefi 30 venue'dur; uygun havuz hedefi aştığında preliminary
-review-count sıralaması ve mevcut category kurallarıyla tam 30 venue freshness
-kısa listesine alınır. Tek CLI koşusu 30 ayrı Place Details HTTP isteği yapar.
-Freshness response'larının ham `newest` payload'u cache'te korunur. Aynı tarihli
+Task 1'in güncel hedefi 30 venue'dur. Freshness, hedef sayı kadar değil, hard
+filtreyi geçen **tüm** eligible adaylar için çalışır (böylece durgun bir aday
+daha taze bir yedekle değiştirilebilir); eligible havuz hedef sayıyı ne kadar
+aşarsa Legacy istek sayısı da o kadar artar. Freshness response'larının ham
+`newest` payload'u cache'te korunur. Aynı tarihli
 ilk snapshot fetch'i bu payload'u seed olarak yeniden kullanır ve venue başına
 yalnızca eksik `most_relevant` çağrısını yapar. Bu optimizasyon eski, yalnızca
 tarih saklayan cache kayıtlarını geriye dönük kurtaramaz.
@@ -126,16 +129,20 @@ uv run python -m app.discover finalize
 
 Discovery akışı:
 
-1. `cafe` ve `restaurant` için ayrı Text Search (New) sorguları yapar.
+1. Cafe ve restoranı birlikte kapsayan tek genel Text Search (New) sorgusu
+   yapar; adayın kategorisi Google'ın döndürdüğü `primaryType`'tan gelir.
 2. Metromall merkezli config çemberini kapsayan API rectangle'ında sayfaları
    toplar; dönen koordinatlara local radius filtresi uygulayarak gerçek çemberin
    dışındakileri eler. Uygun aday havuzu config eşiğine ulaştığında pagination
    erken tamamlanır.
-3. `OPERATIONAL`, minimum review count ve brand cap filtrelerini local uygular.
-4. Kısa listedeki her adayın en yeni yorum tarihini Legacy Details ile kontrol
-   eder.
-5. `log(user_ratings_total)` ve freshness cezasıyla sıralar; cafe/restoran
-   kotalarını uygular.
+3. `OPERATIONAL` ve minimum review count (`min_user_ratings_total`) filtrelerini
+   local uygular. Aynı markanın şube sayısı sınırlanmaz.
+4. Hard filtreyi geçen **her** adayın (yalnızca hedef sayı kadarının değil) en
+   yeni yorum tarihini Legacy Details ile kontrol eder; bu, freshness'ın
+   gerçekten seçimi değiştirebilmesi (durgun bir adayın daha taze bir yedekle
+   yer değiştirebilmesi) için gereklidir.
+5. `log(user_ratings_total)` ve gerçek freshness cezasıyla sıralar, tam hedef
+   sayıda venue seçer.
 6. [`config/catalog.yaml`](config/catalog.yaml) ve
    `reports/discovery-latest.json` üretir.
 
@@ -147,13 +154,28 @@ uv run python -m app.discover search --max-requests 1 --target-count 40 --reset 
 
 ## Periyodik fetch
 
+Onay öncesi, provider'a hiç çıkmadan ve API key gerektirmeden hangi venue'ların
+atlanacağını, hangilerinin freshness cache'inden seed alacağını ve toplam
+beklenen HTTP istek sayısını görmek için:
+
+```bash
+uv run python -m app.fetch --region eryaman --plan
+```
+
+Çıktı hem retry'sız mantıksal istek sayısını (`estimated_http_requests`) hem de
+`max_retries` etkinken gerçek üst sınırı (`worst_case_http_requests_with_retries`)
+gösterir — retry açıkken (`--no-retries` verilmediğinde) gerçek istek sayısı
+mantıksal sayının üzerine çıkabilir. Gerçek koşu:
+
 ```bash
 uv run python -m app.fetch --region eryaman --no-retries
 ```
 
 `--no-retries`, canlı koşu öncesinde onaylanan HTTP istek üst sınırının
-aşılmamasını sağlar. Task 1'de 30 venue ve iki review sort bulunduğundan ilk
-tam fetch en fazla 60 Place Details isteği yapar.
+teknik olarak da aşılmamasını sağlar; retry açık bırakılırsa gerçek istek
+sayısı `--plan`'ın gösterdiği worst-case'e kadar çıkabilir. Task 1'de 30 venue
+ve iki review sort bulunduğundan ilk tam fetch `--no-retries` ile en fazla 60
+Place Details isteği yapar.
 
 İlk canlı kontrolü veya tek mekan retry işlemini katalogdaki `slug` ile
 sınırlandırmak mümkündür:
@@ -183,10 +205,10 @@ Haftalık cron örneği:
 `fetch.cadence` config’te `daily` yapıldığında code değişmeden günlük period
 idempotency’sine geçilir.
 
-## Scoring v4
+## Scoring v5
 
 Score formülü swappable ve versioned’dır. Aktif ağırlıklar
-[`config/scoring.v4.toml`](config/scoring.v4.toml) dosyasındadır:
+[`config/scoring.v5.toml`](config/scoring.v5.toml) dosyasındadır:
 
 - Rating trajectory: `%30`
 - Review velocity/acceleration: `%20`
@@ -202,24 +224,37 @@ Stability durumları:
 - `stable_high`: yüksek seviye + düşük dalgalanma; pozitif “İstikrarlı” ödülü
 - `stable_low`: düşük/orta seviye + düşük dalgalanma; nötr/hafif negatif
 - `volatile`: dalgalı rating
+- `dormant`: rating sayısı da yeni review de uzun süredir artmıyor (bkz. aşağı)
 - `insufficient_data`: yeterli snapshot penceresi yok
 
 Eşik, pencere, minimum snapshot ve katkı değerlerinin tamamı config’tedir.
 Stability ilk haftalarda unavailable olur ve mevcut sinyal ağırlıkları yeniden
 normalize edilir.
 
+**Durgunluk (dormancy) cezası (v5, yeni):** `user_ratings_total` artışı VEYA
+yeni review’dan biri hâlâ geliyorsa mekan “fresh” sayılır — sadece review
+tarihine bakılmaz. İkisi de durduysa, son aktiviteden bu yana geçen güne göre
+kademeli bir ceza uygulanır: `dormancy_grace_days` (60 gün) altında ceza yok;
+`dormancy_full_penalty_days`e (365 gün) doğru ceza doğrusal artar ve
+`dormancy_penalty_value`e (-1.0) ulaşır. Tam durgunlukta state `dormant`
+olur — bu, rating değeri sabit kaldığı için “İstikrarlı” görünen ama aslında
+kimsenin artık ilgilenmediği bir mekanı doğru şekilde Bozdu yönüne çeker. Bu
+ceza mekanı hiçbir zaman kataloğdan/webapp’ten çıkarmaz, yalnızca skoru
+etkiler.
+
 Geçmiş skorları yeniden hesaplamak için:
 
 ```bash
-uv run python -m app.scoring.recompute --region eryaman --score-version v4
+uv run python -m app.scoring.recompute --region eryaman --score-version v5
 ```
 
-## Name değişimi sigortası
+## Operasyonel uyarılar
 
 Provider’dan gelen name bir önceki snapshot’tan farklıysa fetch log’una
-`venue_name_changed` WARNING yazılır ve önceki/yeni değer fetch özetine eklenir.
-Bu uyarı score/confidence’ı etkilemez ve venue kataloğunu otomatik değiştirmez.
-Katalog otomatik değiştirilmez.
+`venue_name_changed` WARNING yazılır; `business_status` değişirse aynı şekilde
+`venue_status_changed` WARNING’i yazılır (ikisi aynı anda değişirse iki ayrı
+kayıt oluşur). Önceki/yeni değer fetch özetine eklenir. Bu uyarılar
+score/confidence’ı etkilemez ve venue kataloğunu otomatik değiştirmez.
 
 ## REST endpoint’leri
 
@@ -240,10 +275,10 @@ uv run ruff format --check .
 uv run alembic check
 ```
 
-Testler gerçek API’ye çıkmaz. New Text Search pagination, discovery seçimi,
-Legacy çift-sıralama parse, review deduplication, cadence idempotency,
-partial-fetch rollback, name warning, Scoring v4 ve web kartı fixture’larla
-doğrulanır.
+Testler gerçek API’ye çıkmaz. New Text Search pagination, discovery seçimi
+(freshness dahil), Legacy çift-sıralama parse, review deduplication, cadence
+idempotency, partial-fetch rollback, operasyonel uyarılar, fetch `--plan`,
+Scoring v4 ve web kartı fixture’larla doğrulanır.
 
 ## Docker
 

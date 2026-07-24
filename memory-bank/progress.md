@@ -63,7 +63,7 @@ içindedir.
 - [x] 30 venue'luk nihai catalog ve discovery raporunu üret; SQLite'a sync et.
 - [x] Freshness ham `newest` payload'unu cache'le ve aynı günkü ilk fetch'te
       yeniden kullan; duplicate bootstrap çağrısını fixture ile engelle.
-- [ ] İlk katalog koşusundan sonra discovery'yi tek birleşik cafe/restoran
+- [x] İlk katalog koşusundan sonra discovery'yi tek birleşik cafe/restoran
       sorgusuna geçir ve category minimum kotalarını kaldır.
 - [x] Config-driven minimum uygun aday havuzuna ulaşınca pagination'ı erken
       bitir; mevcut search'i üçüncü restaurant sayfasını çekmeden tamamla.
@@ -71,6 +71,10 @@ içindedir.
       (30/30 snapshot, 60/60 HTTP response başarılı, retry yok).
 - [x] HTTP client INFO loglarında API key içeren request URL'lerini bastır;
       kullanıcıya açığa çıkan key'i rotate etmesini bildir.
+- [x] Provider'a çıkmadan venue/sort/cache-reuse ve azami HTTP istek sayısını
+      gösteren `python -m app.fetch --plan` dry-run çıktısını ekle.
+- [x] `business_status` değişimi için `venue_status_changed` operasyonel
+      WARNING'i ekle (name-change warning'iyle aynı desende, score dışı).
 
 ### Scoring ve change story
 
@@ -140,3 +144,58 @@ Bilinen model riski: early-phase sentiment drift, recent/older cohort'lardan
 birinde çok az review varken kanıt gücünü toplam review sayısından fazla yüksek
 hesaplayabilir. Venice Italian Pizza bunun somut örneğidir. Config-driven cohort
 minimumu ve dengeli reliability hesabı sonraki score version kararıdır.
+
+## 2026-07-24 — Tam review sonrası düzeltmeler
+
+Tam codebase review'ında bulunan iki gerçek bug düzeltildi:
+
+- Ana sayfa skor panosu "son snapshot"ı `MAX(PlaceSnapshot.id)` yerine
+  `snapshot_date` + `id` sıralı `row_number()` penceresiyle seçiyor artık;
+  geçmişe dönük `--date` ile doldurulan bir hafta artık venue'yu skorborddan
+  düşürmüyor.
+- Sentiment keyword eşleşmesi substring yerine kelime sınırına (`\b`) geçirildi
+  (`"bad"` artık `"badem"` içinde eşleşmiyor). v4 bugfix olarak ele alındı,
+  yeni score version açılmadı; mevcut 30 venue `recompute` ile güncellendi ve
+  bazı skorlar gerçekten değişti (örn. elmin-simit-cafe 29.7 → 35.5).
+
+Ayrıca: `place_snapshots`'ta hiç dolmayan 6 kolon (`formatted_address`,
+`latitude`, `longitude`, `types`, `website`, `google_maps_url`)
+`0003_drop_unused_snapshot_fields` migration'ıyla kaldırıldı (upgrade/downgrade
+doğrulandı); discovery tek birleşik sorguya geçirildi ve `category_minimums`
+kaldırıldı; `python -m app.fetch --plan` dry-run çıktısı eklendi;
+`venue_status_changed` operasyonel warning'i eklendi. Tüm değişiklikler
+fixture'larla test edildi (33 test), `ruff check`/`format` ve migration
+upgrade→downgrade→upgrade geçti; gerçek local DB'ye karşı `/health`, ana sayfa
+ve venue kartı smoke testi yapıldı. Hiçbir gerçek API çağrısı yapılmadı.
+
+Aynı gün, iki discovery filtresi (`min_user_ratings_total`,
+`max_branches_per_brand`) kullanıcı isteğiyle gerçek ham aday havuzuna karşı
+doğrulandı ve iki ürün kararı uygulandı: minimum review eşiği `100`→`50`, ve
+brand şube sınırı tamamen kaldırıldı (aynı markanın tüm şubeleri artık ayrı
+ayrı eklenebilir). `FilterResult.rejected_brand_cap` ve ilgili config/rapor
+alanları koddan silindi. 33 test ve ruff kontrolleri geçti.
+
+Push öncesi son bir review turunda kullanıcının 4 sorusu 2 gerçek bug/eksik
+ortaya çıkardı ve düzeltildi: (1) `freshness_shortlist` adayları gerçek
+freshness bilinmeden `target_count`'a daraltıyordu, bu yüzden freshness
+sonucu hiçbir zaman seçimi değiştiremiyordu — artık hard filtreyi geçen tüm
+adaylar freshness kontrolüne giriyor, daraltma yalnızca gerçek freshness
+bilindikten sonra oluyor (regression testiyle kanıtlandı). (2)
+`fetch --plan`, retry açıkken gerçek istek üst sınırını göstermiyordu —
+`max_retries` ve `worst_case_http_requests_with_retries` alanları eklendi.
+README.md discovery/fetch bölümleri de bugünkü tüm değişikliklerle güncellendi
+(daha önce güncellenmemişti). 35 test, ruff check/format, `alembic check` ve
+gerçek DB smoke testi geçti.
+
+Son olarak, kullanıcı stability sinyaline "durgunluk" kavramını ekletti:
+rating sayısı hâlâ artıyorsa mekan fresh sayılır, hem rating hem review
+durursa süreye göre kademeli bir ceza uygulanır (60 gün ceza yok, 365 günde
+tam ceza), mekan asla kataloğdan çıkarılmaz — yalnızca skor Bozdu yönüne
+çekilir. Bu formül davranışı değiştiren bir tasarım kararı olduğu için yeni
+bir score version — **`scoring.v5`** — açıldı (v4 frozen kaldı); aktif
+`SCORING_CONFIG_PATH` hem `app/config.py` default'unda hem gerçek `.env`'de
+`config/scoring.v5.toml`'a güncellendi. 37 test, ruff check/format,
+`alembic check`, local recompute (30 venue v5'e taşındı) ve gerçek DB smoke
+testi (API'de `score.version == "v5"`) geçti. Dormancy alanları şu an tüm
+venue'larda gözlenemiyor çünkü stability henüz `insufficient_data` (tek
+snapshot); birkaç hafta sonra gerçek etkisi görülecek.

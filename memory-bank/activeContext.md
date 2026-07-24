@@ -133,15 +133,166 @@ girmez. Yeni key doğrulanana kadar başka live API çağrısı yapılmayacaktı
   config-driven merkez/radius'u kapsayan rectangular viewport gönderilir.
   Field mask'teki `places.location` ile dönen adaylara haversine tabanlı gerçek
   radius filtresi yerelde uygulanır; böylece viewport köşeleri kapsama girmez.
+- 2026-07-24: Tam codebase review'ı sonrası kullanıcı onayıyla altı düzeltme
+  sırayla uygulandı (bkz. progress.md "2026-07-24" bölümü). İlgili kararlar:
+  - Ana sayfa skor panosunun "son snapshot" seçimi `MAX(id)`'den
+    `snapshot_date` + `id` sıralı pencere fonksiyonuna düzeltildi.
+  - Sentiment keyword eşleşmesi kelime sınırına (`\b`) geçirildi; bu **v4
+    içinde bugfix** sayıldı (yeni score version açılmadı), çünkü formül/ağırlık
+    değişmedi — yalnızca implementasyon hatası düzeltildi. Mevcut 30 venue
+    `recompute` ile güncellendi. Bilinen sınırlama: Türkçe yüklem ekleri
+    (`tazeydi` gibi) artık kelime sınırıyla yakalanmıyor; sıfır eşleşmede
+    rating-fallback bunu yumuşatıyor. Bu ayrı, çözülmemiş bir konu değil,
+    bilinçli bir ölçek/kapsam kararı.
+  - `place_snapshots`'taki hiç dolmayan 6 kolon (`formatted_address`,
+    `latitude`, `longitude`, `types`, `website`, `google_maps_url`) ve bunlara
+    bağlı `PlaceState` alanları, Legacy parse kodu ve venue kartındaki Google
+    Maps linki **kaldırıldı** (dokümante etmek yerine); minimal field mask
+    ilkesiyle uyumlu hale getirildi.
+  - Discovery tek birleşik Text Search sorgusuna geçirildi
+    (`category: general`, `text_query: "restoran ve kafe"`,
+    `included_type: null`); `category_minimums` config alanı ve seçimdeki kota
+    mantığı tamamen kaldırıldı. Adayın `category`'si artık Google'ın
+    `primaryType`'ından türetiliyor. Bu, henüz gerçek API'ye karşı
+    çalıştırılmadı — bir sonraki onaylı `search --reset` koşusunda
+    `"restoran ve kafe"` sorgu metninin gerçek sonuç kalitesi gözden
+    geçirilmeli.
+  - `python -m app.fetch --plan` eklendi: provider'a çıkmadan/API key
+    gerektirmeden hangi venue'ların atlanacağını, hangilerinin freshness
+    cache'inden seed alacağını ve toplam beklenen HTTP istek sayısını basar.
+  - `venue_status_changed` operasyonel WARNING'i, `venue_name_changed` ile aynı
+    desende eklendi (score/confidence'ı etkilemez).
+  - Doğrulama: 33 fixture test, `ruff check`/`format`, migration
+    `0003_drop_unused_snapshot_fields` upgrade→downgrade→upgrade→`alembic
+    check`, ve gerçek local DB'ye karşı `/health` + ana sayfa + venue kartı
+    smoke testi geçti. Gerçek API'ye hiç çıkılmadı.
+- 2026-07-24 (devam): Kullanıcı iki discovery filtresini gerçek ham aday
+  havuzuna (47 unique aday) karşı doğrulamamı istedi. `min_user_ratings_total`
+  filtresinin gerçekten çalıştığı kanıtlandı (16 aday <100 review nedeniyle
+  reddedilmişti). `max_branches_per_brand` kodu doğruydu ama gerçek havuzda
+  hiç 3+ şubeli marka çıkmadığı için o kural pratikte hiç tetiklenmemişti —
+  bug değildi. Kullanıcı ardından iki ürün kararı verdi:
+  - Minimum review eşiği `100`'den `50`'ye düşürüldü.
+  - `max_branches_per_brand` kuralı **tamamen kaldırıldı**: aynı markanın tüm
+    şubeleri artık ayrı ayrı katalog adayı olabilir (5 Starbucks varsa 5'i de
+    eklenir). `apply_hard_filters`'ın `existing`/brand-cap parametresi ve
+    `FilterResult.rejected_brand_cap` alanı koddan silindi; `brand_key` sadece
+    bilgi amaçlı hesaplanmaya devam ediyor. Bu, mevcut 30 venue'luk kataloğu
+    etkilemiyor (zaten hiçbirinde brand cap tetiklenmemişti) — yalnızca
+    sonraki discovery koşularını etkiler.
+  - Doğrulama: güncellenmiş `apply_hard_filters` gerçek 47 adaylık ham havuzda
+    tekrar çalıştırıldı (35 kabul, 12 review-count reddi — eşik değişimiyle
+    tutarlı), 33 test + ruff check/format geçti.
+- 2026-07-24 (push öncesi review): Kullanıcı günün değişikliklerini push
+  öncesi 4 soruyla sorguladı; üçü gerçek bulgu çıkardı:
+  - **Scoring version semantiği:** Keyword bugfix'i v4 içinde kaldı (yeni
+    version açılmadı). Veri bütünlüğü açısından sorun yok (recompute her
+    zaman güncel engine koduyla tüm v4 satırlarını tazeler, karışık/eski
+    sonuç kalmaz). Ama gerçek bir gedik var: DB'de "bu v4 satırı hangi engine
+    koduyla hesaplandı" bilgisi yok — tek kaynak bu memory-bank kaydı ve git
+    geçmişi. Kabul edilebilir ama mükemmel değil; ileride scoring engine'in
+    kendisini etkileyen (yalnızca weight/threshold değil) benzer düzeltmeler
+    birikirse tekrar gözden geçirilebilir.
+  - **Freshness gerçekten seçimi etkilemiyor muydu — DOĞRULANMIŞ BUG:**
+    `freshness_shortlist()`, gerçek freshness bilinmeden (`newest_review_at=
+    None`) hesaplanan preliminary skorla adayları `target_count`'a
+    daraltıyordu; freshness sonucu yalnızca finalize'daki ikinci
+    `select_candidates` çağrısına giriyordu ama o noktada havuzda zaten tam
+    `target_count` kadar aday olduğu için hiçbir aday freshness yüzünden
+    elenemiyordu. Düzeltildi: `freshness_shortlist` artık hard filtreyi geçen
+    **tüm** eligible adayları döndürüyor, daraltma yalnızca finalize'da gerçek
+    freshness bilindikten sonra oluyor. Bu, mevcut tamamlanmış 30 venue'luk
+    kataloğu etkilemez (retroaktif değil), yalnızca sonraki discovery
+    koşularını düzeltir. Yeni regression testi
+    (`test_freshness_can_demote_a_stale_high_review_count_candidate`)
+    popüler-ama-durgun bir adayın gerçekten daha taze bir yedekle
+    değiştirildiğini kanıtlıyor.
+  - **`fetch --plan` retry ile gerçek üst sınırı göstermiyordu — DOĞRULANMIŞ
+    EKSİK:** `estimated_http_requests` yalnızca mantıksal (retry'sız) istek
+    sayısını gösteriyordu; retry açıkken (varsayılan, `settings.
+    http_max_retries=2`) gerçek istek sayısı 3 katına kadar çıkabilirdi ama
+    plan çıktısı bunu hiç yansıtmıyordu. `max_retries` parametresi ve
+    `worst_case_http_requests_with_retries` alanı eklendi. Gerçek DB'ye karşı
+    doğrulandı: retry açıkken 60 mantıksal → 180 worst-case; `--no-retries`
+    ile 60/60.
+  - **README:** Discovery/fetch bölümleri (ayrı cafe/restaurant sorgusu,
+    brand cap, category kotaları, min review=100) tamamen güncellenmedi
+    olarak bulundu; birleşik sorgu, kota kaldırma, `min_user_ratings_total=50`,
+    brand cap kaldırma, `--plan`, `venue_status_changed` ve freshness'ın artık
+    seçimi etkilediği bilgisiyle güncellendi.
+  - Doğrulama: 35 test (2 yeni: freshness demote testi + plan retry
+    assertion'ları güncellendi), ruff check/format, `alembic check`, gerçek
+    local DB'ye karşı `--plan` (retry açık/kapalı) + `/health` + ana sayfa
+    smoke testi geçti.
+- 2026-07-24 (Scoring v5 — dormancy): Kullanıcı, discovery freshness
+  tartışmasından yola çıkarak ürün scoring'i için bir netleştirme yaptı:
+  "sadece review'a bakarak durgunluk cezası verilemez; rating sayısı (yıldız/
+  oylama) hâlâ artıyorsa mekan fresh sayılır; ikisi de durmuşsa ceza
+  uygulanabilir ama mekan asla kataloğdan çıkarılmaz, yalnızca skor Bozdu
+  yönüne yaklaşır." Kullanıcı bunu mevcut `stability` sinyaline entegre etmeyi
+  seçti (5. sinyal veya review_velocity'ye entegre yerine), süreye göre
+  kademeli bir ceza olarak ("4 ay az, 6 ay biraz daha, uzadıkça artar").
+  - Bu, formülün davranışını değiştiren bir tasarım kararı olduğu için
+    (bugfix değil) yeni bir score version — **`scoring.v5`** — açıldı; v4
+    dokunulmadan/frozen kaldı.
+  - `ScoringEngine._days_since_activity`: son aktivite tarihi,
+    `user_ratings_total`'ın snapshot'lar arası en son arttığı tarih **veya**
+    en son review'un `published_at`'i (hangisi daha yeniyse) olarak
+    hesaplanır. `ScoringEngine._dormancy_penalty`: `dormancy_grace_days`
+    (60 gün) altında ceza yok; `dormancy_full_penalty_days`e (365 gün) doğru
+    doğrusal artıp `dormancy_penalty_value`e (-1.0) ulaşır.
+  - `-1.0` seçildi (ilk taslak -0.60 idi) çünkü test etti: `stable_high`
+    (+0.75) + `-0.60` hâlâ pozitif (+0.15) çıkıyordu — kullanıcının "Bozdu'ya
+    yaklaşsın" isteğini karşılamıyordu. `-1.0` ile tam durgunlukta değer her
+    zaman net negatife düşüyor.
+  - `app/config.py`'nin varsayılan `scoring_config_path`'i VE gerçek `.env`
+    dosyasındaki `SCORING_CONFIG_PATH` `config/scoring.v5.toml`'a
+    güncellendi (yalnızca default'u değiştirmek yetmiyordu, `.env`'de
+    açık `v4` override'ı vardı). Local recompute ile 30 venue v5'e taşındı;
+    tek snapshot oldukları için `stability` hâlâ `insufficient_data`,
+    dormancy alanları henüz gözlenemiyor (7+ snapshot gerekiyor).
+  - Eski `scoring.v4.toml` yeni alanları içermediği için `StabilityConfig`'e
+    nötr default'lar eklendi (`dormancy_penalty_value=0.0` vb.) — v4 hâlâ
+    yüklenebilir ve davranışı değişmedi.
+  - `main.py`'deki `STABILITY_LABELS`'e `dormant: "Sessizleşti"` eklendi
+    (`stable_low` zaten "Durgun" etiketini kullandığı için farklı bir isim
+    seçildi, karışıklık olmasın diye).
+  - Doğrulama: 37 test (3 yeni: kademeli ceza, tam dormancy override, rating-
+    count-ile-fresh-kalma), ruff check/format, `alembic check`, gerçek local
+    DB'de recompute + `/health`/ana sayfa/venue kartı smoke testi (API
+    çıktısında `score.version == "v5"` doğrulandı).
+  - Kullanıcı ardından formülün genel tutarlılığını sorguladı: "aktif+istikrarlı
+    Coştu'ya güçlü yaklaşıyor mu, durgunluk Bozdu'ya zayıf/kademeli mi
+    çekiyor, tüm sinyaller uyumlu mu?" Gerçek `ScoringEngine` ile simüle edilip
+    doğrulandı (39 teste 2 yeni regression testi eklendi):
+    - Aktif + 4.2 sabit rating → `change_score=26.1`, **costu**, confidence
+      %97.3 (güçlü, beklenen).
+    - Aynı venue tam durgunlaşınca (0→119→182→371 gün) `change_score`
+      26.1→9.7→4.5→-13.5 olarak **kademeli** düşüyor ama yüksek ratingli bir
+      venue'da durgunluk TEK BAŞINA asla `bozdu`ya geçmiyor, `dengede`de
+      kalıyor (`rating_trajectory` hâlâ nötr olduğu için, sayı hiç
+      düşmediğinden) — kullanıcının "zayıf, güçlü düşüş yok" tarifiyle birebir
+      örtüşüyor.
+    - Aynı durgunluk düşük bir rating'le (3.5, `stable_low` taban) birleşince
+      `change_score=-39.6`, **bozdu** — yani durgunluk diğer sinyallerle
+      doğru şekilde toplanabiliyor, izole/tavanlı değil.
+    - `review_velocity`, durgunluğa geçiş anında geçici bir negatif tepki
+      veriyor (ivme/deceleration, `-0.39`'dan `-0.19`'a sönümleniyor) —
+      stability'nin kalıcı dormancy cezasıyla çelişmiyor, aynı yöne
+      tamamlayıcı katkı yapıyor. `sentiment_keyword_drift` review birikmeyince
+      doğru şekilde unavailable oluyor. Confidence tüm senaryolarda sabit
+      (%97.3) kaldı çünkü "veriye güven" ile "yön" birbirinden ayrık — dormancy
+      yönü etkiliyor, güveni değil (yeterli snapshot geçmişi zaten var).
 
-## Aktif puanlama v4 ağırlıkları
+## Aktif puanlama v5 ağırlıkları
 
 Config üzerinden kesinleşen ağırlıklar:
 
 - Rating trajectory: `0.30`
 - Review-count velocity/acceleration: `0.20`
 - Review sentiment ve keyword drift: `0.20`
-- Seviyeyle koşullu stability: `0.30`
+- Seviyeyle koşullu stability (+ 2026-07-24'ten itibaren dormancy cezası):
+  `0.30`
 
 Snapshot geçmişi oluşmadan unavailable sinyaller score'a katılmaz. Task 1'de
 review tarihlerinden stability proxy zorlanmaz; stability yeterli snapshot
@@ -162,6 +313,13 @@ score version olarak kararlaştırılacaktır.
 
 ## Son doğrulama sonuçları
 
+- 2026-07-24: `pytest`: 33 test geçti (6 yeni test: keyword word-boundary,
+  genel discovery sorgusu, fetch `--plan`, `venue_status_changed` × 2 senaryo).
+  `ruff check .` ve `ruff format --check .`: geçti. Alembic
+  `0003_drop_unused_snapshot_fields` dahil upgrade → downgrade → upgrade ve
+  `alembic check`: geçti (gerçek local DB üzerinde, yedek alınarak). Gerçek DB
+  ile `/health`, ana sayfa (`Eryaman skor panosu` render) ve
+  `/venues/mrada-cafe` smoke testi: HTTP 200. Gerçek API'ye çıkılmadı.
 - `pytest`: 27 test geçti.
 - `ruff check .`: geçti.
 - `ruff format --check .`: geçti.
@@ -177,14 +335,13 @@ score version olarak kararlaştırılacaktır.
 
 ## Yakın sıradaki işler
 
-1. İlk katalog koşusu tamamlandığı için discovery config ve testlerini tek
-   birleşik cafe/restoran sorgusu, category kotası olmadan çalışacak şekilde
-   güncellemek.
-2. Discovery/fetch için provider'a çıkmadan endpoint, venue, sort, cache reuse
-   ve azami HTTP istek sayısını gösteren local dry-run/plan çıktısı eklemek.
-3. Gerçek snapshotlarla UI/card davranışını ve early-phase confidence
+1. Bir sonraki onaylı `search --reset` koşusunda yeni birleşik
+   `"restoran ve kafe"` sorgu metninin gerçek Text Search sonuç kalitesini
+   (cafe/restoran karışımı, alaka düzeyi) gözden geçirmek; gerekirse metni
+   ayarlamak.
+2. Gerçek snapshotlarla UI/card davranışını ve early-phase confidence
    sunumunu denetlemek.
-4. Task 1 DoD, README ve memory-bank'i son kez denetlemek.
+3. Task 1 DoD, README ve memory-bank'i son kez denetlemek.
 
 ## Açık konular
 

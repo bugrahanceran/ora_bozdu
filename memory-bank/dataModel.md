@@ -49,10 +49,12 @@ operational warning kayıtlarıdır.
 Temel alanlar: `id`, `fetch_run_id`, `venue_id`, `snapshot_id`, `warning_code`,
 `details`, `created_at`.
 
-Task 1'de `venue_name_changed` warning kodu kullanılır. `details` içinde önceki
-ve yeni provider name değeri bulunur. Warning yalnızca log ve fetch özetinde
-gösterilir; score/confidence hesabını veya venue kataloğunu değiştirmez. Venue
-kataloğundan çıkarma ya da yeni venue açma kararı manuel verilir.
+Task 1'de `venue_name_changed` ve `venue_status_changed` warning kodları
+kullanılır. `details` içinde ilgili alanın önceki ve yeni değeri bulunur. Aynı
+snapshot'ta hem name hem `business_status` değişirse iki ayrı warning kaydı
+oluşur. Warning yalnızca log ve fetch özetinde gösterilir; score/confidence
+hesabını veya venue kataloğunu değiştirmez. Venue kataloğundan çıkarma ya da
+yeni venue açma kararı manuel verilir.
 
 ### `place_snapshots`
 
@@ -60,7 +62,11 @@ Bir venue'nun belirli bir cadence periodundaki logical state kaydı.
 
 Temel alanlar: `id`, `venue_id`, `fetch_run_id`, `snapshot_date`, `cadence`,
 `period_start`, `captured_at`, `rating`, `user_ratings_total`, `price_level`,
-`business_status`, provider name ve `created_at`.
+`business_status`, provider name ve `created_at`. Adres, koordinat, website,
+Google Maps URL ve `types` kolonları `0003_drop_unused_snapshot_fields`
+migration'ıyla şemadan kaldırılmıştır; periyodik fetch field mask'i bu
+alanları hiçbir zaman istemediği için sürekli boş kalıyorlardı. Field mask
+genişlerse yeni bir migration ile geri eklenir.
 
 `venue_id + cadence + period_start` unique constraint cadence-aware idempotency
 sağlar. `snapshot_payloads` içindeki request-variant unique constraint ile
@@ -140,6 +146,24 @@ Task 1 üçüncü parti backfill yapmaz. İleride son 6 aya ait review'lar geldi
 
 ## Schema değişiklik geçmişi
 
+- **2026-07-24 — Scoring v5 (dormancy):** Şema değişmedi (`score_results.
+  signal_breakdown` zaten serbest JSON). `stability` sinyaline "durgunluk"
+  kavramı eklendi: `user_ratings_total` artışı VEYA yeni review varsa mekan
+  fresh sayılır; ikisi de durduysa, son aktiviteden bu yana geçen güne göre
+  kademeli bir ceza uygulanır (60 gün altı ceza yok, 365 günde tam ceza
+  `-1.0`) ve tam eşikte state `dormant` olur. Bu asla venue'yu kataloğdan
+  çıkarmaz, yalnızca `change_score`'u etkiler. `StabilityConfig`'e 3 yeni alan
+  (`dormancy_grace_days`, `dormancy_full_penalty_days`,
+  `dormancy_penalty_value`) eklendi; eski `scoring.v4.toml` bunları
+  içermediği için nötr default'larla (etkisiz) yüklenmeye devam eder.
+  `app/config.py` ve gerçek `.env`'deki `SCORING_CONFIG_PATH`, `scoring.v5.
+  toml`'a güncellendi.
+- **2026-07-24 — `0003_drop_unused_snapshot_fields`:** `place_snapshots`
+  tablosundan hiç doldurulmayan `formatted_address`, `latitude`, `longitude`,
+  `types`, `website`, `google_maps_url` kolonları kaldırıldı (upgrade/downgrade
+  doğrulandı). Bununla birlikte `PlaceState`/Legacy adapter parse'ı ve venue
+  detay kartındaki Google Maps linki de kaldırıldı; minimal field mask
+  ilkesiyle uyumlu hale getirildi.
 - **2026-07-19 — Freshness raw-cache sidecar:** DB şeması değişmeden discovery
   cache'e ham `details_newest` payload, fetched timestamp ve payload hash
   eklendi. Aynı tarihli ilk fetch bu payload'u yeniden kullanabilir; snapshot
