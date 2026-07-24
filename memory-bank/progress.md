@@ -2,7 +2,8 @@
 
 ## Genel durum
 
-Phase 1 / Task 1'in ilk implementation doğrulamaları geçti. Nihai veri toplama
+Phase 1 tamamlandı (2026-07-24). Task 1'in tüm checklist maddeleri ve push
+öncesi son review'da bulunan düzeltmeler geçti. Nihai veri toplama
 kararıyla otomatik discovery, YAML catalog ve cadence-aware haftalık fetch
 dönüşümü açıldı. `GOOGLE_MAPS_API_KEY` yapılandırılmıştır fakat kullanıcı onayı
 olmadan hiçbir ücretli API koşusu yapılmaz. Önceden terminal çıktısında görünmüş
@@ -113,10 +114,15 @@ içindedir.
 - [x] SQLite volume persistence'ı doğrula.
 - [x] Tüm test, lint, format, migration ve smoke kontrollerini geçir.
 
-## Task 2 hazırlığı
+## Faz 1 durumu: tamamlandı
 
-- [ ] Venue kataloğunun 30'dan 40 kayda code değişikliği olmadan çıkabildiğini
-      Task 1 sonunda doğrula.
+Faz 1 kapsamındaki tüm Task 1 maddeleri (yukarıdaki checklist) tamamlanmıştır.
+30'dan 40 kayda (ve sonrasında 500 mekana) code değişikliği olmadan
+çıkabildiğinin doğrulanması artık Faz 1'i kapatan bir Task 2 ön koşulu olarak
+değil, **Faz 2'nin** kapsamına taşınmıştır (2026-07-24 kullanıcı kararı);
+Faz 2 zaten `techContext.md`'deki "Faz 2'de netleştirilecek" bölümünde 500
+mekana genişleme işini içeriyordu, 30→40 doğrulaması bu genişlemenin ilk
+adımı olarak oraya eklendi.
 
 ## Bilinen bug'lar
 
@@ -199,3 +205,30 @@ bir score version — **`scoring.v5`** — açıldı (v4 frozen kaldı); aktif
 testi (API'de `score.version == "v5"`) geçti. Dormancy alanları şu an tüm
 venue'larda gözlenemiyor çünkü stability henüz `insufficient_data` (tek
 snapshot); birkaç hafta sonra gerçek etkisi görülecek.
+
+## 2026-07-24 — Dormancy sınır durumu düzeltmesi + doküman senkronizasyonu
+
+Kullanıcının işaret ettiği bir gerçek bug bulundu ve düzeltildi:
+`_days_since_activity`, ne `user_ratings_total` artışı ne de review hiç
+gözlenmemişse (tüm snapshot geçmişi boyunca tam sessizlik) `None` dönüyordu;
+bu da `_dormancy_penalty`'nin cezasız (`0.0`) kalmasına yol açıyordu — yani en
+uç durgunluk durumu (hiç kanıt yok) yanlışlıkla "kanıt yok, ceza yok" olarak
+ele alınıyor, bir yıldır tamamen sessiz bir mekan `stable_high`+0.75 alarak
+Coştu yönünde ödüllendirilebiliyordu. Düzeltme: aday tarih (growth/review)
+yoksa en eski snapshot tarihi "son bilinen aktivite" referansı olarak
+kullanılıyor artık (`app/scoring/engine.py`), yani tüm gözlem penceresi
+boyunca hiç aktivite görülmemesi kademeli cezaya giriyor.
+`test_never_active_venue_still_gets_dormancy_penalty` regresyon testiyle
+kanıtlandı. Bu bir bugfix'tir (v5'in dokümante edilen niyetine karşı gerçek
+bir implementasyon hatası), yeni score version açılmadı.
+
+Ayrıca push öncesi bulunan doküman tutarsızlıkları giderildi: README'de iki
+yerde "Aktif Scoring v4" / "Scoring v4 ... doğrulanır" ifadeleri unutulmuş,
+`activeContext.md`'deki "Kesinleşen kararlar" bölümü hâlâ "aktif version
+scoring.v4" diyordu, `techContext.md`'deki "Çalışma komutları" cheat-sheet'i
+`--score-version v4` gösteriyordu — tümü v5'e güncellendi.
+
+Son olarak, Faz 1/Task 2 ön koşulu olan "kataloğun 30'dan 40'a code
+değişikliği olmadan çıkabildiğini doğrula" maddesi kullanıcı kararıyla Faz
+1'i kapatmadan Faz 2 kapsamına taşındı (bkz. yukarıdaki "Faz 1 durumu" ve
+`techContext.md`'nin "Faz 2'de netleştirilecek" bölümü); Faz 1 artık done.

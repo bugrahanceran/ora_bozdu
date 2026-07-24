@@ -191,7 +191,7 @@ Fetch akışı:
 3. Her venue için `newest` ve `most_relevant` review sıralamalarını alır.
 4. İki çağrı da başarılıysa snapshot ve alt kayıtları tek transaction’da yazar.
 5. Aynı cadence periodunda mevcut snapshot varsa API çağrısı yapmadan atlar.
-6. Aktif Scoring v4 sonuçlarını son snapshot’a kadar yeniden hesaplar.
+6. Aktif Scoring v5 sonuçlarını son snapshot’a kadar yeniden hesaplar.
 
 Bir çağrı başarısız olursa venue için partial snapshot oluşmaz. Diğer venue’lar
 işlenmeye devam eder ve CLI non-zero exit code ile hata özetini yazdırır.
@@ -278,7 +278,7 @@ uv run alembic check
 Testler gerçek API’ye çıkmaz. New Text Search pagination, discovery seçimi
 (freshness dahil), Legacy çift-sıralama parse, review deduplication, cadence
 idempotency, partial-fetch rollback, operasyonel uyarılar, fetch `--plan`,
-Scoring v4 ve web kartı fixture’larla doğrulanır.
+Scoring v5 ve web kartı fixture’larla doğrulanır.
 
 ## Docker
 

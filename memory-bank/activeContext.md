@@ -55,9 +55,11 @@ girmez. Yeni key doğrulanana kadar başka live API çağrısı yapılmayacaktı
 ## Kesinleşen kararlar
 
 - Puanlama yaklaşımı: **A — normalize edilmiş ağırlıklı change score +
-  confidence**, aktif version `scoring.v4`.
-- `scoring.v4` ağırlıkları rating trajectory `%30`, review velocity `%20`,
-  sentiment/keyword drift `%20` ve stability `%30` olarak belirlenmiştir.
+  confidence**, aktif version `scoring.v5` (2026-07-24'te `v4`'ten devraldı;
+  ağırlıklar değişmedi, stability'ye dormancy cezası eklendi — bkz. aşağıdaki
+  2026-07-24 kaydı).
+- Ağırlıklar (v4'ten beri sabit): rating trajectory `%30`, review velocity
+  `%20`, sentiment/keyword drift `%20` ve stability `%30`.
 - Domain `change_score` değeri `-100..+100`, UI bar position `0..100` olur.
 - Venue detay kartında barın yanında yalnızca genel `Veri güveni` pill'i
   gösterilir. Classification/stability pill'leri ve bar altındaki tekrar eden

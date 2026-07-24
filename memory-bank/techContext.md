@@ -203,8 +203,12 @@ adım olarak yapılır:
 
 ## Faz 2'de netleştirilecek
 
+- Venue kataloğunun 30'dan 40 kayda code değişikliği olmadan çıkabildiğinin
+  doğrulanması (eskiden Faz 1/Task 2 ön koşuluydu; 2026-07-24'te Faz 1
+  kapatılırken bu genişlemenin ilk adımı olarak Faz 2'ye taşındı).
 - Places Aggregate API ile 40 venue ve daha sonra tüm Ankara genişlemesinde
-  bölge bölge, 20'şer venue'luk gruplar halinde fetch kurgusu.
+  bölge bölge, 20'şer venue'luk gruplar halinde fetch kurgusu (500 mekana
+  geçiş).
 - Kullanıcı talebiyle kataloğa venue ekleme akışı gelirse Autocomplete tabanlı
   canlı arama/tamamlama.
 - Katalog kurulumunda venue başına 1-2 Place Photo saklanması ve kartta
@@ -278,6 +282,14 @@ webapp'ten çıkarmaz, yalnızca `change_score`'u Bozdu yönüne çeker. Eski
 için nötr default'lar (`dormancy_penalty_value=0.0` vb.) tanımlıdır — v4
 davranışı bu nedenle değişmeden kalır.
 
+**Sınır durumu düzeltmesi (2026-07-24):** `user_ratings_total` tüm snapshot
+geçmişi boyunca hiç artmamış VE hiç review yoksa (tam sessizlik, "kanıt yok"
+değil), `_days_since_activity` artık en eski snapshot tarihini "son bilinen
+aktivite" referansı sayıyor — önceden bu durumda `None` dönüp ceza hiç
+uygulanmıyordu, yani bir yıldır tamamen sessiz `stable_high` bir mekan
+cezasız kalabiliyordu. Bu bir v5 bugfix'idir (dokümante edilen "hem rating
+hem review durursa ceza" niyetine karşı gerçek bir gedikti).
+
 Task 1'de review tarihlerinden stability proxy üretimi varsayılan olarak kapalı
 olacaktır. En fazla iki farklı sıralamadan gelen sınırlı ve seçilim yanlı review
 örneği, güvenilir bir “istikrar” iddiası için yeterli kabul edilmez. Bu karar
@@ -317,7 +329,7 @@ uv run python -m app.catalog
 uv run uvicorn app.main:app --reload
 uv run python -m app.fetch --region eryaman --plan
 uv run python -m app.fetch --region eryaman
-uv run python -m app.scoring.recompute --region eryaman --score-version v4
+uv run python -m app.scoring.recompute --region eryaman --score-version v5
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .
