@@ -13,12 +13,7 @@ from app.discovery.search_cache import (
     DiscoverySearchCache,
     SearchPageRecord,
 )
-from app.discovery.selector import (
-    apply_hard_filters,
-    deduplicate_candidates,
-    score_candidate,
-    select_candidates,
-)
+from app.discovery.selector import apply_hard_filters, deduplicate_candidates
 
 Checkpoint = Callable[[DiscoverySearchCache], None]
 
@@ -58,11 +53,7 @@ def _filtered_candidates(
         if candidate.place_id not in existing_place_ids
     )
     unique_candidates = deduplicate_candidates(new_candidates)
-    filtered = apply_hard_filters(
-        unique_candidates,
-        config=config.discovery,
-        existing=catalog.venues,
-    )
+    filtered = apply_hard_filters(unique_candidates, config=config.discovery)
     return unique_candidates, filtered
 
 
@@ -85,17 +76,6 @@ def complete_search_if_pool_ready(
     if len(filtered.candidates) < pool_target:
         return False
 
-    category_counts = {
-        category: sum(entry.category == category for entry in catalog.venues)
-        + sum(candidate.category == category for candidate in filtered.candidates)
-        for category in config.discovery.category_minimums
-    }
-    if any(
-        category_counts[category] < minimum
-        for category, minimum in config.discovery.category_minimums.items()
-    ):
-        return False
-
     for query in cache.queries:
         query.completed = True
     cache.completion_reason = "minimum_candidate_pool"
@@ -108,24 +88,15 @@ def freshness_shortlist(
     config: DataCollectionConfig,
     catalog: VenueCatalog,
 ):
-    """Select exactly the target-sized deterministic pool for details checks."""
+    """Every locally-eligible candidate that still needs a freshness check.
+
+    This must not be pre-narrowed to target_count: final selection (in
+    build_discovery_result) scores candidates using the real freshness
+    result, and can only let freshness change the outcome if candidates
+    beyond target_count are still in play to be out-ranked by a fresher one.
+    """
     _, filtered = _filtered_candidates(cache, config=config, catalog=catalog)
-    preliminary_scores = tuple(
-        score_candidate(
-            candidate,
-            newest_review_at=None,
-            as_of_date=cache.as_of_date,
-            config=config.discovery,
-        )
-        for candidate in filtered.candidates
-    )
-    selected = select_candidates(
-        preliminary_scores,
-        existing=catalog.venues,
-        target_count=cache.target_count,
-        config=config.discovery,
-    )
-    return tuple(item.candidate for item in selected)
+    return filtered.candidates
 
 
 def search_stage_summary(

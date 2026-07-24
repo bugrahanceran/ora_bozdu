@@ -10,7 +10,7 @@ from app.adapters.base import (
     ReviewFreshnessResult,
 )
 from app.catalog import VenueCatalog
-from app.data_collection_config import load_data_collection_config
+from app.data_collection_config import DiscoveryQueryConfig, load_data_collection_config
 from app.discovery.search_cache import (
     create_search_cache,
     load_search_cache,
@@ -19,6 +19,16 @@ from app.discovery.search_cache import (
 from app.services.discovery_stages import (
     DiscoveryFreshnessStage,
     DiscoverySearchStage,
+)
+
+# These stage-level tests exercise generic multi-query pagination/resumption
+# behavior, which the stage still supports even though production config now
+# uses a single unified query (see config/data_collection.yaml).
+TWO_QUERIES = (
+    DiscoveryQueryConfig(category="cafe", text_query="cafe", included_type="cafe"),
+    DiscoveryQueryConfig(
+        category="restaurant", text_query="restaurant", included_type="restaurant"
+    ),
 )
 
 
@@ -93,7 +103,7 @@ async def test_search_stage_honors_one_request_budget_and_resumes(
 ) -> None:
     base_config = load_data_collection_config(Path("config/data_collection.yaml"))
     discovery = base_config.discovery.model_copy(
-        update={"target_count": 2, "category_minimums": {"cafe": 1, "restaurant": 1}}
+        update={"target_count": 2, "queries": TWO_QUERIES}
     )
     config = base_config.model_copy(update={"discovery": discovery})
     catalog = VenueCatalog(region_slug="eryaman", region_name="Eryaman", venues=())
@@ -133,7 +143,10 @@ async def test_search_stage_honors_one_request_budget_and_resumes(
 
     assert second.requests_this_run == 2
     assert second.search_completed is True
-    assert second.freshness_required == 2
+    # freshness_shortlist no longer pre-narrows to target_count (2); all 3
+    # eligible candidates (cafe-a, cafe-b, restaurant-a) need a freshness
+    # check so a stale one can still be out-ranked by a fresher spare.
+    assert second.freshness_required == 3
     assert provider.calls == [
         ("cafe", None),
         ("cafe", "cafe-page-2"),
@@ -150,7 +163,7 @@ async def test_search_stage_stops_when_minimum_candidate_pool_is_ready(
         update={
             "target_count": 2,
             "minimum_candidate_pool": 2,
-            "category_minimums": {"cafe": 1, "restaurant": 0},
+            "queries": TWO_QUERIES,
         }
     )
     config = base_config.model_copy(update={"discovery": discovery})
@@ -187,7 +200,7 @@ async def test_search_stage_stops_when_minimum_candidate_pool_is_ready(
 async def test_freshness_stage_honors_request_budget(tmp_path: Path) -> None:
     base_config = load_data_collection_config(Path("config/data_collection.yaml"))
     discovery = base_config.discovery.model_copy(
-        update={"target_count": 2, "category_minimums": {"cafe": 1, "restaurant": 1}}
+        update={"target_count": 2, "queries": TWO_QUERIES}
     )
     config = base_config.model_copy(update={"discovery": discovery})
     catalog = VenueCatalog(region_slug="eryaman", region_name="Eryaman", venues=())
@@ -219,8 +232,11 @@ async def test_freshness_stage_honors_request_budget(tmp_path: Path) -> None:
     )
 
     assert summary.requests_this_run == 1
-    assert summary.freshness_required == 2
+    # All 3 eligible candidates (cafe-a, cafe-b, restaurant-a) require a
+    # freshness check now, not just the target_count (2); place-id order
+    # still starts with cafe-a so the budget-1 assertion below is unchanged.
+    assert summary.freshness_required == 3
     assert summary.freshness_completed == 1
-    assert summary.freshness_remaining == 1
+    assert summary.freshness_remaining == 2
     assert freshness_provider.calls == ["cafe-a"]
     assert cache.freshness_payloads["cafe-a"].review_sort == "newest"

@@ -12,18 +12,11 @@ discovery:
   minimum_candidate_pool: 30
   radius_meters: 2000
   page_size: 20
-  min_user_ratings_total: 100
-  max_branches_per_brand: 2
+  min_user_ratings_total: 50
   queries:
-    - category: cafe
-      text_query: cafe
-      included_type: cafe
-    - category: restaurant
-      text_query: restaurant
-      included_type: restaurant
-  category_minimums:
-    cafe: 6
-    restaurant: 10
+    - category: general
+      text_query: "restoran ve kafe"
+      included_type: null
   brand_stopwords:
     - ankara
     - eryaman

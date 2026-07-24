@@ -87,6 +87,56 @@ async def test_text_search_paginates_with_minimal_field_mask() -> None:
 
 
 @pytest.mark.asyncio
+async def test_general_query_omits_included_type_and_infers_category() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        assert "includedType" not in body
+        assert "strictTypeFiltering" not in body
+        return httpx.Response(
+            200,
+            json={
+                "places": [
+                    {
+                        "id": "place-cafe",
+                        "displayName": {"text": "Mixed Cafe"},
+                        "businessStatus": "OPERATIONAL",
+                        "userRatingCount": 120,
+                        "primaryType": "cafe",
+                        "location": {"latitude": 39.979, "longitude": 32.636},
+                    },
+                    {
+                        "id": "place-restaurant",
+                        "displayName": {"text": "Mixed Restaurant"},
+                        "businessStatus": "OPERATIONAL",
+                        "userRatingCount": 300,
+                        "primaryType": "restaurant",
+                        "location": {"latitude": 39.979, "longitude": 32.636},
+                    },
+                ]
+            },
+        )
+
+    client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    adapter = PlacesNewTextSearchAdapter("test-key", client=client)
+    try:
+        candidates = await adapter.search(
+            category="general",
+            text_query="restoran ve kafe",
+            included_type=None,
+            latitude=39.979,
+            longitude=32.636,
+            radius_meters=2000,
+            page_size=20,
+        )
+    finally:
+        await client.aclose()
+
+    by_id = {candidate.place_id: candidate for candidate in candidates}
+    assert by_id["place-cafe"].category == "cafe"
+    assert by_id["place-restaurant"].category == "restaurant"
+
+
+@pytest.mark.asyncio
 async def test_text_search_surfaces_google_access_error_details() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(

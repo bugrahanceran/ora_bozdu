@@ -20,7 +20,7 @@ class RegionConfig(BaseModel):
 class DiscoveryQueryConfig(BaseModel):
     category: str
     text_query: str
-    included_type: str
+    included_type: str | None = None
 
 
 class DiscoveryConfig(BaseModel):
@@ -29,9 +29,7 @@ class DiscoveryConfig(BaseModel):
     radius_meters: float = Field(gt=0, le=50000)
     page_size: int = Field(gt=0, le=20)
     min_user_ratings_total: int = Field(ge=0)
-    max_branches_per_brand: int = Field(gt=0)
     queries: tuple[DiscoveryQueryConfig, ...]
-    category_minimums: dict[str, int]
     brand_stopwords: tuple[str, ...] = ()
     brand_aliases: dict[str, str] = Field(default_factory=dict)
     stale_after_days: int = Field(gt=0)
@@ -45,13 +43,6 @@ class DiscoveryConfig(BaseModel):
         categories = [query.category for query in self.queries]
         if not categories or len(categories) != len(set(categories)):
             raise ValueError("discovery query categories must be non-empty and unique")
-        unknown = set(self.category_minimums) - set(categories)
-        if unknown:
-            raise ValueError(f"category minimums have unknown categories: {unknown}")
-        if any(minimum < 0 for minimum in self.category_minimums.values()):
-            raise ValueError("category minimums cannot be negative")
-        if sum(self.category_minimums.values()) > self.target_count:
-            raise ValueError("category minimums exceed target_count")
         return self
 
 

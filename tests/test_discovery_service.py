@@ -17,15 +17,23 @@ class FakeDiscoveryProvider:
     provider_name = "places_api_new"
 
     async def search(self, **kwargs) -> tuple[DiscoveryCandidate, ...]:
-        category = kwargs["category"]
+        # A single unified query still returns a mix of primary types.
         return (
             DiscoveryCandidate(
-                place_id=f"{category}-place",
-                display_name=f"Fixture {category.title()}",
-                category=category,
+                place_id="cafe-place",
+                display_name="Fixture Cafe",
+                category="cafe",
                 business_status="OPERATIONAL",
                 user_ratings_total=500,
-                primary_type=category,
+                primary_type="cafe",
+            ),
+            DiscoveryCandidate(
+                place_id="restaurant-place",
+                display_name="Fixture Restaurant",
+                category="restaurant",
+                business_status="OPERATIONAL",
+                user_ratings_total=500,
+                primary_type="restaurant",
             ),
         )
 
@@ -60,9 +68,7 @@ class FakeFreshnessProvider:
 @pytest.mark.asyncio
 async def test_discovery_service_builds_catalog_and_report_from_fixtures() -> None:
     base_config = load_data_collection_config(Path("config/data_collection.yaml"))
-    discovery = base_config.discovery.model_copy(
-        update={"target_count": 2, "category_minimums": {"cafe": 1, "restaurant": 1}}
-    )
+    discovery = base_config.discovery.model_copy(update={"target_count": 2})
     config = base_config.model_copy(update={"discovery": discovery})
     existing = VenueCatalog(
         region_slug="eryaman",

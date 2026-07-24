@@ -55,7 +55,6 @@ def build_discovery_result(
                     "duplicate_or_existing": len(searched),
                     "business_status": 0,
                     "review_count": 0,
-                    "brand_cap": 0,
                     "not_selected": 0,
                 },
                 "freshness_checked": 0,
@@ -74,11 +73,7 @@ def build_discovery_result(
         if candidate.place_id not in existing_place_ids
     )
     unique_new_candidates = deduplicate_candidates(new_candidates)
-    filtered = apply_hard_filters(
-        unique_new_candidates,
-        config=config.discovery,
-        existing=existing,
-    )
+    filtered = apply_hard_filters(unique_new_candidates, config=config.discovery)
     missing_freshness = {
         candidate.place_id for candidate in filtered.candidates
     } - freshness_by_place_id.keys()
@@ -99,7 +94,6 @@ def build_discovery_result(
         scored,
         existing=existing,
         target_count=target_count,
-        config=config.discovery,
     )
     used_slugs = {entry.slug for entry in existing}
     new_entries: list[VenueCatalogEntry] = []
@@ -135,7 +129,6 @@ def build_discovery_result(
             "duplicate_or_existing": len(searched) - len(unique_new_candidates),
             "business_status": filtered.rejected_status,
             "review_count": filtered.rejected_review_count,
-            "brand_cap": filtered.rejected_brand_cap,
             "not_selected": len(scored) - len(selected),
         },
         "freshness_checked": len(scored),
@@ -209,11 +202,7 @@ class DiscoveryService:
                 if candidate.place_id not in existing_place_ids
             )
         )
-        filtered = apply_hard_filters(
-            unique_new_candidates,
-            config=config.discovery,
-            existing=existing_catalog.venues,
-        )
+        filtered = apply_hard_filters(unique_new_candidates, config=config.discovery)
         freshness = {}
         for candidate in filtered.candidates:
             result = await self._freshness_provider.fetch_review_freshness(

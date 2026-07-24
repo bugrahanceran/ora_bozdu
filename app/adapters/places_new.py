@@ -56,7 +56,7 @@ class PlacesNewTextSearchAdapter:
         *,
         category: str,
         text_query: str,
-        included_type: str,
+        included_type: str | None,
         latitude: float,
         longitude: float,
         radius_meters: float,
@@ -92,7 +92,7 @@ class PlacesNewTextSearchAdapter:
         *,
         category: str,
         text_query: str,
-        included_type: str,
+        included_type: str | None,
         latitude: float,
         longitude: float,
         radius_meters: float,
@@ -103,8 +103,6 @@ class PlacesNewTextSearchAdapter:
             "textQuery": text_query,
             "languageCode": "tr",
             "regionCode": "TR",
-            "includedType": included_type,
-            "strictTypeFiltering": True,
             "pageSize": page_size,
             "locationRestriction": {
                 "rectangle": self._bounding_rectangle(
@@ -114,6 +112,9 @@ class PlacesNewTextSearchAdapter:
                 )
             },
         }
+        if included_type:
+            body["includedType"] = included_type
+            body["strictTypeFiltering"] = True
         if page_token:
             body["pageToken"] = page_token
         payload = await self._request_json(body)
@@ -272,14 +273,15 @@ class PlacesNewTextSearchAdapter:
                 > radius_meters
             ):
                 continue
+            primary_type = place.get("primaryType")
             parsed.append(
                 DiscoveryCandidate(
                     place_id=str(place_id),
                     display_name=str(display_name),
-                    category=category,
+                    category=str(primary_type) if primary_type else category,
                     business_status=place.get("businessStatus"),
                     user_ratings_total=int(place.get("userRatingCount") or 0),
-                    primary_type=place.get("primaryType"),
+                    primary_type=primary_type,
                 )
             )
         return tuple(parsed)
