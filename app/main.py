@@ -61,7 +61,7 @@ def _latest_snapshot(session: Session, venue_id: int) -> PlaceSnapshot | None:
     return session.scalar(
         select(PlaceSnapshot)
         .where(PlaceSnapshot.venue_id == venue_id)
-        .order_by(PlaceSnapshot.snapshot_date.desc())
+        .order_by(PlaceSnapshot.snapshot_date.desc(), PlaceSnapshot.id.desc())
         .limit(1)
     )
 
@@ -113,21 +113,25 @@ def _venue_payload(session: Session, venue: Venue) -> dict[str, Any]:
 
 
 def _overview_payload(session: Session) -> dict[str, Any]:
-    latest_snapshot_ids = (
-        select(
-            PlaceSnapshot.venue_id,
-            func.max(PlaceSnapshot.id).label("snapshot_id"),
+    row_number = (
+        func.row_number()
+        .over(
+            partition_by=PlaceSnapshot.venue_id,
+            order_by=(PlaceSnapshot.snapshot_date.desc(), PlaceSnapshot.id.desc()),
         )
-        .group_by(PlaceSnapshot.venue_id)
-        .subquery()
+        .label("row_number")
     )
+    latest_snapshot_ids = select(
+        PlaceSnapshot.id.label("snapshot_id"), row_number
+    ).subquery()
     rows = session.execute(
         select(Venue, PlaceSnapshot, ScoreResult)
+        .join(PlaceSnapshot, PlaceSnapshot.venue_id == Venue.id)
         .join(
             latest_snapshot_ids,
-            latest_snapshot_ids.c.venue_id == Venue.id,
+            (latest_snapshot_ids.c.snapshot_id == PlaceSnapshot.id)
+            & (latest_snapshot_ids.c.row_number == 1),
         )
-        .join(PlaceSnapshot, PlaceSnapshot.id == latest_snapshot_ids.c.snapshot_id)
         .join(
             ScoreResult,
             (ScoreResult.venue_id == Venue.id)
