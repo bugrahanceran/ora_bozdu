@@ -228,20 +228,13 @@ class PlacesLegacyAdapter:
         name = result.get("name")
         if not name:
             raise PlacesApiError("Place Details response has no venue name")
-        location = (result.get("geometry") or {}).get("location") or {}
         return PlaceState(
             place_id=place_id,
             name=str(name),
-            formatted_address=result.get("formatted_address"),
-            latitude=location.get("lat"),
-            longitude=location.get("lng"),
             rating=result.get("rating"),
             user_ratings_total=result.get("user_ratings_total"),
             price_level=result.get("price_level"),
             business_status=result.get("business_status"),
-            types=tuple(result.get("types") or ()),
-            website=result.get("website"),
-            google_maps_url=result.get("url"),
         )
 
     @staticmethod

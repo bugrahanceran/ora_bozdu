@@ -19,7 +19,7 @@ from app.discovery.search_cache import load_search_cache
 from app.scoring.config import load_scoring_config
 from app.scoring.engine import ScoringEngine
 from app.scoring.service import recompute_region
-from app.services.fetch_service import FetchService
+from app.services.fetch_service import FetchService, build_fetch_plan
 
 
 def configure_logging(log_level: str) -> None:
@@ -50,14 +50,20 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Disable HTTP retries so the approved request ceiling is strict",
     )
+    parser.add_argument(
+        "--plan",
+        action="store_true",
+        help=(
+            "Print what a run would do (venues, cache reuse, HTTP request count) "
+            "without calling the provider; does not require an API key"
+        ),
+    )
     return parser
 
 
 async def run(args: argparse.Namespace) -> int:
     settings = get_settings()
     configure_logging(settings.log_level)
-    if settings.google_maps_api_key is None:
-        raise SystemExit("GOOGLE_MAPS_API_KEY is required")
     catalog_path = args.catalog or settings.venue_catalog_path
     catalog = load_catalog(catalog_path)
     collection_config = load_data_collection_config(
@@ -73,15 +79,11 @@ async def run(args: argparse.Namespace) -> int:
         raise SystemExit("Catalog is empty; run app.discover first")
     if args.venue and args.venue not in {entry.slug for entry in active_entries}:
         raise SystemExit(f"Venue is not in the active catalog: {args.venue}")
+    if args.venue:
+        active_entries = tuple(
+            entry for entry in active_entries if entry.slug == args.venue
+        )
     snapshot_date = args.date or datetime.now(ZoneInfo(settings.app_timezone)).date()
-    adapter = PlacesLegacyAdapter(
-        settings.google_maps_api_key.get_secret_value(),
-        timeout_seconds=settings.http_timeout_seconds,
-        max_retries=0 if args.no_retries else settings.http_max_retries,
-        review_sorts=collection_config.fetch.review_sorts,
-        fields=collection_config.fetch.fields,
-        reviews_no_translations=collection_config.fetch.reviews_no_translations,
-    )
     seed_payloads_by_place_id = {}
     cache_path = collection_config.discovery.search_cache_path
     if cache_path.exists():
@@ -91,6 +93,34 @@ async def run(args: argparse.Namespace) -> int:
                 place_id: (payload.to_domain(),)
                 for place_id, payload in discovery_cache.freshness_payloads.items()
             }
+
+    if args.plan:
+        with SessionLocal() as session:
+            plan = build_fetch_plan(
+                session,
+                region_slug=args.region,
+                active_entries=active_entries,
+                snapshot_date=snapshot_date,
+                cadence=collection_config.fetch.cadence,
+                week_start=collection_config.fetch.week_start,
+                review_sorts=collection_config.fetch.review_sorts,
+                provider_name="places_api",
+                max_retries=0 if args.no_retries else settings.http_max_retries,
+                seed_payloads_by_place_id=seed_payloads_by_place_id,
+            )
+        print(json.dumps(plan, ensure_ascii=False, indent=2))
+        return 0
+
+    if settings.google_maps_api_key is None:
+        raise SystemExit("GOOGLE_MAPS_API_KEY is required")
+    adapter = PlacesLegacyAdapter(
+        settings.google_maps_api_key.get_secret_value(),
+        timeout_seconds=settings.http_timeout_seconds,
+        max_retries=0 if args.no_retries else settings.http_max_retries,
+        review_sorts=collection_config.fetch.review_sorts,
+        fields=collection_config.fetch.fields,
+        reviews_no_translations=collection_config.fetch.reviews_no_translations,
+    )
     try:
         with SessionLocal() as session:
             sync_catalog(session, catalog)

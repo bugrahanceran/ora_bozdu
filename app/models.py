@@ -102,16 +102,10 @@ class PlaceSnapshot(Base):
         DateTime(timezone=True), default=utcnow
     )
     provider_name: Mapped[str] = mapped_column(String(240))
-    formatted_address: Mapped[str | None] = mapped_column(String(500))
-    latitude: Mapped[float | None] = mapped_column(Float)
-    longitude: Mapped[float | None] = mapped_column(Float)
     rating: Mapped[float | None] = mapped_column(Float)
     user_ratings_total: Mapped[int | None] = mapped_column(Integer)
     price_level: Mapped[int | None] = mapped_column(Integer)
     business_status: Mapped[str | None] = mapped_column(String(40))
-    types: Mapped[list[str] | None] = mapped_column(JSON)
-    website: Mapped[str | None] = mapped_column(String(1000))
-    google_maps_url: Mapped[str | None] = mapped_column(String(1000))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow
     )

@@ -10,6 +10,12 @@ def test_fetch_cli_can_disable_retries() -> None:
     assert args.no_retries is True
 
 
+def test_fetch_cli_supports_plan_flag() -> None:
+    args = build_parser().parse_args(["--region", "eryaman", "--plan"])
+
+    assert args.plan is True
+
+
 def test_fetch_logging_suppresses_http_request_urls() -> None:
     configure_logging("INFO")
 

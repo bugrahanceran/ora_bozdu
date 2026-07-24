@@ -40,7 +40,6 @@ def seed_card(session: Session) -> None:
         provider_name="Fixture Cafe",
         rating=4.5,
         user_ratings_total=420,
-        google_maps_url="https://maps.google.com/?cid=fixture",
     )
     session.add(snapshot)
     session.flush()

@@ -359,7 +359,6 @@ button {
 .signal-card h2 { font-size: 17px; margin: 0; }
 .signal-card p { color: var(--muted); line-height: 1.5; }
 .signal-card small { color: var(--muted); }
-.maps-link { display: inline-block; margin-top: 40px; }
 
 footer { border-top: 1px solid var(--line); margin-top: 80px; }
 .google-attribution { color: #5e5e5e; font-size: 12px; }

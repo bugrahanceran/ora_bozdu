@@ -11,16 +11,10 @@ class ProviderUnavailableError(RuntimeError):
 class PlaceState:
     place_id: str
     name: str
-    formatted_address: str | None
-    latitude: float | None
-    longitude: float | None
     rating: float | None
     user_ratings_total: int | None
     price_level: int | None
     business_status: str | None
-    types: tuple[str, ...]
-    website: str | None
-    google_maps_url: str | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,7 +88,7 @@ class PlaceDiscoveryProvider(Protocol):
         *,
         category: str,
         text_query: str,
-        included_type: str,
+        included_type: str | None,
         latitude: float,
         longitude: float,
         radius_meters: float,
@@ -112,7 +106,7 @@ class PagedPlaceDiscoveryProvider(Protocol):
         *,
         category: str,
         text_query: str,
-        included_type: str,
+        included_type: str | None,
         latitude: float,
         longitude: float,
         radius_meters: float,

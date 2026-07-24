@@ -14,6 +14,7 @@ from app.adapters.base import (
     RawPlacePayload,
 )
 from app.cadence import period_start_for
+from app.catalog import VenueCatalogEntry
 from app.models import (
     FetchRun,
     FetchRunWarning,
@@ -43,6 +44,98 @@ class FetchSummary:
     failed: int
     warnings: tuple[dict[str, Any], ...]
     errors: dict[str, str]
+
+
+def build_fetch_plan(
+    session: Session,
+    *,
+    region_slug: str,
+    active_entries: tuple[VenueCatalogEntry, ...],
+    snapshot_date: date,
+    cadence: str,
+    week_start: str,
+    review_sorts: tuple[str, ...],
+    provider_name: str,
+    max_retries: int,
+    seed_payloads_by_place_id: dict[str, tuple[RawPlacePayload, ...]] | None = None,
+) -> dict[str, Any]:
+    """Describe what a fetch run would do without calling the provider."""
+    period_start = period_start_for(
+        snapshot_date, cadence=cadence, week_start=week_start
+    )
+    seed_payloads_by_place_id = seed_payloads_by_place_id or {}
+    venue_rows = {
+        row.provider_place_id: row
+        for row in session.execute(
+            select(Venue.id, Venue.slug, Venue.provider_place_id).where(
+                Venue.provider_place_id.in_(entry.place_id for entry in active_entries)
+            )
+        )
+    }
+
+    venues_plan: list[dict[str, Any]] = []
+    for entry in active_entries:
+        row = venue_rows.get(entry.place_id)
+        existing_snapshot_id = (
+            session.scalar(
+                select(PlaceSnapshot.id).where(
+                    PlaceSnapshot.venue_id == row.id,
+                    PlaceSnapshot.cadence == cadence,
+                    PlaceSnapshot.period_start == period_start,
+                )
+            )
+            if row is not None
+            else None
+        )
+        if existing_snapshot_id is not None:
+            venues_plan.append(
+                {
+                    "slug": entry.slug,
+                    "action": "skip_existing",
+                    "http_requests": 0,
+                    "seeded_sorts": [],
+                }
+            )
+            continue
+
+        seeded_sorts = tuple(
+            payload.review_sort
+            for payload in seed_payloads_by_place_id.get(entry.place_id, ())
+            if payload.review_sort in review_sorts
+        )
+        venues_plan.append(
+            {
+                "slug": entry.slug,
+                "action": "new_venue" if row is None else "fetch",
+                "http_requests": len(review_sorts) - len(seeded_sorts),
+                "seeded_sorts": list(seeded_sorts),
+            }
+        )
+
+    logical_requests = sum(item["http_requests"] for item in venues_plan)
+    attempts_per_request = max_retries + 1
+    return {
+        "endpoint": "Places API Legacy Place Details",
+        "provider": provider_name,
+        "region": region_slug,
+        "cadence": cadence,
+        "period_start": period_start.isoformat(),
+        "snapshot_date": snapshot_date.isoformat(),
+        "review_sorts": list(review_sorts),
+        "requested_venues": len(active_entries),
+        "already_captured": sum(
+            item["action"] == "skip_existing" for item in venues_plan
+        ),
+        "to_fetch": sum(item["action"] != "skip_existing" for item in venues_plan),
+        "seeded_from_freshness_cache": sum(
+            bool(item["seeded_sorts"]) for item in venues_plan
+        ),
+        "max_retries": max_retries,
+        "estimated_http_requests": logical_requests,
+        "worst_case_http_requests_with_retries": logical_requests
+        * attempts_per_request,
+        "venues": venues_plan,
+    }
 
 
 class FetchService:
@@ -136,7 +229,7 @@ class FetchService:
                     venue.provider_place_id,
                     existing_payloads=seed_payloads,
                 )
-                warning = self._persist_bundle(
+                produced_warnings = self._persist_bundle(
                     session,
                     fetch_run_id=fetch_run_id,
                     venue=venue,
@@ -145,8 +238,7 @@ class FetchService:
                     period_start=period_start,
                     bundle=bundle,
                 )
-                if warning is not None:
-                    warnings.append(warning)
+                warnings.extend(produced_warnings)
                 session.commit()
             except IntegrityError:
                 session.rollback()
@@ -213,7 +305,7 @@ class FetchService:
         cadence: str,
         period_start: date,
         bundle: PlaceFetchBundle,
-    ) -> dict[str, Any] | None:
+    ) -> tuple[dict[str, Any], ...]:
         previous = session.scalar(
             select(PlaceSnapshot)
             .where(
@@ -232,16 +324,10 @@ class FetchService:
             period_start=period_start,
             captured_at=min(payload.fetched_at for payload in bundle.payloads),
             provider_name=state.name,
-            formatted_address=state.formatted_address,
-            latitude=state.latitude,
-            longitude=state.longitude,
             rating=state.rating,
             user_ratings_total=state.user_ratings_total,
             price_level=state.price_level,
             business_status=state.business_status,
-            types=list(state.types),
-            website=state.website,
-            google_maps_url=state.google_maps_url,
         )
         session.add(snapshot)
         session.flush()
@@ -294,31 +380,61 @@ class FetchService:
         assert run is not None
         run.succeeded_count += 1
 
-        if previous is None or previous.provider_name == state.name:
-            return None
+        if previous is None:
+            return ()
 
-        warning_details = {
-            "code": "venue_name_changed",
-            "venue_slug": venue.slug,
-            "previous_name": previous.provider_name,
-            "current_name": state.name,
-            "previous_snapshot_date": previous.snapshot_date.isoformat(),
-            "current_snapshot_date": snapshot_date.isoformat(),
-        }
-        logger.warning(
-            "venue_name_changed venue=%s previous=%r current=%r",
-            venue.slug,
-            previous.provider_name,
-            state.name,
-        )
-        session.add(
-            FetchRunWarning(
-                fetch_run_id=fetch_run_id,
-                venue_id=venue.id,
-                snapshot_id=snapshot.id,
-                warning_code="venue_name_changed",
-                details=warning_details,
+        produced: list[dict[str, Any]] = []
+        if previous.provider_name != state.name:
+            warning_details = {
+                "code": "venue_name_changed",
+                "venue_slug": venue.slug,
+                "previous_name": previous.provider_name,
+                "current_name": state.name,
+                "previous_snapshot_date": previous.snapshot_date.isoformat(),
+                "current_snapshot_date": snapshot_date.isoformat(),
+            }
+            logger.warning(
+                "venue_name_changed venue=%s previous=%r current=%r",
+                venue.slug,
+                previous.provider_name,
+                state.name,
             )
-        )
-        run.warning_count += 1
-        return warning_details
+            session.add(
+                FetchRunWarning(
+                    fetch_run_id=fetch_run_id,
+                    venue_id=venue.id,
+                    snapshot_id=snapshot.id,
+                    warning_code="venue_name_changed",
+                    details=warning_details,
+                )
+            )
+            produced.append(warning_details)
+
+        if previous.business_status != state.business_status:
+            warning_details = {
+                "code": "venue_status_changed",
+                "venue_slug": venue.slug,
+                "previous_status": previous.business_status,
+                "current_status": state.business_status,
+                "previous_snapshot_date": previous.snapshot_date.isoformat(),
+                "current_snapshot_date": snapshot_date.isoformat(),
+            }
+            logger.warning(
+                "venue_status_changed venue=%s previous=%r current=%r",
+                venue.slug,
+                previous.business_status,
+                state.business_status,
+            )
+            session.add(
+                FetchRunWarning(
+                    fetch_run_id=fetch_run_id,
+                    venue_id=venue.id,
+                    snapshot_id=snapshot.id,
+                    warning_code="venue_status_changed",
+                    details=warning_details,
+                )
+            )
+            produced.append(warning_details)
+
+        run.warning_count += len(produced)
+        return tuple(produced)
