@@ -1,0 +1,87 @@
+version = "v5"
+
+[weights]
+rating_trajectory = 0.30
+review_velocity = 0.20
+sentiment_keyword_drift = 0.20
+stability = 0.30
+
+[rating_trajectory]
+full_scale_delta_per_30_days = 0.40
+min_snapshots = 2
+
+[review_velocity]
+full_scale_acceleration = 1.0
+full_scale_velocity_per_day = 2.0
+min_snapshots_for_acceleration = 3
+review_recency_window_days = 90
+
+[sentiment_keyword_drift]
+recent_window_days = 60
+comparison_window_days = 180
+full_scale_sentiment_delta = 0.60
+min_reviews = 2
+
+[stability]
+high_rating_threshold = 4.20
+window_days = 90
+min_snapshots = 7
+min_coverage_days = 21
+max_rating_stddev = 0.12
+stable_high_value = 0.75
+stable_low_value = -0.10
+volatile_value = -0.25
+# Dormancy: no rating-count growth AND no new review for this many days
+# before any penalty starts (grace period covers normal weekly-cadence gaps).
+dormancy_grace_days = 60
+# Penalty reaches its full magnitude once inactivity reaches this many days;
+# it ramps linearly between the grace period and this point.
+dormancy_full_penalty_days = 365
+# Full penalty magnitude (subtracted from the rating-level stability value).
+# -1.0 ensures full dormancy pulls even a stable_high venue into negative
+# territory, since inactivity itself is treated as a decline signal.
+dormancy_penalty_value = -1.0
+
+[confidence]
+early_phase_cap = 0.45
+full_history_snapshots = 14
+full_history_days = 60
+
+[classification]
+costu_threshold = 20.0
+bozdu_threshold = -20.0
+
+[keywords]
+positive = [
+    "lezzetli",
+    "taze",
+    "hızlı",
+    "ilgili",
+    "güler yüzlü",
+    "kaliteli",
+    "temiz",
+    "başarılı",
+    "delicious",
+    "fresh",
+    "fast",
+    "friendly",
+    "quality",
+    "clean",
+]
+negative = [
+    "pahalı",
+    "bayat",
+    "soğuk",
+    "yavaş",
+    "ilgisiz",
+    "kötü",
+    "bozulmuş",
+    "kirli",
+    "expensive",
+    "stale",
+    "cold",
+    "slow",
+    "rude",
+    "bad",
+    "dirty",
+]

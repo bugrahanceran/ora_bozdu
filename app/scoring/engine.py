@@ -1,3 +1,4 @@
+import re
 import statistics
 import unicodedata
 from dataclasses import dataclass
@@ -6,7 +7,7 @@ from itertools import pairwise
 from typing import Any
 
 from app.models import PlaceSnapshot, SnapshotReview
-from app.scoring.config import ScoringConfig
+from app.scoring.config import ScoringConfig, StabilityConfig
 
 
 def _clip(value: float, lower: float = -1.0, upper: float = 1.0) -> float:
@@ -15,6 +16,12 @@ def _clip(value: float, lower: float = -1.0, upper: float = 1.0) -> float:
 
 def _normalized_text(value: str) -> str:
     return " ".join(unicodedata.normalize("NFKC", value).casefold().split())
+
+
+def _compile_keyword_patterns(keywords: tuple[str, ...]) -> tuple[re.Pattern[str], ...]:
+    return tuple(
+        re.compile(rf"\b{re.escape(keyword.casefold())}\b") for keyword in keywords
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,6 +47,8 @@ class ScoreComputation:
 class ScoringEngine:
     def __init__(self, config: ScoringConfig) -> None:
         self.config = config
+        self._positive_patterns = _compile_keyword_patterns(config.keywords.positive)
+        self._negative_patterns = _compile_keyword_patterns(config.keywords.negative)
 
     def compute(
         self,
@@ -57,7 +66,7 @@ class ScoringEngine:
                 ordered[-1].snapshot_date,
                 unique_reviews,
             ),
-            "stability": self._stability(ordered),
+            "stability": self._stability(ordered, unique_reviews),
         }
         available_weight = sum(
             self.config.weights[name]
@@ -310,10 +319,10 @@ class ScoringEngine:
     def _review_sentiment(self, review: SnapshotReview) -> tuple[float, int, int]:
         text = _normalized_text(review.text)
         positives = sum(
-            text.count(keyword.casefold()) for keyword in self.config.keywords.positive
+            len(pattern.findall(text)) for pattern in self._positive_patterns
         )
         negatives = sum(
-            text.count(keyword.casefold()) for keyword in self.config.keywords.negative
+            len(pattern.findall(text)) for pattern in self._negative_patterns
         )
         total_hits = positives + negatives
         if total_hits:
@@ -322,7 +331,11 @@ class ScoringEngine:
             score = (review.rating - 3) / 2
         return _clip(score), positives, negatives
 
-    def _stability(self, snapshots: list[PlaceSnapshot]) -> SignalResult:
+    def _stability(
+        self,
+        snapshots: list[PlaceSnapshot],
+        reviews: list[SnapshotReview],
+    ) -> SignalResult:
         config = self.config.stability
         as_of = snapshots[-1].snapshot_date
         window = [
@@ -359,16 +372,36 @@ class ScoringEngine:
         )
         if rating_stddev > config.max_rating_stddev:
             state = "volatile"
-            value = config.volatile_value
-            summary = "Rating seviyesi dalgalı."
+            base_value = config.volatile_value
+            base_summary = "Rating seviyesi dalgalı."
         elif mean_rating >= config.high_rating_threshold:
             state = "stable_high"
-            value = config.stable_high_value
-            summary = "Yüksek rating seviyesini istikrarlı koruyor."
+            base_value = config.stable_high_value
+            base_summary = "Yüksek rating seviyesini istikrarlı koruyor."
         else:
             state = "stable_low"
-            value = config.stable_low_value
-            summary = "Düşük/orta rating seviyesinde durağan."
+            base_value = config.stable_low_value
+            base_summary = "Düşük/orta rating seviyesinde durağan."
+
+        days_since_activity = self._days_since_activity(snapshots, reviews, as_of)
+        dormancy_penalty = self._dormancy_penalty(days_since_activity, config)
+        value = base_value + dormancy_penalty
+        summary = base_summary
+        if dormancy_penalty < 0:
+            summary = (
+                f"{base_summary} Son {days_since_activity} gündür yeni oy/yorum yok, "
+                "bu skoru geriletiyor."
+            )
+        if (
+            days_since_activity is not None
+            and days_since_activity >= config.dormancy_full_penalty_days
+        ):
+            state = "dormant"
+            summary = (
+                f"Yaklaşık {days_since_activity} gündür yeni oy/yorum yok; "
+                "mekan sessizleşti."
+            )
+
         return SignalResult(
             True,
             _clip(value),
@@ -381,8 +414,56 @@ class ScoringEngine:
                 "snapshot_count": len(window),
                 "coverage_days": coverage_days,
                 "window_days": config.window_days,
+                "days_since_activity": days_since_activity,
+                "dormancy_penalty": round(dormancy_penalty, 4),
             },
         )
+
+    @staticmethod
+    def _days_since_activity(
+        snapshots: list[PlaceSnapshot],
+        reviews: list[SnapshotReview],
+        as_of: date,
+    ) -> int | None:
+        """Days since the last observed rating-count growth or new review.
+
+        Rating-count growth (user_ratings_total increasing) counts as
+        activity even with no new review text, since a venue can still be
+        actively rated without anyone writing a review.
+        """
+        last_growth_date = None
+        for previous, current in pairwise(snapshots):
+            if (
+                previous.user_ratings_total is not None
+                and current.user_ratings_total is not None
+                and current.user_ratings_total > previous.user_ratings_total
+            ):
+                last_growth_date = current.snapshot_date
+        last_review_date = max(
+            (review.published_at.date() for review in reviews), default=None
+        )
+        candidates = [
+            value for value in (last_growth_date, last_review_date) if value is not None
+        ]
+        if not candidates:
+            return None
+        return (as_of - max(candidates)).days
+
+    @staticmethod
+    def _dormancy_penalty(
+        days_since_activity: int | None,
+        config: StabilityConfig,
+    ) -> float:
+        if (
+            days_since_activity is None
+            or days_since_activity <= config.dormancy_grace_days
+        ):
+            return 0.0
+        ramp_span = config.dormancy_full_penalty_days - config.dormancy_grace_days
+        progress = min(
+            1.0, (days_since_activity - config.dormancy_grace_days) / ramp_span
+        )
+        return config.dormancy_penalty_value * progress
 
     def _classification(self, change_score: float) -> str:
         if change_score >= self.config.classification.costu_threshold:
@@ -415,6 +496,11 @@ class ScoringEngine:
             stability_text = "Seviye durağan; bu durum pozitif istikrar sayılmıyor."
         elif state == "volatile":
             stability_text = "Rating seviyesi gözlem penceresinde dalgalı."
+        elif state == "dormant":
+            days = stability.details["days_since_activity"]
+            stability_text = (
+                f"Yaklaşık {days} gündür yeni oy/yorum yok; mekan sessizleşti."
+            )
         else:
             stability_text = "İstikrar yorumu için periyodik snapshot birikiyor."
         confidence_text = f"Veri güveni %{confidence * 100:.0f}."

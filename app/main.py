@@ -32,6 +32,7 @@ STABILITY_LABELS = {
     "stable_high": "İstikrarlı",
     "stable_low": "Durgun",
     "volatile": "Dalgalı",
+    "dormant": "Sessizleşti",
     "insufficient_data": "Veri birikiyor",
 }
 CLASSIFICATION_LABELS = {

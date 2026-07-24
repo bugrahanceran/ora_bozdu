@@ -43,6 +43,11 @@ class StabilityConfig:
     stable_high_value: float
     stable_low_value: float
     volatile_value: float
+    # Defaults keep dormancy fully neutral for older configs (e.g. the
+    # frozen scoring.v4.toml) that predate this field and never set it.
+    dormancy_grace_days: int = 36_500
+    dormancy_full_penalty_days: int = 36_501
+    dormancy_penalty_value: float = 0.0
 
 
 @dataclass(frozen=True, slots=True)

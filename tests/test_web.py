@@ -47,7 +47,7 @@ def seed_card(session: Session) -> None:
         ScoreResult(
             venue_id=venue.id,
             as_of_snapshot_id=snapshot.id,
-            score_version="v4",
+            score_version="v5",
             change_score=36,
             confidence=0.72,
             classification="costu",
