@@ -20,7 +20,25 @@ if (searchRoot) {
       ...venues.map((venue) => {
         const link = document.createElement("a");
         link.href = `/venues/${venue.slug}`;
-        link.textContent = venue.name;
+
+        const name = document.createElement("span");
+        name.textContent = venue.name;
+        link.appendChild(name);
+
+        const meta = document.createElement("small");
+        meta.className = "venue-meta-inline";
+        if (venue.rating !== null) {
+          let text = `${venue.rating.toFixed(1)} ★`;
+          if (venue.user_ratings_total !== null) {
+            text += ` · ${venue.user_ratings_total} değerlendirme`;
+          }
+          meta.textContent = text;
+        } else if (!venue.is_tracked) {
+          meta.textContent = "takip edilmiyor";
+          meta.classList.add("is-untracked");
+        }
+        if (meta.textContent) name.appendChild(meta);
+
         return link;
       }),
     );

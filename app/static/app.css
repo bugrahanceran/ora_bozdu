@@ -157,6 +157,11 @@ button {
 .search-results a:hover,
 .venue-list a:hover { background: rgb(8 166 122 / 8%); }
 
+.venue-list-name { display: flex; flex-direction: column; gap: 3px; }
+.venue-meta-inline { color: var(--muted); font-size: 12.5px; font-weight: 600; }
+.search-results a .venue-meta-inline { display: block; margin-top: 3px; }
+.venue-meta-inline.is-untracked { font-style: italic; opacity: .85; }
+
 .method-strip {
   border-bottom: 1px solid var(--line);
   border-top: 1px solid var(--line);

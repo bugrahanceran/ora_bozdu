@@ -2,6 +2,7 @@ from datetime import UTC, date, datetime
 
 import httpx
 import pytest
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_session
@@ -113,7 +114,12 @@ async def test_search_and_card_render(session: Session) -> None:
             assert "+36.0" in home.text
             search = await client.get("/api/venues", params={"q": "Fixture"})
             assert search.status_code == 200
-            assert search.json()[0]["slug"] == "fixture-cafe"
+            hit = search.json()[0]
+            assert hit["slug"] == "fixture-cafe"
+            # Same-named chain branches are told apart by rating + review count.
+            assert hit["rating"] == 4.5
+            assert hit["user_ratings_total"] == 420
+            assert hit["is_tracked"] is True
             card = await client.get("/venues/fixture-cafe")
             assert card.status_code == 200
             assert "COŞTU" in card.text
@@ -127,6 +133,46 @@ async def test_search_and_card_render(session: Session) -> None:
             assert "istikrar sinyali henüz hesaplanamıyor" not in card.text
             api = await client.get("/api/venues/fixture-cafe")
             assert api.json()["score"]["change_score"] == 36
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_search_disambiguates_same_name_branches(session: Session) -> None:
+    # Two chain branches share the exact same display_name (as Google returns
+    # them). One is tracked with a snapshot, one is untracked with none.
+    seed_card(session)  # "Fixture Cafe", tracked, rating 4.5 / 420 reviews
+    region = session.scalar(select(Region).where(Region.slug == "eryaman"))
+    assert region is not None
+    untracked = Venue(
+        region_id=region.id,
+        slug="fixture-cafe-branch-2",
+        display_name="Fixture Cafe",
+        provider="places_api",
+        provider_place_id="place-2",
+        is_tracked=False,
+    )
+    session.add(untracked)
+    session.commit()
+
+    def override_session():
+        yield session
+
+    app.dependency_overrides[get_session] = override_session
+    try:
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://test"
+        ) as client:
+            results = (await client.get("/api/venues", params={"q": "Fixture"})).json()
+            by_slug = {row["slug"]: row for row in results}
+            assert by_slug["fixture-cafe"]["rating"] == 4.5
+            assert by_slug["fixture-cafe"]["user_ratings_total"] == 420
+            assert by_slug["fixture-cafe"]["is_tracked"] is True
+            # The untracked branch has no snapshot -> no rating, flagged so the
+            # UI can render "takip edilmiyor" instead of an identical bare name.
+            assert by_slug["fixture-cafe-branch-2"]["rating"] is None
+            assert by_slug["fixture-cafe-branch-2"]["is_tracked"] is False
     finally:
         app.dependency_overrides.clear()
 

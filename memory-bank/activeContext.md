@@ -311,6 +311,25 @@ tazelendi (2026-07-24 tarihli tarihsel kayıtlar, o gün Batıkent gerçekten
 plandaki bölge olduğu için olduğu gibi bırakıldı). Henüz hiçbir gerçek
 Armada API çağrısı yapılmadı — sıradaki adım onaylı smoke/tam koşu.
 
+**Aynı gün, devamı — arama sonuçlarında aynı-isim ayrımı.** Kullanıcı
+webapp aramasında 5 tane birebir "Arabica Coffee House" gördüğünü, ayırt
+edemediğini bildirdi. Kök neden: Google zincir şubelerine aynı `display_name`'i
+veriyor, biz de adresi `0003`'te düşürdüğümüz için elimizde ayırt edici bir
+alan kalmamıştı. Gerçek DB'de 6 Arabica bulundu: 3'ü tracked (snapshot'ı var:
+4.3/442, 4.4/268, 3.9/407), 3'ü non-tracked (hiç snapshot yok, verisiz
+dead-end). Seçenekler kullanıcıya AskUserQuestion ile sunuldu; **"rating+review
+göster, hepsini tut (non-tracked'leri işaretle)"** seçildi. Uygulama:
+`app/main.py`'ye `_search_query` yerine `_search_results` — her eşleşen
+venue'yu en son snapshot'ına (window-function subquery + LEFT JOIN, snapshot'sız
+non-tracked'ler NULL ile gelsin diye) bağlayıp `rating`/`user_ratings_total`/
+`is_tracked` döndürüyor. `/api/venues` ve index route bunu kullanıyor;
+`index.html` (form-submit sonuç sayfası) ve `app.js` (canlı dropdown) ikisi de
+"isim · 4.3 ★ · 442 değerlendirme" ya da verisi yoksa italik "takip edilmiyor"
+gösteriyor. Kullanılmayan `has_place_id` alanı kaldırıldı. Sınır: 3 non-tracked
+şube birbirinden hâlâ ayırt edilemiyor (verileri yok) — bunu ancak konum/adres
+(seçilmeyen option C) çözerdi. Gerçek Arabica verisiyle canlı doğrulandı; 1
+yeni web testi + mevcut teste yeni assertion'lar, toplam 78 test geçiyor.
+
 ## Kesinleşen kararlar
 
 - Puanlama yaklaşımı: **A — normalize edilmiş ağırlıklı change score +

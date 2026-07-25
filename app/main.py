@@ -51,10 +51,39 @@ CLASSIFICATION_LABELS = {
 }
 
 
-def _search_query(query: str):
+def _search_results(session: Session, query: str) -> list[dict[str, Any]]:
+    """Search matches enriched with each venue's latest rating/review count.
+
+    Same display_name repeats across chain branches (Google gives every
+    branch the same name), so the rating + review count -- which differ per
+    branch -- are what let a human tell them apart in the results. Non-tracked
+    venues have no snapshot, so their rating/reviews come back None and the UI
+    marks them as untracked instead.
+    """
     pattern = f"%{query.strip()}%"
-    return (
-        select(Venue)
+    latest = select(
+        PlaceSnapshot.venue_id.label("venue_id"),
+        PlaceSnapshot.rating.label("rating"),
+        PlaceSnapshot.user_ratings_total.label("user_ratings_total"),
+        func.row_number()
+        .over(
+            partition_by=PlaceSnapshot.venue_id,
+            order_by=(
+                PlaceSnapshot.snapshot_date.desc(),
+                PlaceSnapshot.id.desc(),
+            ),
+        )
+        .label("rn"),
+    ).subquery()
+    rows = session.execute(
+        select(
+            Venue.slug,
+            Venue.display_name,
+            Venue.is_tracked,
+            latest.c.rating,
+            latest.c.user_ratings_total,
+        )
+        .outerjoin(latest, (latest.c.venue_id == Venue.id) & (latest.c.rn == 1))
         .where(
             Venue.is_active.is_(True),
             or_(
@@ -64,7 +93,17 @@ def _search_query(query: str):
         )
         .order_by(Venue.display_name)
         .limit(20)
-    )
+    ).all()
+    return [
+        {
+            "slug": row.slug,
+            "name": row.display_name,
+            "is_tracked": row.is_tracked,
+            "rating": row.rating,
+            "user_ratings_total": row.user_ratings_total,
+        }
+        for row in rows
+    ]
 
 
 def _latest_snapshot(session: Session, venue_id: int) -> PlaceSnapshot | None:
@@ -198,7 +237,7 @@ def index(
     session: SessionDependency,
     q: str = Query(default="", max_length=120),
 ) -> HTMLResponse:
-    venues = list(session.scalars(_search_query(q)).all()) if q.strip() else []
+    venues = _search_results(session, q) if q.strip() else []
     overview = _overview_payload(session)
     return templates.TemplateResponse(
         request=request,
@@ -226,15 +265,7 @@ def search_venues(
     session: SessionDependency,
     q: str = Query(min_length=1, max_length=120),
 ) -> list[dict[str, Any]]:
-    venues = session.scalars(_search_query(q)).all()
-    return [
-        {
-            "slug": venue.slug,
-            "name": venue.display_name,
-            "has_place_id": venue.provider_place_id is not None,
-        }
-        for venue in venues
-    ]
+    return _search_results(session, q)
 
 
 @app.get("/api/venues/{slug}")

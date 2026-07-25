@@ -34,7 +34,14 @@
         <div class="venue-list">
           {% for venue in venues %}
             <a href="/venues/{{ venue.slug }}">
-              <span>{{ venue.display_name }}</span>
+              <span class="venue-list-name">
+                {{ venue.name }}
+                {% if venue.rating is not none %}
+                  <small class="venue-meta-inline">{{ '%.1f'|format(venue.rating) }} ★{% if venue.user_ratings_total is not none %} · {{ venue.user_ratings_total }} değerlendirme{% endif %}</small>
+                {% elif not venue.is_tracked %}
+                  <small class="venue-meta-inline is-untracked">takip edilmiyor</small>
+                {% endif %}
+              </span>
               <span aria-hidden="true">→</span>
             </a>
           {% endfor %}

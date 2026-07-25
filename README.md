@@ -384,7 +384,12 @@ score/confidence’ı etkilemez ve venue kataloğunu otomatik değiştirmez.
 - `GET /venues/{slug}`
 
 Webapp canlı Places araması yapmaz; maliyet kontrolü için yalnızca DB içindeki
-venue’ları arar.
+venue’ları arar. Zincir şubeleri Google'da çoğu zaman birebir aynı adı
+taşıdığından (`Arabica Coffee House` × 5), arama sonuçları her mekanın en son
+snapshot'ındaki rating + review sayısını da gösterir — şubeleri ayırt etmenin
+elimizdeki (adres/konum `0003`'te düşürüldüğü için) tek insani yolu budur.
+Henüz hiç snapshot'ı olmayan (takip edilmeyen) mekanlar rating yerine "takip
+edilmiyor" etiketiyle işaretlenir.
 
 ## Test ve kalite
 
