@@ -31,9 +31,53 @@
           <span class="bar-marker" style="left: {{ bar_position }}%" aria-hidden="true"></span>
         </div>
         <div class="card-status-row">
-          <span class="confidence">Veri güveni %{{ '%.0f'|format(score.confidence * 100) }}</span>
+          <button type="button" class="confidence" id="confidence-trigger" aria-haspopup="dialog">
+            Veri güveni %{{ '%.0f'|format(score.confidence * 100) }}
+          </button>
+          {% if maps_url %}
+            <a class="map-sticker" href="{{ maps_url }}" target="_blank" rel="noopener noreferrer">
+              <span aria-hidden="true">📍</span>
+              <span>Haritada gör</span>
+            </a>
+          {% endif %}
         </div>
       </article>
+
+      <dialog id="confidence-dialog" class="confidence-dialog">
+        <form method="dialog">
+          <h2>Veri güveni nasıl hesaplanıyor?</h2>
+          <p>
+            Veri güveni mekanın durumu hakkında değil, elimizdeki <strong>verinin
+            miktarı ve sağlamlığı</strong> hakkındadır: aşağıdaki aktif sinyallerin
+            kendi "kanıt gücü" değerlerinin, sinyal ağırlıklarına göre ağırlıklı
+            ortalamasıdır. Kanıt gücü snapshot sayısı, gözlem süresi ve review
+            miktarı arttıkça yükselir (tavan: {{ confidence_config.full_history_snapshots }}
+            snapshot / {{ confidence_config.full_history_days }} gün).
+          </p>
+          <ul class="confidence-breakdown">
+            {% for signal in signals %}
+              <li class="{{ 'is-unavailable' if not signal.available else '' }}">
+                <span>{{ signal.label }} <small>(ağırlık %{{ '%.0f'|format(signal.configured_weight * 100) }})</small></span>
+                {% if signal.available %}
+                  <strong>Kanıt gücü %{{ '%.0f'|format(signal.reliability * 100) }}</strong>
+                {% else %}
+                  <strong>Henüz veri yok</strong>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+          {% if score.stability_state == "insufficient_data" %}
+            <p class="confidence-note">
+              Bu mekan için istikrar sinyali henüz hesaplanamıyor (en az
+              {{ stability_config.min_snapshots }} snapshot ve
+              {{ stability_config.min_coverage_days }} gün gözlem gerekiyor) —
+              bu yüzden güven şu an en fazla %{{ '%.0f'|format(confidence_config.early_phase_cap * 100) }}
+              olabilir. Snapshot biriktikçe yükselecek.
+            </p>
+          {% endif %}
+          <button type="submit" class="dialog-close">Kapat</button>
+        </form>
+      </dialog>
 
       <section class="signals-section">
         <p class="eyebrow">Skoru besleyen sinyaller</p>

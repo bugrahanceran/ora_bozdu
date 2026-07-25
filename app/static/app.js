@@ -45,3 +45,13 @@ if (scoreboard && scoreFilters.length) {
     });
   });
 }
+
+const confidenceTrigger = document.getElementById("confidence-trigger");
+const confidenceDialog = document.getElementById("confidence-dialog");
+
+if (confidenceTrigger && confidenceDialog) {
+  confidenceTrigger.addEventListener("click", () => confidenceDialog.showModal());
+  confidenceDialog.addEventListener("click", (event) => {
+    if (event.target === confidenceDialog) confidenceDialog.close();
+  });
+}

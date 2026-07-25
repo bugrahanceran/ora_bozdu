@@ -1,6 +1,8 @@
+import hashlib
 from collections import Counter
 from pathlib import Path
 from typing import Annotated, Any
+from urllib.parse import urlencode
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
@@ -15,11 +17,18 @@ from app.models import PlaceSnapshot, ScoreResult, Venue
 from app.scoring.config import load_scoring_config
 
 BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
-ACTIVE_SCORE_VERSION = load_scoring_config(get_settings().scoring_config_path).version
+ACTIVE_SCORING_CONFIG = load_scoring_config(get_settings().scoring_config_path)
+ACTIVE_SCORE_VERSION = ACTIVE_SCORING_CONFIG.version
+# Query-string cache buster so browsers never serve a stale app.css/app.js
+# from an earlier deploy -- content hash changes, URL changes, cache misses.
+templates.env.globals["static_version"] = hashlib.sha256(
+    b"".join((STATIC_DIR / name).read_bytes() for name in ("app.css", "app.js"))
+).hexdigest()[:10]
 
 app = FastAPI(title=get_settings().app_name)
-app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 SessionDependency = Annotated[Session, Depends(get_session)]
 SIGNAL_LABELS = {
@@ -86,6 +95,18 @@ def _latest_score(
     )
 
 
+def _maps_url(venue: Venue) -> str | None:
+    # No stored coordinates (dropped in 0003); place_id search is precise anyway.
+    if not venue.provider_place_id:
+        return None
+    params = {
+        "api": "1",
+        "query": venue.display_name,
+        "query_place_id": venue.provider_place_id,
+    }
+    return f"https://www.google.com/maps/search/?{urlencode(params)}"
+
+
 def _venue_payload(session: Session, venue: Venue) -> dict[str, Any]:
     snapshot = _latest_snapshot(session, venue.id)
     score = _latest_score(session, venue.id, snapshot.id if snapshot else None)
@@ -101,6 +122,7 @@ def _venue_payload(session: Session, venue: Venue) -> dict[str, Any]:
         ]
     return {
         "venue": venue,
+        "maps_url": _maps_url(venue),
         "snapshot": snapshot,
         "score": score,
         "bar_position": (score.change_score + 100) / 2 if score else 50,
@@ -110,6 +132,8 @@ def _venue_payload(session: Session, venue: Venue) -> dict[str, Any]:
             else "Veri bekleniyor"
         ),
         "signals": signal_items,
+        "confidence_config": ACTIVE_SCORING_CONFIG.confidence,
+        "stability_config": ACTIVE_SCORING_CONFIG.stability,
     }
 
 
