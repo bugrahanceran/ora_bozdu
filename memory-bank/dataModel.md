@@ -3,8 +3,9 @@
 ## Tasarım ilkeleri
 
 - Venue kimliği ile zaman içinde değişen gözlemler ayrılır.
-- Cadence-aware snapshot'lar append-only tutulur; başlangıç cadence'i
-  haftalıktır ve config ile günlük yapılabilir.
+- Cadence-aware snapshot'lar append-only tutulur; cadence `daily`/`weekly`/
+  `biweekly` arasında config ile seçilir (Faz 2, 2026-07-25: varsayılan
+  `biweekly`, önce `weekly`'ydi).
 - API response payload'ları parse edilmiş kolonlara ek olarak ham JSON biçiminde
   saklanır.
 - Provider-specific ayrıntılar adapter ve payload katmanında izole edilir.
@@ -15,7 +16,15 @@
 
 ### `regions`
 
-Bölge kataloğu. Task 1'de `eryaman` kaydı kullanılır.
+Bölge kataloğu. Faz 1'de yalnızca `eryaman`; Faz 2'de `batikent` ikinci
+kayıt olarak eklendi (2026-07-24). `provider_place_id` unique constraint'i
+`venues` tablosunda global'dır (bölgeye özel değildir) — bu, aynı gerçek
+mekanın iki bölgede birden takip edilmesini DB seviyesinde engeller; asıl
+koruma discovery'nin `load_other_region_place_ids` ön-kontrolüdür (bkz.
+techContext.md Discovery bölümü), bu constraint son çare güvenlik ağıdır.
+`Region`'ın kendisi hiçbir zaman koordinat/geometri taşımadı — bölge merkezi
+ve yarıçapı yalnızca `config/data_collection.<slug>.yaml`'da yaşar, DB'ye
+hiç yazılmaz.
 
 Temel alanlar: `id`, `slug`, `name`, `created_at`.
 
@@ -24,13 +33,25 @@ Temel alanlar: `id`, `slug`, `name`, `created_at`.
 Mekanın zaman içinde sabit kalan yerel kimliği ve provider bağlantısı.
 
 Temel alanlar: `id`, `region_id`, `slug`, `display_name`, `provider`,
-`provider_place_id`, `is_active`, `created_at`.
+`provider_place_id`, `is_active`, `is_tracked`, `created_at`.
 
 `provider + provider_place_id` unique olur. Venue listesi discovery tarafından
-üretilen `config/catalog.yaml` dosyasından yüklenir; katalogdaki her aktif venue
-kesin bir `place_id` taşır. `--target-count N` mevcut kayıtları koruyarak ekleme
-yapar ve mevcut venue'yu otomatik çıkarmaz. Webapp yalnızca DB kayıtlarında
-arama yapar.
+üretilen bölgeye özel `config/catalog.<slug>.yaml` dosyasından yüklenir;
+katalogdaki her aktif venue kesin bir `place_id` taşır. Faz 2'de discovery
+hard filtreyi geçen **her** eligible adayı ekler (sabit bir hedef sayı/`--target-count`
+kavramı kaldırıldı) ve mevcut venue'yu asla otomatik çıkarmaz. Webapp yalnızca
+DB kayıtlarında arama yapar.
+
+`is_tracked` (`0004_add_venue_is_tracked`, `default=true`, 2026-07-25),
+`is_active`'le aynı iki-katmanlı (katalog → DB, `sync_catalog` üzerinden)
+desende ama farklı bir anlam taşır: `is_active=false` venue'nun kataloktan
+kaldırıldığını, `is_tracked=false` ise venue'nun kataloğda kalmaya devam
+ettiğini ama şu an periyodik fetch'in **dışında** olduğunu (en popüler
+`tracked_venue_limit` kadarına giremediğini) belirtir. `app.fetch` yalnızca
+`is_active=true AND is_tracked=true` venue'ları işler. Değer, kataloğun
+`VenueCatalogEntry.tracked` alanından gelir ve her aylık `finalize`
+koşusunda `rank_tracked_venues` tarafından yeniden hesaplanır (bkz.
+techContext.md "Takip edilen mekan" bölümü) — sabit değildir.
 
 ### `fetch_runs`
 
@@ -70,9 +91,11 @@ genişlerse yeni bir migration ile geri eklenir.
 
 `venue_id + cadence + period_start` unique constraint cadence-aware idempotency
 sağlar. `snapshot_payloads` içindeki request-variant unique constraint ile
-birlikte aynı hafta/gün + venue + review sort duplicate olamaz. Snapshot ve alt
-kayıtları, iki zorunlu API response'u da alındıktan sonra venue bazında tek
-transaction ile yazılır. Aynı period içindeki ikinci çalıştırma mevcut başarılı
+birlikte aynı period + venue + review sort duplicate olamaz. Snapshot ve alt
+kayıtları, config'te zorunlu tüm review-sort response'ları alındıktan sonra
+venue bazında tek transaction ile yazılır (Faz 2, 2026-07-25: aktif config
+tek sort — `newest` — ister; adapter genel olarak birden fazlasını
+destekler). Aynı period içindeki ikinci çalıştırma mevcut başarılı
 snapshot'ı atlar; başarısız venue için yarım snapshot olmadığı için güvenli retry
 yapılır.
 
@@ -84,8 +107,11 @@ snapshot için birden fazla request variant bulunabilir.
 Temel alanlar: `id`, `snapshot_id`, `provider`, `request_variant`,
 `review_sort`, `fetched_at`, `raw_payload`, `payload_hash`.
 
-Task 1 Places adapter'ı için `review_sort` değerleri `most_relevant` ve `newest`
-olur. `snapshot_id + provider + request_variant` unique olur.
+Places Legacy adapter'ı `review_sort` değeri olarak `most_relevant` ve/veya
+`newest` üretebilir; aktif `FetchConfig.review_sorts` Faz 2'de (2026-07-25)
+yalnızca `newest` ister, dolayısıyla yeni snapshot'lar tek `review_sort`
+kaydıyla oluşur (geçmiş snapshot'larda ikisi de görülebilir).
+`snapshot_id + provider + request_variant` unique olur.
 
 ### `snapshot_reviews`
 
@@ -115,7 +141,9 @@ Temel alanlar: `id`, `snapshot_review_id`, `review_sort`, `rank`,
 
 `snapshot_review_id + review_sort` unique olur. Aynı review hem
 `most_relevant` hem `newest` içinde bulunursa iki appearance kaydı oluşur;
-review metni yalnızca bir kez tutulur.
+review metni yalnızca bir kez tutulur. Aktif config tek sort istediğinden
+(2026-07-25) yeni snapshot'larda bu yalnızca tek appearance ile sonuçlanır;
+mekanizma değişmedi, girdi çeşitliliği azaldı.
 
 ### `score_results`
 
@@ -146,6 +174,32 @@ Task 1 üçüncü parti backfill yapmaz. İleride son 6 aya ait review'lar geldi
 
 ## Schema değişiklik geçmişi
 
+- **2026-07-25 — `0004_add_venue_is_tracked`:** `venues.is_tracked`
+  (`Boolean`, `default=true`) eklendi — dinamik top-N "takip edilen mekan"
+  seçimi için (bkz. yukarıdaki `venues` bölümü ve techContext.md "Takip
+  edilen mekan" bölümü). Upgrade/downgrade/upgrade + `alembic check`
+  önce scratch DB'de, sonra kullanıcı onayıyla gerçek `data/ora_bozdu.db`'de
+  (yedek alınarak) doğrulandı — ikisi de temiz. Şemayla birlikte gelen
+  davranış değişiklikleri: `fetch.cadence` varsayılanı `weekly`'den
+  `biweekly`'e düştü (yeni `cadence_anchor_date` alanına hizalı;
+  `place_snapshots`/`fetch_runs`'ın `cadence`/`period_start` kolonları
+  zaten string/date olduğundan bu şema değişikliği gerektirmedi) ve
+  `FetchConfig.review_sorts` artık yalnızca `newest` kabul ediyor (adapter
+  hâlâ genel çoklu-sort'u destekler, yalnızca aktif config daraltıldı).
+- **2026-07-24 — Faz 2 discovery genişletmesi (Eryaman + Batıkent):** DB
+  şeması/migration değişmedi — `Region`/`Venue` zaten bölge geometrisi
+  taşımıyordu ve `venues.provider_place_id` unique constraint'i zaten
+  global'di, bu yüzden bu ikinci bölge için hazır bir backstop olarak
+  kullanıldı. `batikent` ikinci `Region` kaydı olarak eklendi. Bölgeler
+  arası koruma (aynı `place_id`'nin iki bölgede birden takip edilmemesi)
+  DB seviyesinde değil, discovery'nin `load_other_region_place_ids`
+  ön-kontrolüyle (dosya seviyesinde, `catalog.*.yaml` glob'u) sağlanıyor;
+  DB constraint'i yalnızca bu ön-kontrol bir şekilde atlanırsa devreye giren
+  son çare güvenlik ağı. Discovery mekanizması Text Search'ten Nearby
+  Search + grid'e taşındı ve "en iyi N'i seç" yerine "hard filtreyi geçen
+  herkesi al" semantiğine geçti (bkz. techContext.md Discovery bölümü) —
+  bu tamamen config/kod katmanında bir değişiklik, hiçbir DB tablosunu
+  etkilemedi.
 - **2026-07-24 — Scoring v5 (dormancy):** Şema değişmedi (`score_results.
   signal_breakdown` zaten serbest JSON). `stability` sinyaline "durgunluk"
   kavramı eklendi: `user_ratings_total` artışı VEYA yeni review varsa mekan

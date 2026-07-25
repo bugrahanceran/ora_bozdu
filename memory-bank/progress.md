@@ -4,11 +4,12 @@
 
 Phase 1 tamamlandı (2026-07-24). Task 1'in tüm checklist maddeleri ve push
 öncesi son review'da bulunan düzeltmeler geçti. Nihai veri toplama
-kararıyla otomatik discovery, YAML catalog ve cadence-aware haftalık fetch
-dönüşümü açıldı. `GOOGLE_MAPS_API_KEY` yapılandırılmıştır fakat kullanıcı onayı
-olmadan hiçbir ücretli API koşusu yapılmaz. Önceden terminal çıktısında görünmüş
-olan key kullanıcı tarafından rotate edilmiştir; güncel key yalnızca `.env`
-içindedir.
+kararıyla otomatik discovery, YAML catalog ve cadence-aware fetch dönüşümü
+açıldı (başlangıç cadence'i haftalıktı; Faz 2'de 2026-07-25'te `biweekly`'e
+düşürüldü, bkz. aşağıdaki 2026-07-25 kaydı). `GOOGLE_MAPS_API_KEY`
+yapılandırılmıştır fakat kullanıcı onayı olmadan hiçbir ücretli API koşusu
+yapılmaz. Önceden terminal çıktısında görünmüş olan key kullanıcı tarafından
+rotate edilmiştir; güncel key yalnızca `.env` içindedir.
 
 ## Task 1 checklist
 
@@ -232,3 +233,234 @@ Son olarak, Faz 1/Task 2 ön koşulu olan "kataloğun 30'dan 40'a code
 değişikliği olmadan çıkabildiğini doğrula" maddesi kullanıcı kararıyla Faz
 1'i kapatmadan Faz 2 kapsamına taşındı (bkz. yukarıdaki "Faz 1 durumu" ve
 `techContext.md`'nin "Faz 2'de netleştirilecek" bölümü); Faz 1 artık done.
+
+## 2026-07-24 — Faz 2: Discovery genişletmesi (Eryaman + Batıkent)
+
+Faz 2'nin ilk adımı olarak discovery mekanizması baştan tasarlandı ve
+uygulandı. Önce plan modunda tam bir araştırma yapıldı: mevcut Text
+Search (New) tabanlı akış detaylıca çıkarıldı (dahil: `included_type: null`
+config değeriyle `SearchQueryState.included_type: str` arasındaki tip
+uyuşmazlığının fresh bir `search --reset`'i çökerteceği, canlı koddan
+doğrulanan gerçek bir bug), Google'ın Nearby Search (New)/Text Search
+(New)/Places Aggregate API dokümantasyonu web'den araştırıldı ve üç karar
+kullanıcıyla netleştirildi: (1) Eryaman + Batıkent iki ayrı, sıkı (~3km
+yarıçaplı, merkezleri ~7.8km ayrık) bölge olarak modellenecek — tek
+birleşik ~15km alan değil; (2) eski Text-Search tabanlı toplu keşif kodu
+tamamen kaldırılacak, paralel bırakılmayacak; (3) webapp'te bölge gösterimi
+bu adımın kapsamı dışı. Kullanıcı ayrıca kapsamı netleştirdi: yalnızca
+restoran/kafe değil, Google Places API'nin "Food and Drink" Table A
+kategorisindeki **tüm** tipler (~166 tip — bistro, pastane, dondurmacı,
+tatlıcı ve tüm mutfak-spesifik `*_restaurant` tipleri dahil) taranacak.
+
+Uygulama: `app/discovery/geo.py` (haversine + local tangent-plane offset),
+`app/discovery/grid.py` (kare-grid + çevrel daire kapsama, tek-seviye
+adaptif bölme, `chunk_types` ile 50'lik tip grupları), yeni
+`app/adapters/places_nearby.py` (eski `places_new.py` silindi),
+`app/discovery/search_cache.py`'nin hücre-tabanlı `discovery-search.v2`
+şemasına yeniden yazımı, `discovery_stages.py`'nin `DiscoveryGridSearchStage`
+ile yeniden yazımı, `selector.py`/`discovery_service.py`'nin
+`select_candidates`/`target_count` yerine `accept_all_candidates`
+(take-all) semantiğine geçirilmesi, `app/catalog.py`'ye bölgeler-arası
+`place_id` çakışmasını önleyen `load_other_region_place_ids` eklenmesi,
+`app/discover.py`/`app/fetch.py`'ye `--data-collection-config` bayrağı
+eklenmesi. Google Places Aggregate API (`computeInsights`) araştırıldı:
+gerçek bir ürün ama `INSIGHT_PLACES` modu yalnızca sayı ≤100 ise place_id
+döndürüyor ve döndürdüğü tek şey place_id (metadata yok) — Nearby Search'e
+göre net bir kazanç sağlamadığı için kullanılmadı.
+
+Config dosyaları bölge başına ayrıştırıldı: `config/data_collection.eryaman.yaml`
++ yeni `config/data_collection.batikent.yaml` (merkez 39.968102, 32.726780 —
+web'den doğrulandı), `config/catalog.eryaman.yaml` + yeni, boş
+`config/catalog.batikent.yaml`. `app/config.py`'nin varsayılanları ve
+`.env`/`.env.example` buna göre güncellendi.
+
+51 test geçti (yeni: `test_discovery_grid.py`, `test_places_nearby_adapter.py`;
+yeniden yazılan: `test_discovery.py`, `test_discovery_service.py`,
+`test_discovery_stages.py`; silinen: `test_places_new_adapter.py`), ruff
+check/format temiz, `alembic check` yeni migration göstermedi (şema
+değişmedi — `Region`/`Venue` zaten coğrafi veri taşımıyordu, global
+`uq_venue_provider_place_id` constraint'i zaten bölgeler-arası koruma için
+hazırdı). Gerçek config dosyalarına karşı sıfır-maliyetli
+`search --max-requests 0` dry-run'ı çalıştırıldı: her iki bölge de 276
+arama birimi (69 coğrafi hücre × 4 tip grubu) üretti — bu sayı elle
+(kare-grid geometrisiyle) hesaplanıp koddan gelen sonuçla birebir
+doğrulandı. README ve memory-bank (techContext.md, dataModel.md,
+activeContext.md) güncellendi. Henüz hiçbir gerçek Nearby Search veya
+freshness API çağrısı yapılmadı; sıradaki adım onaylı dry-run → küçük prob
+→ tam koşu aşamalarıdır (önce Eryaman'ın yeniden taranması, sonra Batıkent).
+
+## 2026-07-24 — Eryaman'ın ilk gerçek search'ü + adaptif bölmenin kaldırılması
+
+Kullanıcı onayıyla Eryaman'ın search aşaması gerçek API'ye karşı çalıştırıldı:
+1 istekle smoke test, sonra 400 + 55 isteklik iki ek koşuyla tamamlandı.
+Sonuç: **456 gerçek istek** (276 temel hücre×tip-grubu + 45 hücrenin tavana
+çarpıp bölünmesinden gelen +180), 3359 ham aday, dedup+filtre sonrası **410
+benzersiz yeni uygun mekan** freshness'a hazır (`search_completed: true`).
+
+Kullanıcı bu +%65'lik öngörülemez artışı ("276 demiştin, 456 çıktı") kabul
+edilemez buldu; "en az istekle en çok mekan bulmak, minimum duplication,
+verimli altyapı" önceliğini netleştirdi ve sınır taşması gibi küçük
+hassasiyet kayıplarının önemli olmadığını belirtti. Bunun üzerine **tek
+seviyeli adaptif bölme mekanizması tamamen kaldırıldı**: tavana çarpan bir
+hücre artık bölünmüyor, sonucu olduğu gibi kabul edilip yalnızca
+`cells_flagged_for_review`'da işaretleniyor. Bu, bir bölgenin toplam arama
+isteğini her zaman tam `hücre × tip-grubu` (Eryaman/Batıkent için 276) yapar
+— dry-run'da görülen sayı artık kesindir, sürpriz büyüme olmaz. Bedeli: en
+yoğun ceplerde (rankPreference=POPULARITY'nin en sona bıraktığı, genelde en
+az review'lu) bazı mekanlar görülmeyebilir — kullanıcının önceliğiyle
+uyumlu, bilinçli bir kabul.
+
+Kod: `split_cell` (`app/discovery/grid.py`) silindi; `GridCellState.from_spec`
+sadeleştirildi, `.spec()` kaldırıldı; `cells_flagged_for_review`,
+`depth>=1` yerine `status=="searched" and hit_result_cap` olarak yeniden
+tanımlandı. `depth`/`parent_cell_id` alanları ve `status="split"` değeri
+yalnızca Eryaman'ın **zaten toplanmış ve ödenmiş** gerçek cache verisiyle
+geriye dönük uyumluluk için şemada bırakıldı — bu kritikti, çünkü aksi
+halde 456 gerçek isteğin sonucu kaybedilirdi. Değişiklik sonrası gerçek
+Eryaman cache'i `app.discover status` ile tekrar okunup doğrulandı:
+`cells_flagged_for_review` yeniden tanım öncesi/sonrası aynı sonucu (19)
+verdi, `freshness_required` hâlâ 410 — hiçbir veri kaybı yok. 50 test
+geçti (2 bölme testi silindi; 1 yeni "bölünmeden kabul et" davranış testi
++ 1 yeni geriye-dönük-uyumluluk testi eklendi), ruff check/format temiz.
+
+Freshness aşaması (410 istek) henüz başlatılmadı; kullanıcı onayı
+bekleniyor. Onaylanınca sıradaki adım `freshness --max-requests N` →
+`finalize`, sonra aynı akışla Batıkent.
+
+## 2026-07-24 — Eryaman freshness + finalize + excluded_primary_types filtresi
+
+Kullanıcı onayıyla 410 mekan için freshness çalıştırıldı: **410/410
+başarılı, 0 hata.** Sonuç: 405 fresh, 5 stale (en eskisi Göktuğ
+Kavurma&Izgara, son review 2025-02-06), **0 mekan hiç review'suz**;
+medyan son-review-yaşı 5 gün, %88'i son 30 gün içinde review almış — bulunan
+mekanlar genel olarak aktif. Ardından `finalize` (local, ücretsiz)
+çalıştırıldı: 410 eklendi, 30 korundu, katalog 440 oldu.
+
+Kategori dağılımı incelenirken (kullanıcı isteğiyle "sonuçları
+değerlendirelim") yemekle ilgisiz 11 kategori bulundu — isimlerine
+bakıldı: `medical_clinic` (bir diyetisyen/fizyoterapi kliniği),
+`barber_shop`, `hair_salon`, `supermarket` (Bim), `store` (nargile
+dükkanı), `swimming_pool`, `amusement_center` (çocuk oyun evi),
+`video_arcade` (simülasyon merkezi) — bu 8'i açıkça alakasız; ayrıca 3
+sınırda kalan (`sports_complex`="...Pool Cafe", `garden_center`="Ankara
+Barbekü", `wedding_venue`) isimlerinde yemek/ikram ima ediyordu. Kök
+neden: Nearby Search'ün `includedTypes`'ı (Google'ın kendi FAQ'sinde
+belgelendiği gibi) bir mekanın TÜM tip etiketlerine bakar, yalnızca
+`primaryType`'a değil — `includedPrimaryTypes` kullanılsaydı bu sızıntı
+olmazdı ama gerçek food/drink mekanlarını (primary type'ı farklı olanları)
+kaçırma riski vardı, bu yüzden bilinçli olarak `includedTypes` seçilmişti.
+
+Kullanıcı kararı: 8 açıkça alakasız kategoriyi kaldır, 3 sınırdakini tut;
+bundan sonra bu tip mekanlar için gereksiz freshness çağrısı atılmasın.
+Uygulama: yeni `excluded_primary_types` config alanı (`DiscoveryConfig`) +
+`apply_hard_filters`'a `rejected_irrelevant_primary_type` reddi eklendi —
+freshness'tan **önce** çalışır (`_filtered_candidates` içinde). İki config
+dosyasına da (Eryaman + Batıkent) aynı 8 kategorilik dışlama listesi
+eklendi. Zaten kataloğa girmiş 8 mekan `config/catalog.eryaman.yaml`'dan
+elle çıkarıldı (440→432).
+
+Operasyonel not: config/katalog dosyaları değiştiği için discovery
+cache'inin kayıtlı `collection_config_hash`/`catalog_hash`'i artık
+uyuşmuyordu (`--reset` istendi) — **`--reset` kullanılmadı** (456+410
+gerçek/ödenmiş isteği silerdi); bunun yerine cache'in saklı hash'leri yeni
+dosyaların gerçek hash'ine elle güncellendi (bu değişikliğin arama
+sonuçlarını geçersiz kılmadığı, yalnızca sonraki local filtrelemeyi
+etkilediği bilinerek). `finalize` yeniden çalıştırıldı (local, ücretsiz):
+katalog 432'de sabit kaldı; `apply_hard_filters` bu 8 place_id'ye karşı
+ayrıca doğrudan test edilip `rejected_irrelevant_primary_type=8` verdiği
+kanıtlandı — hiçbir veri kaybı, hiçbir yeni API çağrısı olmadı. 51 test
+geçti, ruff check/format ve `alembic check` temiz.
+
+**Eryaman durumu: 432 mekan kataloğa girdi, henüz DB'ye sync edilmedi**
+(bir sonraki `app.fetch` koşusunda `sync_catalog` ile olacak, aynı anda bu
+402 yeni mekan için "snapshot 1" üretilecek). Sıradaki adım: `app.fetch
+--region eryaman` (gerçek snapshot) veya Batıkent'in aynı akışla
+başlatılması — ikisi de kullanıcı onayı bekliyor.
+
+## 2026-07-25 — Takip edilen mekan (tracked) seçimi + iki haftalık cadence
+
+432 mekanlık Eryaman kataloğunun tamamını 2 haftada bir Legacy Detail ile
+izlemek gereksiz maliyetli olacağından, kullanıcı dinamik bir top-N
+mekanizması istedi: `user_ratings_total`'a göre en popüler
+`tracked_venue_limit` (`200`) kadarı aktif izlensin, geri kalanı kataloğda
+kalsın ama fetch edilmesin — ve bu seçim **sabit değil**, her aylık
+`finalize`'da yeniden hesaplansın (review sayısı büyüyen bir mekan tekrar
+top-N'e girebilsin). Aynı oturumda birleşen iki ek karar: fetch cadence'i
+`weekly`'den `biweekly`'e düşürüldü; Legacy fetch tek sort'a (`newest`)
+indirildi. İkincisinin gerekçesi kod üzerinden doğrulandı: `rating`/
+`price_level` zaten sort'tan bağımsız `fields` parametresiyle geliyor,
+`rating_trajectory`/`stability`/`review_velocity` sinyalleri `newest` +
+review sayısı artışıyla tam besleniyor, yalnızca `sentiment_keyword_drift`
+`most_relevant`'a ufak/kontrolsüz bir bağımlılık taşıyor — Google'ın
+`most_relevant` sonuçlarının tarih/sıra garantisi olmadığından bu katkı
+zaten güvenilmezdi. Açık kalan bir soru ("yeni keşfedilen mekanlara koruma/
+grace-period gerekir mi?") kullanıcıya soruldu; cevap **hayır, yalnızca
+review sayısı** oldu — Google Places API açılış tarihi vermediğinden
+güvenilir bir "ne kadar yeni" sinyali zaten yok.
+
+Uygulama: yeni migration `0004_add_venue_is_tracked` (`venues.is_tracked`,
+`default=true`, `0003`'ün devamı); `DiscoveryConfig.tracked_venue_limit`
+(`200`), `FetchConfig.cadence_anchor_date` (Eryaman/Batıkent için
+`2026-07-13`, bir Pazartesi) eklendi, `FetchConfig.review_sorts` validator'ü
+`{"newest"}`'e daraltıldı; `app/cadence.py`'nin `period_start_for`'ına
+`anchor_date` parametreli biweekly hesaplama eklendi (hafta farkının
+tekliği periyodu bir hafta geri kaydırır); `app/discovery/selector.py`'ye
+saf `rank_tracked_venues` fonksiyonu eklendi (veri yokken dokunmama, eşitte
+`place_id` tie-break); `VenueCatalogEntry`'ye `tracked`/`user_ratings_total`
+alanları eklendi; `build_discovery_result`/`_run_finalize` yeni
+`all_scanned_candidates` parametresiyle her `finalize`'da yeniden sıralama
+yapacak şekilde entegre edildi; `app/fetch.py`/`FetchService.run` artık
+yalnızca `is_active AND is_tracked` venue'ları işliyor (`is_active` ile aynı
+iki-katmanlı katalog→DB deseni, `sync_catalog` üzerinden).
+
+Kod okurken gerçek bir bug bulundu ve düzeltildi (implementasyona
+başlamadan önce, plan aşamasında tespit edildi): freshness'ın seed'lediği
+`newest` payload'u yalnızca `fields=reviews` ile alındığından `name`
+içermiyor; eski `reusable` filtresi bunu sort eşleşmesine bakıp (state
+içerip içermediğine bakmadan) yine de "kullanılabilir" sayıyordu. Dual-sort
+rejiminde zararsızdı (state her zaman taze `most_relevant`'tan geliyordu)
+ama tek-sort rejiminde hiç HTTP isteği yapmadan `fetch_place`'in
+`PlacesApiError("...contains no venue state")` ile çökmesine yol açardı.
+Düzeltme: `app/adapters/places_legacy.py`'deki `reusable`, yalnızca
+`result.name` içeren payload'ları seed kabul edecek şekilde daraltıldı.
+
+Doğrulama: 24 yeni test (toplam 75 geçiyor) — `rank_tracked_venues` (limit
+üstü/altı, veri yokken dokunmama, incumbent'ın düşürülebilmesi), biweekly
+`period_start_for` (anchor'a göre doğru period, negatif offset, anchor'sız
+`ValueError`), seed-safety bugfix regresyonu, `is_tracked` katalog/DB
+round-trip, `FetchConfig` validator'leri (`review_sorts`, `cadence_anchor_date`),
+`finalize`'ın `tracked_count`/yeniden sıralama entegrasyonu, `FetchService`'in
+`is_tracked` filtresi. `ruff check`/`format` temiz. `0004_add_venue_is_tracked`
+migration'ı önce **scratch bir DB'de** upgrade→downgrade→upgrade→`alembic
+check` ile doğrulandı (gerçek DB'ye o an henüz dokunulmadı — bilerek,
+gerçek DB değişikliği ayrı bir onay bekliyordu; bkz. aşağıdaki paragraf,
+o onay aynı gün geldi). README ve memory-bank (techContext.md,
+dataModel.md, activeContext.md) güncellendi.
+
+**Gerçek veriye uygulama (aynı gün, kullanıcı onayıyla tamamlandı):**
+migration önce yedek alınarak gerçek local `data/ora_bozdu.db`'ye
+uygulandı (`alembic upgrade head`, `alembic check` temiz, mevcut 47 DB
+venue'su doğru `is_tracked=true` aldı). Eryaman için `finalize` **mevcut,
+zaten toplanmış cache ile** (yeni API çağrısı yok) yeniden çalıştırıldı;
+config bu oturumda değiştiği için cache'in `collection_config_hash`'i
+(daha önceki `excluded_primary_types` düzeltmesinde kullanılan aynı
+teknikle, `--reset` kullanmadan) elle güncellendi. **Sonuç: 432 mekanlık
+kataloğun 200'ü `tracked`, 232'si değil** — en yüksek review'lu tracked
+mekan "ANZELHA ERYAMAN" (14164 review), kesim noktası ~205 review
+civarında temiz (son tracked ~205-206, ilk not-tracked 192-203). Katalog
+dosyası gerçekten yeniden yazıldı; DB'nin `is_tracked` kolonu bir sonraki
+gerçek `app.fetch` koşusunda `sync_catalog` ile senkronlanacak.
+
+**İlk gerçek biweekly fetch (aynı gün, onaylandı ve tamamlandı):** önce
+`--plan` ile önizleme onaylandı (200 mekan, 200 istek, `--no-retries` ile
+kesin üst sınır), ardından gerçek koşu onaylandı.
+`app.fetch --region eryaman --no-retries` **200/200 başarılı, 0 hata, 0
+warning**. `sync_catalog` DB'yi kataloğa senkronladı: DB'de
+`is_active AND is_tracked` tam **200**, `is_active AND NOT is_tracked` tam
+**232** (katalogla birebir; ayrıca güncel katalogda olmayan 17 eski/pasif
+venue DB'de zararsız kalıntı olarak duruyor). 200 yeni `biweekly`
+snapshot'ı tek `newest` payload'ıyla yazıldı. Örnek gerçek veri: "ANZELHA
+ERYAMAN" 4.4★/14164 review, "Köfteci Yusuf" 3.7★/9582 review — finalize
+raporundaki sayılarla neredeyse birebir. Sıradaki adım: Batıkent'in kendi
+discovery akışı (dry-run → search → freshness → finalize → kendi
+retarget'ı), kullanıcı onayı bekliyor.
