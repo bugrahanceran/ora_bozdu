@@ -1,0 +1,5 @@
+version: catalog.v1
+region:
+  slug: batikent
+  name: Batıkent
+venues: []

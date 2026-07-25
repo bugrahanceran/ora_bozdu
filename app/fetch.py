@@ -40,6 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fetch only the venue with this catalog slug",
     )
     parser.add_argument("--catalog", type=Path)
+    parser.add_argument("--data-collection-config", type=Path)
     parser.add_argument(
         "--date",
         type=date.fromisoformat,
@@ -67,14 +68,16 @@ async def run(args: argparse.Namespace) -> int:
     catalog_path = args.catalog or settings.venue_catalog_path
     catalog = load_catalog(catalog_path)
     collection_config = load_data_collection_config(
-        settings.data_collection_config_path
+        args.data_collection_config or settings.data_collection_config_path
     )
     if (
         catalog.region_slug != args.region
         or collection_config.region.slug != args.region
     ):
         raise SystemExit("Catalog, data-collection config and CLI regions must match")
-    active_entries = tuple(entry for entry in catalog.venues if entry.active)
+    active_entries = tuple(
+        entry for entry in catalog.venues if entry.active and entry.tracked
+    )
     if not active_entries:
         raise SystemExit("Catalog is empty; run app.discover first")
     if args.venue and args.venue not in {entry.slug for entry in active_entries}:
@@ -107,6 +110,7 @@ async def run(args: argparse.Namespace) -> int:
                 provider_name="places_api",
                 max_retries=0 if args.no_retries else settings.http_max_retries,
                 seed_payloads_by_place_id=seed_payloads_by_place_id,
+                anchor_date=collection_config.fetch.cadence_anchor_date,
             )
         print(json.dumps(plan, ensure_ascii=False, indent=2))
         return 0
@@ -133,6 +137,7 @@ async def run(args: argparse.Namespace) -> int:
                 venue_slugs=tuple(entry.slug for entry in active_entries),
                 venue_slug=args.venue,
                 seed_payloads_by_place_id=seed_payloads_by_place_id,
+                anchor_date=collection_config.fetch.cadence_anchor_date,
             )
             recompute_region(
                 session,

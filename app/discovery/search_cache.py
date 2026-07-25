@@ -1,13 +1,14 @@
 import json
+from dataclasses import replace
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
 from app.adapters.base import DiscoveryCandidate, RawPlacePayload
-from app.catalog import VenueCatalog
 from app.data_collection_config import DataCollectionConfig
+from app.discovery.grid import GridCellSpec, build_grid, chunk_types
 
 
 class CachedCandidate(BaseModel):
@@ -17,6 +18,8 @@ class CachedCandidate(BaseModel):
     business_status: str | None
     user_ratings_total: int
     primary_type: str | None
+    latitude: float
+    longitude: float
 
     @classmethod
     def from_domain(cls, candidate: DiscoveryCandidate) -> "CachedCandidate":
@@ -27,28 +30,48 @@ class CachedCandidate(BaseModel):
             business_status=candidate.business_status,
             user_ratings_total=candidate.user_ratings_total,
             primary_type=candidate.primary_type,
+            latitude=candidate.latitude,
+            longitude=candidate.longitude,
         )
 
     def to_domain(self) -> DiscoveryCandidate:
         return DiscoveryCandidate(**self.model_dump())
 
 
-class SearchQueryState(BaseModel):
-    category: str
-    text_query: str
-    included_type: str
-    next_page_token: str | None = None
-    started: bool = False
-    completed: bool = False
-    request_count: int = 0
+class GridCellState(BaseModel):
+    cell_id: str
+    center_latitude: float
+    center_longitude: float
+    radius_meters: float
+    included_types: tuple[str, ...]
+    depth: int = 0
+    parent_cell_id: str | None = None
+    status: Literal["pending", "searched", "split"] = "pending"
+    result_count: int | None = None
+    hit_result_cap: bool = False
+    searched_at: datetime | None = None
+
+    @classmethod
+    def from_spec(
+        cls,
+        spec: GridCellSpec,
+        *,
+        included_types: tuple[str, ...],
+    ) -> "GridCellState":
+        return cls(
+            cell_id=spec.cell_id,
+            center_latitude=spec.center_latitude,
+            center_longitude=spec.center_longitude,
+            radius_meters=spec.radius_meters,
+            included_types=included_types,
+        )
 
 
-class SearchPageRecord(BaseModel):
-    category: str
-    request_page_token: str | None
-    next_page_token: str | None
-    fetched_at: str
+class CellSearchRecord(BaseModel):
+    cell_id: str
+    fetched_at: datetime
     candidate_count: int
+    hit_result_cap: bool
     raw_payload: dict[str, Any]
 
 
@@ -80,26 +103,39 @@ class CachedFreshnessPayload(BaseModel):
 
 
 class DiscoverySearchCache(BaseModel):
-    version: str = "discovery-search.v1"
+    version: str = "discovery-search.v2"
     collection_config_hash: str
     catalog_hash: str
     region_slug: str
-    target_count: int
     as_of_date: date
-    queries: list[SearchQueryState]
+    cells: list[GridCellState]
     candidates: list[CachedCandidate] = Field(default_factory=list)
-    pages: list[SearchPageRecord] = Field(default_factory=list)
+    cell_search_records: list[CellSearchRecord] = Field(default_factory=list)
     freshness_results: dict[str, str | None] = Field(default_factory=dict)
     freshness_payloads: dict[str, CachedFreshnessPayload] = Field(default_factory=dict)
-    completion_reason: str | None = None
 
     @property
     def search_completed(self) -> bool:
-        return all(query.completed for query in self.queries)
+        return all(cell.status != "pending" for cell in self.cells)
 
     @property
     def total_search_requests(self) -> int:
-        return sum(query.request_count for query in self.queries)
+        return sum(1 for cell in self.cells if cell.status != "pending")
+
+    @property
+    def cells_flagged_for_review(self) -> tuple[GridCellState, ...]:
+        """Terminal cells that hit the result cap and were never subdivided.
+
+        Historical caches (from when a single level of adaptive splitting
+        existed) may still contain `status="split"` parents that hit the cap
+        but were superseded by their children -- those aren't flagged, only
+        cells whose (possibly truncated) result was accepted as final.
+        """
+        return tuple(
+            cell
+            for cell in self.cells
+            if cell.status == "searched" and cell.hit_result_cap
+        )
 
     def domain_candidates(self) -> tuple[DiscoveryCandidate, ...]:
         return tuple(candidate.to_domain() for candidate in self.candidates)
@@ -108,26 +144,31 @@ class DiscoverySearchCache(BaseModel):
 def create_search_cache(
     *,
     config: DataCollectionConfig,
-    catalog: VenueCatalog,
     collection_config_hash: str,
     catalog_hash: str,
-    target_count: int,
     as_of_date: date,
 ) -> DiscoverySearchCache:
+    base_cells = build_grid(
+        center_latitude=config.region.center.latitude,
+        center_longitude=config.region.center.longitude,
+        region_radius_meters=config.discovery.radius_meters,
+        cell_radius_meters=config.discovery.cell_radius_meters,
+    )
+    type_batches = chunk_types(config.discovery.included_types)
+    cells = [
+        GridCellState.from_spec(
+            replace(cell, cell_id=f"{cell.cell_id}.batch{batch_index}"),
+            included_types=batch,
+        )
+        for cell in base_cells
+        for batch_index, batch in enumerate(type_batches)
+    ]
     return DiscoverySearchCache(
         collection_config_hash=collection_config_hash,
         catalog_hash=catalog_hash,
         region_slug=config.region.slug,
-        target_count=target_count,
         as_of_date=as_of_date,
-        queries=[
-            SearchQueryState(
-                category=query.category,
-                text_query=query.text_query,
-                included_type=query.included_type,
-            )
-            for query in config.discovery.queries
-        ],
+        cells=cells,
     )
 
 

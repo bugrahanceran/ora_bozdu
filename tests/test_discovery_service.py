@@ -1,102 +1,68 @@
 from datetime import UTC, date, datetime
 from pathlib import Path
 
-import pytest
-
-from app.adapters.base import (
-    DiscoveryCandidate,
-    RawPlacePayload,
-    ReviewFreshnessResult,
-)
+from app.adapters.base import DiscoveryCandidate
 from app.catalog import VenueCatalog, VenueCatalogEntry
 from app.data_collection_config import load_data_collection_config
-from app.services.discovery_service import DiscoveryService
+from app.services.discovery_service import build_discovery_result
+
+CONFIG_PATH = Path("config/data_collection.eryaman.yaml")
 
 
-class FakeDiscoveryProvider:
-    provider_name = "places_api_new"
-
-    async def search(self, **kwargs) -> tuple[DiscoveryCandidate, ...]:
-        # A single unified query still returns a mix of primary types.
-        return (
-            DiscoveryCandidate(
-                place_id="cafe-place",
-                display_name="Fixture Cafe",
-                category="cafe",
-                business_status="OPERATIONAL",
-                user_ratings_total=500,
-                primary_type="cafe",
-            ),
-            DiscoveryCandidate(
-                place_id="restaurant-place",
-                display_name="Fixture Restaurant",
-                category="restaurant",
-                business_status="OPERATIONAL",
-                user_ratings_total=500,
-                primary_type="restaurant",
-            ),
-        )
-
-    async def aclose(self) -> None:
-        return None
-
-
-class FakeFreshnessProvider:
-    provider_name = "places_api"
-
-    def __init__(self) -> None:
-        self.place_ids: list[str] = []
-
-    async def fetch_review_freshness(self, place_id: str) -> ReviewFreshnessResult:
-        self.place_ids.append(place_id)
-        latest = datetime(2026, 7, 17, tzinfo=UTC)
-        return ReviewFreshnessResult(
-            latest_review_at=latest,
-            payload=RawPlacePayload(
-                request_variant="details_newest",
-                review_sort="newest",
-                fetched_at=latest,
-                body={"status": "OK", "result": {"reviews": []}},
-                payload_hash=f"hash-{place_id}",
-            ),
-        )
-
-    async def aclose(self) -> None:
-        return None
-
-
-@pytest.mark.asyncio
-async def test_discovery_service_builds_catalog_and_report_from_fixtures() -> None:
-    base_config = load_data_collection_config(Path("config/data_collection.yaml"))
-    discovery = base_config.discovery.model_copy(update={"target_count": 2})
-    config = base_config.model_copy(update={"discovery": discovery})
-    existing = VenueCatalog(
-        region_slug="eryaman",
-        region_name="Eryaman",
-        venues=(),
+def _candidate(place_id: str, display_name: str, category: str) -> DiscoveryCandidate:
+    return DiscoveryCandidate(
+        place_id=place_id,
+        display_name=display_name,
+        category=category,
+        business_status="OPERATIONAL",
+        user_ratings_total=500,
+        primary_type=category,
+        latitude=39.979,
+        longitude=32.636,
     )
-    freshness = FakeFreshnessProvider()
 
-    result = await DiscoveryService(FakeDiscoveryProvider(), freshness).run(
+
+def test_build_discovery_result_adds_every_eligible_candidate_take_all() -> None:
+    # No target_count to compete over: every candidate that passes hard
+    # filters and has a freshness result gets added, however many there are.
+    config = load_data_collection_config(CONFIG_PATH)
+    existing = VenueCatalog(region_slug="eryaman", region_name="Eryaman", venues=())
+    searched = (
+        _candidate("cafe-place", "Fixture Cafe", "cafe"),
+        _candidate("restaurant-place", "Fixture Restaurant", "restaurant"),
+        _candidate("bakery-place", "Fixture Bakery", "bakery"),
+    )
+    freshness = {
+        candidate.place_id: datetime(2026, 7, 17, tzinfo=UTC) for candidate in searched
+    }
+
+    result = build_discovery_result(
         config=config,
         existing_catalog=existing,
-        target_count=2,
         as_of_date=date(2026, 7, 18),
+        searched=searched,
+        grid_summary={"total_cells": 9},
+        freshness_by_place_id=freshness,
+        all_scanned_candidates=searched,
     )
 
-    assert len(result.catalog.venues) == 2
-    assert {entry.category for entry in result.catalog.venues} == {
-        "cafe",
-        "restaurant",
+    assert len(result.catalog.venues) == 3
+    assert {entry.place_id for entry in result.catalog.venues} == {
+        "cafe-place",
+        "restaurant-place",
+        "bakery-place",
     }
-    assert sorted(freshness.place_ids) == ["cafe-place", "restaurant-place"]
-    assert result.report["selected_new"] == 2
-    assert result.report["catalog_categories"] == {"cafe": 1, "restaurant": 1}
+    assert result.report["added_count"] == 3
+    assert result.report["rejected"]["duplicate_or_existing"] == 0
+    # All three fit well within tracked_venue_limit (200), so all get tracked.
+    assert result.report["tracked_count"] == 3
+    assert result.report["not_tracked_count"] == 0
+    assert all(entry.tracked for entry in result.catalog.venues)
+    assert all(entry.user_ratings_total == 500 for entry in result.catalog.venues)
 
 
-@pytest.mark.asyncio
-async def test_discovery_at_target_preserves_catalog_without_provider_calls() -> None:
-    config = load_data_collection_config(Path("config/data_collection.yaml"))
+def test_build_discovery_result_preserves_existing_and_skips_duplicates() -> None:
+    config = load_data_collection_config(CONFIG_PATH)
     existing = VenueCatalog(
         region_slug="eryaman",
         region_name="Eryaman",
@@ -110,16 +76,65 @@ async def test_discovery_at_target_preserves_catalog_without_provider_calls() ->
             ),
         ),
     )
+    # One brand-new candidate plus one that duplicates an already-catalogued
+    # place_id (e.g. re-discovered on a repeat grid sweep).
+    new_candidate = _candidate("new-place", "New Restaurant", "restaurant")
+    duplicate_candidate = _candidate("existing-place", "Existing Cafe", "cafe")
+    searched = (new_candidate, duplicate_candidate)
 
-    result = await DiscoveryService(
-        FakeDiscoveryProvider(), FakeFreshnessProvider()
-    ).run(
+    result = build_discovery_result(
         config=config,
         existing_catalog=existing,
-        target_count=1,
         as_of_date=date(2026, 7, 18),
+        searched=searched,
+        grid_summary={"total_cells": 9},
+        freshness_by_place_id={"new-place": datetime(2026, 7, 17, tzinfo=UTC)},
+        all_scanned_candidates=searched,
     )
 
-    assert result.catalog.venues == existing.venues
-    assert result.report["candidate_count"] == 0
+    assert {entry.place_id for entry in result.catalog.venues} == {
+        "existing-place",
+        "new-place",
+    }
     assert result.report["existing_preserved"] == 1
+    assert result.report["added_count"] == 1
+    assert result.report["rejected"]["duplicate_or_existing"] == 1
+    # The re-discovered "existing-place" gets its review count refreshed
+    # from this round's scan even though it was already catalogued.
+    by_id = {entry.place_id: entry for entry in result.catalog.venues}
+    assert by_id["existing-place"].user_ratings_total == 500
+
+
+def test_build_discovery_result_untracks_the_lowest_ranked_when_over_limit() -> None:
+    config = load_data_collection_config(CONFIG_PATH)
+    limited_discovery = config.discovery.model_copy(update={"tracked_venue_limit": 2})
+    config = config.model_copy(update={"discovery": limited_discovery})
+    existing = VenueCatalog(region_slug="eryaman", region_name="Eryaman", venues=())
+    searched = (
+        _candidate("top", "Top Place", "cafe"),
+        _candidate("mid", "Mid Place", "cafe"),
+        _candidate("low", "Low Place", "cafe"),
+    )
+    freshness = {
+        candidate.place_id: datetime(2026, 7, 17, tzinfo=UTC) for candidate in searched
+    }
+
+    result = build_discovery_result(
+        config=config,
+        existing_catalog=existing,
+        as_of_date=date(2026, 7, 18),
+        searched=searched,
+        grid_summary={"total_cells": 9},
+        freshness_by_place_id=freshness,
+        all_scanned_candidates=searched,
+    )
+
+    assert result.report["tracked_count"] == 2
+    assert result.report["not_tracked_count"] == 1
+    # All three candidates tie on review count (500, via the _candidate
+    # helper); rank_tracked_venues breaks ties by place_id ascending, so
+    # "top" (alphabetically last of the three) loses the tie.
+    by_id = {entry.place_id: entry for entry in result.catalog.venues}
+    assert by_id["low"].tracked is True
+    assert by_id["mid"].tracked is True
+    assert by_id["top"].tracked is False

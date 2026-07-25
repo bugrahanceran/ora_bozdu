@@ -18,6 +18,8 @@ class VenueCatalogEntry:
     category: str
     brand_key: str
     active: bool = True
+    tracked: bool = True
+    user_ratings_total: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,6 +42,8 @@ def load_catalog(path: Path) -> VenueCatalog:
             category=item["category"],
             brand_key=item["brand_key"],
             active=item.get("active", True),
+            tracked=item.get("tracked", True),
+            user_ratings_total=item.get("user_ratings_total"),
         )
         for item in data.get("venues", [])
     )
@@ -57,6 +61,27 @@ def load_catalog(path: Path) -> VenueCatalog:
         region_name=region["name"],
         venues=venues,
     )
+
+
+def load_other_region_place_ids(
+    catalog_path: Path, *, current_region_slug: str
+) -> frozenset[str]:
+    """Place IDs already tracked under any sibling catalog.*.yaml file.
+
+    A region's own search circle is not supposed to overlap another region's,
+    but this guards against ever double-tracking the same real-world place
+    under two regions (the DB's uq_venue_provider_place_id constraint is the
+    last-resort backstop if this convention-based check is ever bypassed).
+    """
+    place_ids: set[str] = set()
+    for sibling in sorted(catalog_path.parent.glob("catalog.*.yaml")):
+        if sibling == catalog_path:
+            continue
+        catalog = load_catalog(sibling)
+        if catalog.region_slug == current_region_slug:
+            continue
+        place_ids.update(entry.place_id for entry in catalog.venues)
+    return frozenset(place_ids)
 
 
 def write_catalog(path: Path, catalog: VenueCatalog) -> None:
@@ -101,6 +126,7 @@ def sync_catalog(session: Session, catalog: VenueCatalog) -> Region:
                 provider="places_api",
                 provider_place_id=entry.place_id,
                 is_active=entry.active,
+                is_tracked=entry.tracked,
             )
             session.add(venue)
         else:
@@ -109,6 +135,7 @@ def sync_catalog(session: Session, catalog: VenueCatalog) -> Region:
             venue.provider = "places_api"
             venue.provider_place_id = entry.place_id
             venue.is_active = entry.active
+            venue.is_tracked = entry.tracked
         catalog_slugs.add(entry.slug)
 
     for venue in existing_venues:

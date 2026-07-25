@@ -5,10 +5,15 @@ from app.adapters.base import DiscoveryCandidate
 from app.catalog import VenueCatalogEntry
 from app.data_collection_config import load_data_collection_config
 from app.discovery.selector import (
+    accept_all_candidates,
     apply_hard_filters,
+    rank_tracked_venues,
     score_candidate,
-    select_candidates,
 )
+
+CONFIG_PATH = Path("config/data_collection.eryaman.yaml")
+REGION_CENTER_LATITUDE = 39.979
+REGION_CENTER_LONGITUDE = 32.636
 
 
 def candidate(
@@ -17,6 +22,9 @@ def candidate(
     category: str,
     count: int,
     status: str = "OPERATIONAL",
+    *,
+    latitude: float = REGION_CENTER_LATITUDE,
+    longitude: float = REGION_CENTER_LONGITUDE,
 ) -> DiscoveryCandidate:
     return DiscoveryCandidate(
         place_id=place_id,
@@ -25,11 +33,13 @@ def candidate(
         business_status=status,
         user_ratings_total=count,
         primary_type=category,
+        latitude=latitude,
+        longitude=longitude,
     )
 
 
 def test_hard_filters_keep_all_same_brand_branches() -> None:
-    config = load_data_collection_config(Path("config/data_collection.yaml")).discovery
+    config = load_data_collection_config(CONFIG_PATH)
     candidates = (
         candidate("starbucks-c", "Starbucks Ankara", "cafe", 300),
         candidate("starbucks-a", "Starbucks Eryaman", "cafe", 500),
@@ -38,7 +48,9 @@ def test_hard_filters_keep_all_same_brand_branches() -> None:
         candidate("small", "Small Cafe", "cafe", 40),
     )
 
-    result = apply_hard_filters(candidates, config=config)
+    result = apply_hard_filters(
+        candidates, config=config.discovery, region=config.region
+    )
 
     # All three same-brand branches are kept; only status/review-count reject.
     assert [item.place_id for item in result.candidates] == [
@@ -48,10 +60,51 @@ def test_hard_filters_keep_all_same_brand_branches() -> None:
     ]
     assert result.rejected_status == 1
     assert result.rejected_review_count == 1
+    assert result.rejected_outside_radius == 0
 
 
-def test_freshness_can_demote_a_stale_high_review_count_candidate() -> None:
-    config = load_data_collection_config(Path("config/data_collection.yaml")).discovery
+def test_hard_filters_reject_candidates_outside_the_region_radius() -> None:
+    config = load_data_collection_config(CONFIG_PATH)
+    # A grid cell near the region boundary can return a place slightly beyond
+    # radius_meters (the circumscribed-circle overshoot); this must be caught
+    # here so radius_meters keeps a precise meaning.
+    far_away = candidate(
+        "far",
+        "Far Cafe",
+        "cafe",
+        500,
+        latitude=REGION_CENTER_LATITUDE + 1.0,
+        longitude=REGION_CENTER_LONGITUDE,
+    )
+    nearby = candidate("near", "Near Cafe", "cafe", 500)
+
+    result = apply_hard_filters(
+        (far_away, nearby), config=config.discovery, region=config.region
+    )
+
+    assert [item.place_id for item in result.candidates] == ["near"]
+    assert result.rejected_outside_radius == 1
+
+
+def test_hard_filters_reject_irrelevant_primary_types() -> None:
+    # Nearby Search's includedTypes matches any of a place's type tags, not
+    # just its primaryType, so a hair salon or supermarket that also carries
+    # a secondary food-adjacent tag can slip into results. These are
+    # rejected locally by primaryType so freshness is never wasted on them.
+    config = load_data_collection_config(CONFIG_PATH)
+    irrelevant = candidate("salon", "Kuaför Güzellik", "hair_salon", 500)
+    relevant = candidate("cafe-a", "Real Cafe", "cafe", 500)
+
+    result = apply_hard_filters(
+        (irrelevant, relevant), config=config.discovery, region=config.region
+    )
+
+    assert [item.place_id for item in result.candidates] == ["cafe-a"]
+    assert result.rejected_irrelevant_primary_type == 1
+
+
+def test_accept_all_candidates_includes_everyone_regardless_of_score() -> None:
+    config = load_data_collection_config(CONFIG_PATH).discovery
     today = date(2026, 7, 18)
     fresh = datetime(2026, 7, 17, tzinfo=UTC)
     stale = datetime.combine(
@@ -61,27 +114,8 @@ def test_freshness_can_demote_a_stale_high_review_count_candidate() -> None:
     )
     raw = (
         candidate("popular-stale", "Popular Stale Place", "cafe", 1000),
-        candidate("solid-fresh", "Solid Fresh Place", "cafe", 500),
-        candidate("modest-fresh", "Modest Fresh Place", "cafe", 400),
+        candidate("modest-fresh", "Modest Fresh Place", "cafe", 60),
     )
-
-    # Preliminary (freshness-unknown) ranking favors raw review count alone;
-    # this is what freshness_shortlist must NOT lock in as the final pool
-    # before a real freshness check happens (that was the bug).
-    preliminary = tuple(
-        score_candidate(item, newest_review_at=None, as_of_date=today, config=config)
-        for item in raw
-    )
-    preliminary_top_two = [
-        item.candidate.place_id
-        for item in sorted(preliminary, key=lambda i: (-i.score, i.candidate.place_id))
-    ][:2]
-    assert preliminary_top_two == ["popular-stale", "solid-fresh"]
-
-    # Once real freshness is known, the stale-but-popular candidate must be
-    # out-ranked by the fresher, lower-review-count spare -- which requires
-    # the spare (modest-fresh) to still be in the candidate pool at this
-    # point, i.e. the pool passed to selection must exceed target_count.
     scored = tuple(
         score_candidate(
             item,
@@ -92,80 +126,121 @@ def test_freshness_can_demote_a_stale_high_review_count_candidate() -> None:
         for item in raw
     )
 
-    selected = select_candidates(scored, existing=(), target_count=2)
+    added = accept_all_candidates(scored)
 
-    assert [item.candidate.place_id for item in selected] == [
-        "solid-fresh",
+    # No target_count to compete over: a popular-but-stale place and a modest
+    # fresh one are both added, nothing is discarded as "not selected".
+    assert {item.candidate.place_id for item in added} == {
+        "popular-stale",
         "modest-fresh",
-    ]
+    }
 
 
-def test_selection_ranks_by_freshness_score_and_place_id_tie_breaker() -> None:
-    base_config = load_data_collection_config(
-        Path("config/data_collection.yaml")
-    ).discovery
-    config = base_config.model_copy(update={"target_count": 4})
+def catalog_entry(
+    place_id: str,
+    *,
+    tracked: bool = True,
+    user_ratings_total: int | None = None,
+) -> VenueCatalogEntry:
+    return VenueCatalogEntry(
+        slug=place_id,
+        display_name=place_id,
+        place_id=place_id,
+        category="cafe",
+        brand_key=place_id,
+        tracked=tracked,
+        user_ratings_total=user_ratings_total,
+    )
+
+
+def test_rank_tracked_venues_marks_top_limit_tracked_and_rest_untracked() -> None:
+    entries = (
+        catalog_entry("a"),
+        catalog_entry("b"),
+        catalog_entry("c"),
+        catalog_entry("d", tracked=True, user_ratings_total=150),
+    )
+    # "d" isn't in this round's scan (e.g. outside this round's grid sweep)
+    # but keeps its last-known count of 150 as a ranking fallback.
+    current_review_counts = {"a": 300, "b": 200, "c": 100}
+
+    ranked = rank_tracked_venues(
+        entries, current_review_counts=current_review_counts, limit=2
+    )
+
+    by_id = {item.place_id: item for item in ranked}
+    assert by_id["a"].tracked is True
+    assert by_id["b"].tracked is True
+    assert by_id["d"].tracked is False  # outranked despite being tracked before
+    assert by_id["c"].tracked is False
+    assert by_id["d"].user_ratings_total == 150
+    # Original list order is preserved, not re-sorted by rank.
+    assert [item.place_id for item in ranked] == ["a", "b", "c", "d"]
+
+
+def test_rank_tracked_venues_leaves_entries_with_no_known_count_untouched() -> None:
+    entries = (
+        catalog_entry("known-a", tracked=False),
+        catalog_entry("known-b", tracked=False),
+        catalog_entry("never-scanned", tracked=True),
+    )
+    # "never-scanned" has no count this round and never had one before --
+    # there's nothing to rank it by, so ranking must leave its existing
+    # tracked flag alone rather than silently untracking it for lack of data.
+    current_review_counts = {"known-a": 900, "known-b": 800}
+
+    ranked = rank_tracked_venues(
+        entries, current_review_counts=current_review_counts, limit=1
+    )
+
+    by_id = {item.place_id: item for item in ranked}
+    assert by_id["known-a"].tracked is True
+    assert by_id["known-b"].tracked is False
+    assert by_id["never-scanned"].tracked is True
+    assert by_id["never-scanned"].user_ratings_total is None
+
+
+def test_rank_tracked_venues_demotes_incumbent_when_a_rival_grows() -> None:
+    entries = (
+        catalog_entry("incumbent", tracked=True, user_ratings_total=120),
+        catalog_entry("challenger", tracked=False, user_ratings_total=90),
+    )
+    # This round's scan shows the challenger overtook the incumbent's review
+    # count -- tracking must follow the data every cycle, not stay pinned to
+    # whoever was tracked last time.
+    current_review_counts = {"incumbent": 130, "challenger": 400}
+
+    ranked = rank_tracked_venues(
+        entries, current_review_counts=current_review_counts, limit=1
+    )
+
+    by_id = {item.place_id: item for item in ranked}
+    assert by_id["challenger"].tracked is True
+    assert by_id["challenger"].user_ratings_total == 400
+    assert by_id["incumbent"].tracked is False
+    assert by_id["incumbent"].user_ratings_total == 130
+
+
+def test_accept_all_candidates_orders_by_score_then_place_id() -> None:
+    config = load_data_collection_config(CONFIG_PATH).discovery
     today = date(2026, 7, 18)
     fresh = datetime(2026, 7, 17, tzinfo=UTC)
-    stale = datetime.combine(
-        today - timedelta(days=config.stale_after_days),
-        datetime.min.time(),
-        tzinfo=UTC,
-    )
     raw = (
         candidate("cafe-b", "Cafe B", "cafe", 1000),
         candidate("cafe-a", "Cafe A", "cafe", 1000),
         candidate("rest-a", "Rest A", "restaurant", 300),
-        candidate("rest-b", "Rest B", "restaurant", 250),
-        candidate("rest-stale", "Rest Stale", "restaurant", 5000),
     )
     scored = tuple(
-        score_candidate(
-            item,
-            newest_review_at=stale if item.place_id == "rest-stale" else fresh,
-            as_of_date=today,
-            config=config,
-        )
+        score_candidate(item, newest_review_at=fresh, as_of_date=today, config=config)
         for item in raw
     )
 
-    selected = select_candidates(scored, existing=(), target_count=4)
+    added = accept_all_candidates(scored)
 
-    # rest-stale still outranks everything despite the freshness penalty
-    # (huge review count); cafe-a/cafe-b tie on score and split on place_id;
-    # rest-b (lowest review count) misses the top-4 cut.
-    assert [item.candidate.place_id for item in selected] == [
-        "rest-stale",
+    # cafe-a/cafe-b tie on score (identical review count) and split on
+    # place_id; rest-a's lower review count ranks it last.
+    assert [item.candidate.place_id for item in added] == [
         "cafe-a",
         "cafe-b",
         "rest-a",
     ]
-
-
-def test_expansion_preserves_existing_catalog_entry() -> None:
-    base_config = load_data_collection_config(
-        Path("config/data_collection.yaml")
-    ).discovery
-    config = base_config.model_copy(update={"target_count": 2})
-    existing = (
-        VenueCatalogEntry(
-            slug="existing-cafe",
-            display_name="Existing Cafe",
-            place_id="existing",
-            category="cafe",
-            brand_key="existing-cafe",
-        ),
-    )
-    item = candidate("rest-a", "Rest A", "restaurant", 500)
-    scored = (
-        score_candidate(
-            item,
-            newest_review_at=datetime(2026, 7, 17, tzinfo=UTC),
-            as_of_date=date(2026, 7, 18),
-            config=config,
-        ),
-    )
-
-    selected = select_candidates(scored, existing=existing, target_count=2)
-
-    assert [item.candidate.place_id for item in selected] == ["rest-a"]

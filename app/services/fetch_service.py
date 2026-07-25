@@ -58,10 +58,11 @@ def build_fetch_plan(
     provider_name: str,
     max_retries: int,
     seed_payloads_by_place_id: dict[str, tuple[RawPlacePayload, ...]] | None = None,
+    anchor_date: date | None = None,
 ) -> dict[str, Any]:
     """Describe what a fetch run would do without calling the provider."""
     period_start = period_start_for(
-        snapshot_date, cadence=cadence, week_start=week_start
+        snapshot_date, cadence=cadence, week_start=week_start, anchor_date=anchor_date
     )
     seed_payloads_by_place_id = seed_payloads_by_place_id or {}
     venue_rows = {
@@ -153,6 +154,7 @@ class FetchService:
         venue_slugs: tuple[str, ...] | None = None,
         venue_slug: str | None = None,
         seed_payloads_by_place_id: dict[str, tuple[RawPlacePayload, ...]] | None = None,
+        anchor_date: date | None = None,
     ) -> FetchSummary:
         region = session.scalar(select(Region).where(Region.slug == region_slug))
         if region is None:
@@ -161,10 +163,12 @@ class FetchService:
             snapshot_date,
             cadence=cadence,
             week_start=week_start,
+            anchor_date=anchor_date,
         )
         venue_query = select(Venue.id, Venue.slug).where(
             Venue.region_id == region.id,
             Venue.is_active.is_(True),
+            Venue.is_tracked.is_(True),
         )
         if venue_slugs is not None:
             venue_query = venue_query.where(Venue.slug.in_(venue_slugs))

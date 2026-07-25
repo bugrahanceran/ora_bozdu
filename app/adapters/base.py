@@ -70,49 +70,32 @@ class DiscoveryCandidate:
     business_status: str | None
     user_ratings_total: int
     primary_type: str | None
+    latitude: float
+    longitude: float
 
 
 @dataclass(frozen=True, slots=True)
-class DiscoveryPage:
+class NearbySearchCellResult:
     candidates: tuple[DiscoveryCandidate, ...]
-    next_page_token: str | None
     fetched_at: datetime
     raw_payload: dict[str, Any]
+    hit_result_cap: bool
 
 
-class PlaceDiscoveryProvider(Protocol):
+class NearbySearchProvider(Protocol):
     provider_name: str
 
-    async def search(
+    async def search_cell(
         self,
         *,
-        category: str,
-        text_query: str,
-        included_type: str | None,
         latitude: float,
         longitude: float,
         radius_meters: float,
-        page_size: int,
-    ) -> tuple[DiscoveryCandidate, ...]: ...
-
-    async def aclose(self) -> None: ...
-
-
-class PagedPlaceDiscoveryProvider(Protocol):
-    provider_name: str
-
-    async def search_page(
-        self,
-        *,
-        category: str,
-        text_query: str,
-        included_type: str | None,
-        latitude: float,
-        longitude: float,
-        radius_meters: float,
-        page_size: int,
-        page_token: str | None,
-    ) -> DiscoveryPage: ...
+        included_types: tuple[str, ...],
+        excluded_types: tuple[str, ...],
+        rank_preference: str,
+        max_result_count: int,
+    ) -> NearbySearchCellResult: ...
 
     async def aclose(self) -> None: ...
 

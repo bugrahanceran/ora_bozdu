@@ -1,16 +1,13 @@
 import math
 import re
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime
 
 from app.adapters.base import DiscoveryCandidate
 from app.catalog import VenueCatalogEntry
-from app.data_collection_config import DiscoveryConfig
-
-
-class DiscoverySelectionError(RuntimeError):
-    pass
+from app.data_collection_config import DiscoveryConfig, RegionConfig
+from app.discovery.geo import distance_meters
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,6 +24,8 @@ class FilterResult:
     candidates: tuple[DiscoveryCandidate, ...]
     rejected_status: int
     rejected_review_count: int
+    rejected_outside_radius: int
+    rejected_irrelevant_primary_type: int
 
 
 def _normalized_words(value: str) -> list[str]:
@@ -73,16 +72,33 @@ def apply_hard_filters(
     candidates: tuple[DiscoveryCandidate, ...],
     *,
     config: DiscoveryConfig,
+    region: RegionConfig,
 ) -> FilterResult:
     rejected_status = 0
     rejected_review_count = 0
+    rejected_outside_radius = 0
+    rejected_irrelevant_primary_type = 0
     accepted: list[DiscoveryCandidate] = []
     for candidate in deduplicate_candidates(candidates):
         if candidate.business_status != "OPERATIONAL":
             rejected_status += 1
             continue
+        if candidate.primary_type in config.excluded_primary_types:
+            rejected_irrelevant_primary_type += 1
+            continue
         if candidate.user_ratings_total < config.min_user_ratings_total:
             rejected_review_count += 1
+            continue
+        if (
+            distance_meters(
+                origin_latitude=region.center.latitude,
+                origin_longitude=region.center.longitude,
+                destination_latitude=candidate.latitude,
+                destination_longitude=candidate.longitude,
+            )
+            > config.radius_meters
+        ):
+            rejected_outside_radius += 1
             continue
         accepted.append(candidate)
 
@@ -90,6 +106,8 @@ def apply_hard_filters(
         candidates=tuple(sorted(accepted, key=lambda item: item.place_id)),
         rejected_status=rejected_status,
         rejected_review_count=rejected_review_count,
+        rejected_outside_radius=rejected_outside_radius,
+        rejected_irrelevant_primary_type=rejected_irrelevant_primary_type,
     )
 
 
@@ -129,17 +147,56 @@ def score_candidate(
     )
 
 
-def select_candidates(
+def accept_all_candidates(
     scored: tuple[ScoredCandidate, ...],
-    *,
-    existing: tuple[VenueCatalogEntry, ...],
-    target_count: int,
 ) -> tuple[ScoredCandidate, ...]:
-    needed = max(0, target_count - len(existing))
-    if needed == 0:
-        return ()
+    """Every scored candidate, ordered for a readable report -- no selection cutoff."""
+    return tuple(
+        sorted(scored, key=lambda item: (-item.score, item.candidate.place_id))
+    )
 
-    ranked = sorted(scored, key=lambda item: (-item.score, item.candidate.place_id))
-    if len(ranked) < needed:
-        raise DiscoverySelectionError("Not enough candidates to reach target_count")
-    return tuple(ranked[:needed])
+
+def rank_tracked_venues(
+    entries: tuple[VenueCatalogEntry, ...],
+    *,
+    current_review_counts: dict[str, int],
+    limit: int,
+) -> tuple[VenueCatalogEntry, ...]:
+    """Re-rank the catalog by review count and mark the top `limit` as tracked.
+
+    Every entry's `user_ratings_total` is refreshed from this round's scan
+    when available, else it keeps its last known value. Entries with a known
+    count (this round or a previous one) compete for the top `limit` tracked
+    slots purely by that count -- no protection for newly-discovered venues,
+    per an explicit product decision (Google Places has no opening-date
+    field, so there's no reliable "how new is this place" signal to protect
+    on anyway). Entries with no count at all (never scanned, never fetched)
+    keep whatever `tracked` state they already had -- there's no data to
+    rank them by, so they're neither promoted nor demoted. List order is
+    preserved; only `tracked` and `user_ratings_total` are updated.
+    """
+    updated_counts = {
+        entry.place_id: current_review_counts.get(
+            entry.place_id, entry.user_ratings_total
+        )
+        for entry in entries
+    }
+    ranked = sorted(
+        (
+            (place_id, count)
+            for place_id, count in updated_counts.items()
+            if count is not None
+        ),
+        key=lambda item: (-item[1], item[0]),
+    )
+    tracked_place_ids = {place_id for place_id, _ in ranked[:limit]}
+
+    result: list[VenueCatalogEntry] = []
+    for entry in entries:
+        count = updated_counts[entry.place_id]
+        if count is None:
+            tracked = entry.tracked
+        else:
+            tracked = entry.place_id in tracked_place_ids
+        result.append(replace(entry, tracked=tracked, user_ratings_total=count))
+    return tuple(result)

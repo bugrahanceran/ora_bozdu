@@ -101,6 +101,7 @@ class PlacesLegacyAdapter:
             payload.review_sort: payload
             for payload in existing_payloads
             if payload.review_sort in self._review_sorts
+            and (payload.body.get("result") or {}).get("name")
         }
         missing_sorts = tuple(
             review_sort

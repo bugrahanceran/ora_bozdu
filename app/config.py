@@ -14,8 +14,8 @@ class Settings(BaseSettings):
         default=None,
         validation_alias="GOOGLE_MAPS_API_KEY",
     )
-    venue_catalog_path: Path = Path("config/catalog.yaml")
-    data_collection_config_path: Path = Path("config/data_collection.yaml")
+    venue_catalog_path: Path = Path("config/catalog.eryaman.yaml")
+    data_collection_config_path: Path = Path("config/data_collection.eryaman.yaml")
     scoring_config_path: Path = Path("config/scoring.v5.toml")
     http_timeout_seconds: float = 15.0
     http_max_retries: int = 2

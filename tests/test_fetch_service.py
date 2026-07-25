@@ -96,6 +96,22 @@ def seed_second_venue(session: Session) -> Venue:
     return venue
 
 
+def seed_untracked_venue(session: Session) -> Venue:
+    region = session.scalar(select(Region).where(Region.slug == "eryaman"))
+    assert region is not None
+    venue = Venue(
+        region_id=region.id,
+        slug="untracked-cafe",
+        display_name="Untracked Cafe",
+        provider="places_api",
+        provider_place_id="place-3",
+        is_tracked=False,
+    )
+    session.add(venue)
+    session.commit()
+    return venue
+
+
 @pytest.mark.asyncio
 async def test_weekly_idempotency_and_name_change_warning(session: Session) -> None:
     seed_venue(session)
@@ -233,6 +249,26 @@ async def test_fetch_can_be_limited_to_one_venue(session: Session) -> None:
         cadence="weekly",
         week_start="monday",
         venue_slug="fixture-cafe",
+    )
+
+    assert summary.requested == 1
+    assert summary.succeeded == 1
+    assert provider.fetch_count == 1
+    assert session.scalar(select(func.count(PlaceSnapshot.id))) == 1
+
+
+@pytest.mark.asyncio
+async def test_fetch_skips_untracked_venues(session: Session) -> None:
+    seed_venue(session)
+    seed_untracked_venue(session)
+    provider = FakeProvider(make_bundle("Fixture Cafe"))
+
+    summary = await FetchService(provider).run(
+        session,
+        region_slug="eryaman",
+        snapshot_date=date(2026, 7, 18),
+        cadence="weekly",
+        week_start="monday",
     )
 
     assert summary.requested == 1
