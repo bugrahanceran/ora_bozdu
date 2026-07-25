@@ -61,12 +61,14 @@ değiştirildi: hedef "en iyi N'i seç"ten "hard filtreyi geçen neredeyse
 herkesi al"a döndüğü için Text Search (New)'ün sorgu başına ~60 sonuç tavanı
 yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
 
-- **İki bölge:** Eryaman (`config/data_collection.eryaman.yaml`) ve Batıkent
-  (`config/data_collection.batikent.yaml`), her biri kendi `Region` DB kaydı,
-  kendi merkez koordinatı (~7.8km ayrık, çakışmayan ~3km yarıçaplı çemberler —
-  kullanıcı kararı, tek birleşik 15km alan yerine) ve kendi search
-  cache/catalog/report dosyalarıyla. Tek bir `DataCollectionConfig` hâlâ tek
-  bölgeyi temsil eder (`region: RegionConfig` singular alan);
+- **İki bölge:** Eryaman (`config/data_collection.eryaman.yaml`) ve Armada
+  (`config/data_collection.armada.yaml`, Söğütözü — 2026-07-25'te Batıkent'in
+  yerine geçti, bkz. aşağıdaki "Bölge değişikliği" notu), her biri kendi
+  `Region` DB kaydı, kendi merkez koordinatı (~16,6km ayrık, çakışmayan ~3km
+  yarıçaplı çemberler — kullanıcı kararı, tek birleşik 15km alan yerine) ve
+  kendi search cache/catalog/report dosyalarıyla. Tek bir
+  `DataCollectionConfig` hâlâ tek bölgeyi temsil eder
+  (`region: RegionConfig` singular alan);
   `app.discover`/`app.fetch` artık `--data-collection-config` bayrağıyla
   hangi dosyanın kullanılacağını seçer (`--catalog` deseniyle aynı, adı
   `--config` değil çünkü `app/scoring/recompute.py` o adı zaten "scoring
@@ -87,8 +89,9 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
   içmeyle alakalı tüm types"). Bu liste `chunk_types` ile ≤50'lik gruplara
   bölünür (~166 tip için 4 grup); gerçek "arama birimi" coğrafi hücre × tip
   grubu kombinasyonudur (`GridCellState`, `cell_id` örn. `"r2c3.batch0"`) —
-  bu yüzden Eryaman/Batıkent'in taraması tam olarak ~69×4=276 arama birimi
-  yapar — bu artık kesin bir sayıdır (bkz. aşağıdaki "tavana çarpma" notu:
+  bu yüzden Eryaman/Armada'nın taraması tam olarak ~69×4=276 arama birimi
+  yapar (Armada için 2026-07-25'te zero-cost dry-run'la da doğrulandı: 276) —
+  bu artık kesin bir sayıdır (bkz. aşağıdaki "tavana çarpma" notu:
   bölme kaldırıldığı için sabit kalır, büyümez).
 - **Tavana çarpma: bölme yok, sabit istek sayısı (2026-07-24'te revize edildi).**
   İlk tasarımda bir birim tam `max_result_count` (20) döndürürse (kırpılma
@@ -156,8 +159,8 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
   `catalog.*.yaml` glob'unu tarayıp diğer tüm bölgelerin `place_id`'lerini
   toplar; bu küme hem freshness kontrolünden (boşuna ücretli çağrı
   yapılmasın diye) hem finalize'dan hariç tutulur. DB constraint'i son çare
-  güvenlik ağıdır (Eryaman/Batıkent çemberleri çakışmadığı için bu normalde
-  tetiklenmez).
+  güvenlik ağıdır (Eryaman/Armada çemberleri ~16,6km ayrık ve çakışmadığı
+  için bu normalde tetiklenmez).
 - Discovery field mask yorumsuz ve minimaldir: place ID, display name,
   business status, user rating count, type ve konum
   (`app/adapters/places_nearby.py`, `NEARBY_SEARCH_FIELD_MASK`).
@@ -170,13 +173,17 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
   `finalize` ağ çağrısı yapmaz.
 - Discovery seçimi otomatiktir. Proje sahibi raporu denetler fakat normal
   akışta manuel venue seçimi yapılmaz.
-- 2026-07-19 official global pricing kontrolünde Text Search (New)'te
-  `userRatingCount` alanının Enterprise SKU'yu tetiklediği doğrulanmıştı
-  (aylık ücretsiz kullanım 1.000 event, sonraki ilk dilim 35 USD/1.000
-  event). Nearby Search (New) aynı field mask alanlarını (`userRatingCount`,
-  `businessStatus`) kullandığından muhtemelen aynı kademeye girer, ama bu
-  **henüz ayrıca doğrulanmadı** — ilk gerçek Batıkent/Eryaman-yeniden-tarama
-  koşusu onaylanmadan önce Google Cloud Console'dan tekrar kontrol edilmeli.
+- **Nearby Search SKU doğrulandı (2026-07-25):** Google'ın resmi
+  dokümantasyonundan (`developers.google.com/maps/documentation/places/
+  web-service/nearby-search`) doğrudan kontrol edildi: field mask'imizdeki
+  `businessStatus` ve `userRatingCount` alanları Nearby Search'te
+  **Enterprise SKU**'yu tetikliyor (`id`/`displayName`/`primaryType`/
+  `location` yalnızca Pro olurdu, ama Google en yüksek kademeli alana göre
+  fiyatlandırıyor — toplamıyor). Enterprise: aylık **1.000 istek ücretsiz**,
+  sonrası **$35,00/1.000 istek**. Eryaman'ın 456 isteklik taraması tek
+  başına, Armada'nın beklenen ~276 isteklik taraması da birlikte
+  (456+276=732) aylık ücretsiz kotanın altında kalıyor — ayda bir kez her
+  iki bölgeyi de `--reset` ile baştan taramak bile $0 maliyetli.
 
 ### Nereden buraya: Text Search tabanlı toplu keşif neden kaldırıldı
 
@@ -208,6 +215,32 @@ Kaldırılan kod: `SearchQueryState`/`SearchPageRecord` (sayfalama tabanlı cach
 `DiscoveryQueryConfig`, `select_candidates`/`DiscoverySelectionError`,
 kullanılmayan (yalnızca kendi testinden çağrılan) `DiscoveryService` sınıfı ve
 `PlaceDiscoveryProvider`/`PagedPlaceDiscoveryProvider`/`DiscoveryPage`.
+
+### Bölge değişikliği: Batıkent → Armada (2026-07-25)
+
+İkinci bölge olarak planlanan Batıkent'te hiçbir gerçek API çağrısı hiç
+yapılmamıştı (katalog hep boştu) — kullanıcı kararıyla tamamen iptal edildi,
+yerine **Armada** (Söğütözü, `39.911640, 32.809945`) geldi. Eski
+`config/catalog.batikent.yaml`/`config/data_collection.batikent.yaml`
+silindi (git'ten de kaldırıldı, geri dönüş ihtimaline karşı dursun
+denmedi); yerine aynı şablondan `config/catalog.armada.yaml`/
+`config/data_collection.armada.yaml` üretildi — yalnızca `region`
+(slug/name/center) ve `brand_stopwords` (`ankara`, `armada`, `söğütözü`,
+`sogutozu`) bölgeye özel, geri kalan her şey (166 tip, filtreler,
+`tracked_venue_limit`, cadence) Eryaman'la birebir aynı.
+
+Kullanıcı "r=3km mantıklı mı?" diye sordu; WebSearch ile Söğütözü'nün
+gerçek bir yeme-içme yoğunluğu olan bir bölge olduğu (iş merkezi + sosyal
+yaşam kesişimi, çok sayıda kafe/restoran) doğrulandı, ardından zero-cost
+`search --max-requests 0 --reset` dry-run'ı çalıştırıldı: **276 hücre** —
+Eryaman'la birebir aynı (aynı `radius_meters=3000`/`cell_radius_meters=500`
+salt geometriden gelen bir sayı, konumdan bağımsız). Eryaman-Armada merkez
+mesafesi `app/discovery/geo.py`'nin kendi `distance_meters` fonksiyonuyla
+hesaplandı: **~16,6km** — 2×3km=6km çakışma eşiğinin çok üzerinde, bölgeler
+arası koruma mekanizmasının normalde hiç tetiklenmeyeceği teyit edildi.
+Henüz hiçbir gerçek Nearby Search/freshness API çağrısı yapılmadı; sıradaki
+adım onaylı dry-run/smoke/tam koşu aşamalarıdır (Eryaman'da izlenen akışın
+aynısı).
 
 ## Periyodik fetch — Places API Legacy
 
@@ -325,7 +358,7 @@ sonraki bir döngüde tekrar top-N'e girebilir.
   anchor_week_start).days // 7`) tek sayıysa bir hafta geri kayılır (çift
   haftalık periyodun başına iner). `FetchConfig.cadence_anchor_date`
   (`biweekly` iken zorunlu, validator ile kontrol edilir) config'te tutulur;
-  Eryaman/Batıkent için `2026-07-13` (bir Pazartesi, Faz 1'in ilk
+  Eryaman/Armada için `2026-07-13` (bir Pazartesi, Faz 1'in ilk
   period_start'ı — keyfi ama anlamlı bir referans).
   `FetchConfig.review_sorts` validator'ü de `{"newest", "most_relevant"}`
   yerine `{"newest"}` zorunlu kılacak şekilde daraltıldı.
@@ -333,6 +366,25 @@ sonraki bir döngüde tekrar top-N'e girebilir.
   da içerir) ayda bir, fetch iki haftada bir; proje sahibi doğal dille
   tetikler ("2 hafta oldu detail çağrını yap" gibi). Otomasyon fikri "Faz
   4'te netleştirilecek" bölümünde artık bu somut mekanizmaya bağlı.
+- **Aylık discover `--reset` gerektirir (2026-07-25 netleşti):**
+  `app.discover search`'ün cache'i `search_completed=true` olduktan sonra
+  tekrar çağrılması **sıfır yeni istek** yapar (yalnızca durumu yazdırır) —
+  keşfedilen hücreler asla otomatik yeniden taranmaz. Bu, iki gerçek sonuç
+  doğurur: (1) yeni açılan bir mekan `--reset` olmadan asla bulunamaz; (2)
+  `rank_tracked_venues`'ın kullandığı `current_review_counts`
+  (`cache.domain_candidates()`'tan gelir) de dondurulur — `app.fetch`'in
+  biweekly topladığı güncel review sayıları asla `finalize`'ın sıralamasına
+  girmez (`_run_finalize` hiçbir zaman DB'ye bağlanmaz, yalnızca cache/
+  katalog dosyalarını okur). Yani `--reset` olmadan hem yeni mekan keşfi
+  hem de dinamik yeniden sıralama fiilen çalışmaz. Karar: aylık discover
+  akışına `search --reset` **standart, zorunlu bir adım** olarak eklenir —
+  yukarıdaki SKU doğrulamasına göre bu maliyetsiz (aylık 732 istek < 1.000
+  ücretsiz kota). `--reset` sonrası `existing_place_ids` filtresi zaten yeni
+  aday havuzunu (freshness için) mevcut kataloğa daraltıyor, ama
+  `all_scanned_candidates` (dedup edilmemiş `domain_candidates()`) hem yeni
+  hem zaten-katalogtaki adayların güncel review sayısını taşıdığı için
+  ranking doğru şekilde tazeleniyor — kod bu senaryo için zaten doğru
+  tasarlanmıştı, ek bir düzeltme gerekmedi.
 
 ## Configuration ve secrets
 
@@ -340,7 +392,7 @@ sonraki bir döngüde tekrar top-N'e girebilir.
   bulunmaz.
 - `.env` commit edilmez, `.env.example` sağlanır.
 - Her bölgenin venue kataloğu discovery tarafından kendi `config/catalog.<bölge>.yaml`
-  dosyasına yazılır (Eryaman, Batıkent). Yeni bir bölge eklemek elle bir config
+  dosyasına yazılır (Eryaman, Armada). Yeni bir bölge eklemek elle bir config
   + boş katalog dosyası oluşturmaktan ibarettir, code değişikliği gerektirmez.
 - Cadence, bölge yarıçapı, grid hücre boyutu, aranacak type listesi, filtre
   eşikleri ve freshness cezası hardcode edilmez; data-collection config'tedir.
@@ -356,7 +408,7 @@ sonraki bir döngüde tekrar top-N'e girebilir.
   alındı: discovery artık grid tabanlı Nearby Search ile hard filtreyi geçen
   herkesi alıyor (bkz. Discovery bölümü), sabit bir hedef sayı kavramı yok;
   Places Aggregate API değerlendirilip reddedildi. Ankara genelinde tüm
-  şehre yayılma (Eryaman+Batıkent ötesi) hâlâ açık bir gelecek adımı.
+  şehre yayılma (Eryaman+Armada ötesi) hâlâ açık bir gelecek adımı.
 - Kullanıcı talebiyle kataloğa venue ekleme akışı gelirse Autocomplete tabanlı
   canlı arama/tamamlama.
 - Katalog kurulumunda venue başına 1-2 Place Photo saklanması ve kartta
@@ -498,8 +550,8 @@ uv run ruff check .
 uv run ruff format --check .
 ```
 
-Batıkent için aynı komutlar `--data-collection-config config/data_collection.batikent.yaml
---catalog config/catalog.batikent.yaml` ile çalıştırılır.
+Armada için aynı komutlar `--data-collection-config config/data_collection.armada.yaml
+--catalog config/catalog.armada.yaml` ile çalıştırılır.
 
 Kontrollü ilk canlı deneme veya tek mekan retry işlemi için fetch komutuna
 `--venue <slug>` filtresi verilebilir. Bu filtre yalnızca seçilen aktif katalog

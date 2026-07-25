@@ -69,7 +69,7 @@ def test_load_catalog_defaults_tracked_true_for_older_files_without_it(
 
 def test_load_other_region_place_ids_unions_sibling_catalogs(tmp_path: Path) -> None:
     eryaman_path = tmp_path / "catalog.eryaman.yaml"
-    batikent_path = tmp_path / "catalog.batikent.yaml"
+    armada_path = tmp_path / "catalog.armada.yaml"
     write_catalog(
         eryaman_path,
         VenueCatalog(
@@ -87,17 +87,17 @@ def test_load_other_region_place_ids_unions_sibling_catalogs(tmp_path: Path) -> 
         ),
     )
     write_catalog(
-        batikent_path,
+        armada_path,
         VenueCatalog(
-            region_slug="batikent",
-            region_name="Batıkent",
+            region_slug="armada",
+            region_name="Armada",
             venues=(
                 VenueCatalogEntry(
-                    slug="batikent-cafe",
-                    display_name="Batıkent Cafe",
-                    place_id="batikent-place",
+                    slug="armada-cafe",
+                    display_name="Armada Cafe",
+                    place_id="armada-place",
                     category="cafe",
-                    brand_key="batikent-cafe",
+                    brand_key="armada-cafe",
                 ),
             ),
         ),
@@ -106,12 +106,10 @@ def test_load_other_region_place_ids_unions_sibling_catalogs(tmp_path: Path) -> 
     from_eryaman = load_other_region_place_ids(
         eryaman_path, current_region_slug="eryaman"
     )
-    from_batikent = load_other_region_place_ids(
-        batikent_path, current_region_slug="batikent"
-    )
+    from_armada = load_other_region_place_ids(armada_path, current_region_slug="armada")
 
-    assert from_eryaman == frozenset({"batikent-place"})
-    assert from_batikent == frozenset({"eryaman-place"})
+    assert from_eryaman == frozenset({"armada-place"})
+    assert from_armada == frozenset({"eryaman-place"})
 
 
 def test_catalog_is_source_of_truth_for_active_db_venues(session: Session) -> None:

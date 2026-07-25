@@ -172,7 +172,7 @@ bir "ne kadar yeni" sinyali zaten yok.
 
 Implementasyon: `0004_add_venue_is_tracked` migration'ı (`venues.is_tracked`,
 `default=true`); config'e `tracked_venue_limit`, `cadence_anchor_date`
-(Eryaman/Batıkent için `2026-07-13`, bir Pazartesi) eklendi,
+(her bölge için `2026-07-13`, bir Pazartesi) eklendi,
 `review_sorts` validator'ü `{"newest"}`'e daraltıldı; `app/cadence.py`'ye
 `anchor_date` parametreli biweekly period hesaplama eklendi;
 `app/discovery/selector.py`'ye saf `rank_tracked_venues` fonksiyonu
@@ -248,6 +248,69 @@ altına koşullu "Haritada gör ↗" linki, `app.css`'e `.map-link` stili.
 Dev server yeniden başlatılıp gerçek bir venue'da (`anzelha-eryaman`)
 canlı doğrulandı — link doğru `query_place_id` ile geliyor.
 
+**Aynı gün, devamı — veri güveni popup'ı + sticker redesign + cache-busting
+bugfix.** Kullanıcı `Veri güveni` pilinin yanına bir konum "sticker"'ı ve
+pile tıklayınca güvenin nasıl hesaplandığını açıklayan bir popup istedi.
+`ScoringEngine.compute`'daki confidence formülü (aktif sinyallerin
+reliability'lerinin ağırlıklı ortalaması, `stability` `insufficient_data`
+ise `early_phase_cap`'e kırpılır) kod üzerinden çıkarılıp `<dialog>`
+tabanlı bir popup'a (native `showModal`, `app.js`'e guard'lı bir blok)
+döküldü; tüm sayılar (`early_phase_cap`, `full_history_snapshots/days`,
+`stability.min_snapshots/coverage_days`) aktif `scoring.v5.toml`'dan
+dinamik geliyor. Gerçek venue'larda doğrulandı (ANZELHA ERYAMAN %32,
+hatayus %35 — ikisi de `insufficient_data` notunu doğru gösterdi).
+Ardından kullanıcı "tıklanmıyor" dedi; sunucu tarafı (template/JS/CSS)
+tekrar tekrar kontrol edilip hatasız bulundu — kök neden muhtemelen
+tarayıcının eski `app.js`'i önbelleklemesiydi, çünkü statik varlıklarda
+hiç cache-busting yoktu. Kalıcı düzeltme: `main.py`'de `app.css`+`app.js`
+içeriğinin hash'i `templates.env.globals["static_version"]`'a yazılıp
+`base.html`'de `?v=` query param'ı olarak eklendi — içerik değiştikçe URL
+değişiyor, tarayıcı asla eski dosyayı sunamıyor. Sticker de emoji-only'den
+emoji+"Haritada gör" yazılı, biraz büyükçe, hafif döndürülmüş sarı bir
+pil'e dönüştürüldü (`.map-sticker`). 3 test (2 yeni), 77 test toplam.
+
+**Aynı gün, devamı — Nearby Search SKU doğrulaması + aylık `--reset`
+kararı.** Kullanıcı Google Cloud Console'da fiyat/SKU kontrolünü istedi;
+gerçek Console erişimim olmadığı açıklanıp Google'ın resmi dokümantasyonu
+(`developers.google.com/.../nearby-search`) doğrudan kontrol edildi:
+field mask'imizdeki `businessStatus`+`userRatingCount` **Enterprise
+SKU**'yu tetikliyor (1.000/ay ücretsiz, sonrası $35/1.000). Bu kontrol
+sırasında kod okuması bir tasarım boşluğu ortaya çıkardı: `_run_finalize`
+hiçbir zaman DB'ye bağlanmıyor, yalnızca dondurulmuş search-cache/katalog
+dosyalarını okuyor — yani `search`'ün cache'i `search_completed=true`
+olduktan sonra (ki her zaman öyle kalıyor, otomatik sıfırlanmıyor) hem
+yeni mekan bulma hem de `rank_tracked_venues`'ın "güncel" review sayısına
+göre yeniden sıralaması fiilen çalışmıyor — sıralama hep ilk tarama
+anındaki (2026-07-24) sayılarda donuk kalıyor, `app.fetch`'in biweekly
+topladığı taze sayılar hiç görülmüyor. Kullanıcı kararı: **aylık discover
+akışı artık zorunlu olarak `search --reset` ile başlayacak** — SKU
+hesabına göre bu maliyetsiz (iki bölgenin tam taraması ~732 istek,
+1.000 ücretsiz kotanın altında). Kod değişikliği gerekmedi:
+`all_scanned_candidates` mekanizması (bu session'ın başında eklenmişti)
+zaten hem yeni hem zaten-katalogtaki adayların güncel review sayısını
+doğru taşıyacak şekilde tasarlanmıştı — yalnızca `--reset`'in gerçekten
+kullanılması gerekiyormuş, bu netleşti. README ve techContext.md
+güncellendi ("Bir kerelik discovery" başlığı yanıltıcıydı, "Discovery
+(aylık, `--reset` ile tekrarlanır)" oldu).
+
+**Aynı gün, devamı — ikinci bölge değişikliği: Batıkent → Armada.**
+Kullanıcı Batıkent'i iptal edip yerine **Armada** (Söğütözü,
+`39.911640, 32.809945`) koymak istedi, yine `r=3km`. Batıkent'te hiç
+gerçek API çağrısı yapılmamış (katalog boştu) olduğundan placeholder
+`config/*.batikent.yaml` dosyaları silindi (git'ten de kaldırıldı) ve
+aynı şablondan `config/*.armada.yaml` üretildi — yalnızca `region` ve
+`brand_stopwords` (`ankara`/`armada`/`söğütözü`/`sogutozu`) bölgeye özel.
+"r=3km mantıklı mı?" sorusuna: WebSearch ile Söğütözü'nün gerçek bir
+yeme-içme yoğunluğu (56+ kafe, iş merkezi + sosyal yaşam) olduğu
+doğrulandı; zero-cost `search --max-requests 0 --reset` dry-run'ı **276
+hücre** verdi (Eryaman'la birebir — salt geometri, konumdan bağımsız);
+Eryaman-Armada merkez mesafesi `distance_meters` ile **~16,6km**
+(çakışma yok). `test_fetch_cli.py`'deki batikent örneği armada'ya
+güncellendi; README + tüm memory-bank Batıkent→Armada geçişiyle
+tazelendi (2026-07-24 tarihli tarihsel kayıtlar, o gün Batıkent gerçekten
+plandaki bölge olduğu için olduğu gibi bırakıldı). Henüz hiçbir gerçek
+Armada API çağrısı yapılmadı — sıradaki adım onaylı smoke/tam koşu.
+
 ## Kesinleşen kararlar
 
 - Puanlama yaklaşımı: **A — normalize edilmiş ağırlıklı change score +
@@ -273,12 +336,13 @@ canlı doğrulandı — link doğru `query_place_id` ile geliyor.
 - Official API response'ları append-only ham snapshot olarak kalıcı saklanır.
 - Ham yazım için configuration/uyum kapısı olmayacaktır.
 - Discovery Places API (New) ile otomatik ve deterministik yapılır; kullanıcı
-  seçim raporunu denetler. **Güncel mekanizma (Faz 2, 2026-07-24):** Nearby
-  Search + grid tarama, iki bölge (Eryaman + Batıkent), hard filtreyi geçen
-  **herkesi** alan take-all semantiği — Text Search/tek-sorgu/`minimum_candidate_pool`/
-  `target_count` tamamen kaldırıldı; ayrıntı için `techContext.md`'nin
-  "Discovery — Places API (New) Nearby Search + grid" bölümüne bakılmalı, bu
-  maddeler artık yalnızca o karara giden tarihi bağlamdır.
+  seçim raporunu denetler. **Güncel mekanizma (Faz 2):** Nearby Search + grid
+  tarama, iki bölge (Eryaman + Armada; ikincisi 2026-07-25'te Batıkent'in
+  yerine geçti), hard filtreyi geçen **herkesi** alan take-all semantiği —
+  Text Search/tek-sorgu/`minimum_candidate_pool`/`target_count` tamamen
+  kaldırıldı; ayrıntı için `techContext.md`'nin "Discovery — Places API
+  (New) Nearby Search + grid" bölümüne bakılmalı, bu maddeler artık yalnızca
+  o karara giden tarihi bağlamdır.
 - Cafe/restoran dağılımı hiçbir zaman ayrı bir seçim hedefi olmadı; Faz 2'de
   kapsam daha da genişledi — yalnızca cafe/restoran değil, Google'ın tüm
   "Food and Drink" tip kümesi (~166 tip) taranıyor.
@@ -561,15 +625,22 @@ score version olarak kararlaştırılacaktır.
    seçimi + biweekly cadence implementasyonu, gerçek DB/retarget
    uygulaması (200 tracked / 232 not-tracked) **ve** ilk gerçek biweekly
    fetch (200/200 başarılı) tamamlandı. Bkz. yukarıdaki 2026-07-25
-   kayıtları.) Sırada, kullanıcı onayıyla: Batıkent'in kendi discovery
-   akışı (dry-run → search → freshness → finalize, kendi retarget'ıyla) —
-   Eryaman tarafında şu an başka bekleyen bir adım yok.
-3. Nearby Search'ün gerçek SKU/fiyat kademesini (Text Search'te
-   `userRatingCount`'un Enterprise'ı tetiklediği zaten doğrulanmıştı) Google
-   Cloud Console'dan doğrulamak — henüz yapılmadı, 456+410 gerçek istek
-   sonrası artık daha somut bir maliyet verisiyle kontrol edilebilir.
-4. Gerçek snapshotlarla UI/card davranışını ve early-phase confidence
-   sunumunu denetlemek.
+   kayıtları.) Sırada, kullanıcı onayıyla: **Armada** (Söğütözü) bölgesinin
+   kendi discovery akışı (dry-run tamam → onaylı search → freshness →
+   finalize, kendi retarget'ıyla). Batıkent iptal edildi, yerine Armada
+   geçti (bkz. aşağıdaki 2026-07-25 bölge-değişikliği kaydı); config/katalog
+   dosyaları hazır, zero-cost dry-run 276 hücre gösterdi. Eryaman tarafında
+   şu an başka bekleyen bir adım yok.
+3. (2026-07-25'te tamamlandı: Nearby Search'ün Enterprise SKU'ya girdiği
+   Google'ın resmi dokümantasyonundan doğrulandı; bkz. yukarıdaki kayıt.
+   Bu kontrol sırasında bulunan "aylık discover `--reset` gerektirir" gerçeği
+   README/techContext.md'ye işlendi.) Sırada: aylık discover'ı fiilen
+   `search --reset` ile çalıştırma alışkanlığını unutmamak — kod hazır,
+   yalnızca operasyonel bir hatırlatma.
+4. (2026-07-25'te büyük ölçüde ele alındı: gerçek venue'larda spot-check
+   yapıldı, kullanıcının "%32 mi %45 mi neye göre" sorusuna cevaben veri
+   güveni açıklama popup'ı eklendi.) Devam eden bir denetim değil, daha
+   fazla snapshot biriktikçe doğal olarak gözden geçirilecek.
 5. Faz 4: discover (aylık)/fetch (2 haftada bir) tetiklemesini scheduled bir
    pipeline'a (örn. Jenkins) bağlamak — yalnızca not düşüldü, tasarım
    yapılmadı (bkz. techContext.md "Faz 4'te netleştirilecek").

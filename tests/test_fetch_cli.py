@@ -21,13 +21,13 @@ def test_fetch_cli_accepts_a_per_region_data_collection_config() -> None:
     args = build_parser().parse_args(
         [
             "--region",
-            "batikent",
+            "armada",
             "--data-collection-config",
-            "config/data_collection.batikent.yaml",
+            "config/data_collection.armada.yaml",
         ]
     )
 
-    assert args.data_collection_config == Path("config/data_collection.batikent.yaml")
+    assert args.data_collection_config == Path("config/data_collection.armada.yaml")
 
 
 def test_fetch_logging_suppresses_http_request_urls() -> None:

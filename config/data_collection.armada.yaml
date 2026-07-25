@@ -1,11 +1,11 @@
 version: collection.v1
 
 region:
-  slug: batikent
-  name: Batıkent
+  slug: armada
+  name: Armada
   center:
-    latitude: 39.968102
-    longitude: 32.726780
+    latitude: 39.911640
+    longitude: 32.809945
 
 discovery:
   radius_meters: 3000
@@ -189,7 +189,8 @@ discovery:
   # (yalnızca primaryType'a değil), bu yüzden yemekle ilgisiz mekanlar da
   # (kuaför, market, klinik vb.) ikincil bir food-tipi etiketi yüzünden
   # sonuçlara sızabiliyor. Bunlar primaryType'a göre local olarak elenir --
-  # Eryaman koşusunda (2026-07-24) bulunan somut örneklere dayanır.
+  # Eryaman koşusunda (2026-07-24) bulunan somut örneklere dayanır; Armada
+  # gerçek koşusundan sonra bölgeye özgü ek örnekler çıkarsa güncellenmeli.
   excluded_primary_types:
     - medical_clinic
     - barber_shop
@@ -201,15 +202,15 @@ discovery:
     - video_arcade
   brand_stopwords:
     - ankara
-    - batikent
-    - batıkent
-    - yenimahalle
+    - armada
+    - söğütözü
+    - sogutozu
   brand_aliases: {}
   stale_after_days: 183
   stale_penalty: 1.5
   review_count_log_weight: 1.0
-  search_cache_path: data/discovery-search-cache.batikent.json
-  report_path: reports/discovery-latest.batikent.json
+  search_cache_path: data/discovery-search-cache.armada.json
+  report_path: reports/discovery-latest.armada.json
 
 fetch:
   cadence: biweekly

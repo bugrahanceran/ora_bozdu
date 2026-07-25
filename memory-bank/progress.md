@@ -400,7 +400,7 @@ güvenilir bir "ne kadar yeni" sinyali zaten yok.
 
 Uygulama: yeni migration `0004_add_venue_is_tracked` (`venues.is_tracked`,
 `default=true`, `0003`'ün devamı); `DiscoveryConfig.tracked_venue_limit`
-(`200`), `FetchConfig.cadence_anchor_date` (Eryaman/Batıkent için
+(`200`), `FetchConfig.cadence_anchor_date` (her bölge için
 `2026-07-13`, bir Pazartesi) eklendi, `FetchConfig.review_sorts` validator'ü
 `{"newest"}`'e daraltıldı; `app/cadence.py`'nin `period_start_for`'ına
 `anchor_date` parametreli biweekly hesaplama eklendi (hafta farkının
@@ -461,6 +461,57 @@ warning**. `sync_catalog` DB'yi kataloğa senkronladı: DB'de
 venue DB'de zararsız kalıntı olarak duruyor). 200 yeni `biweekly`
 snapshot'ı tek `newest` payload'ıyla yazıldı. Örnek gerçek veri: "ANZELHA
 ERYAMAN" 4.4★/14164 review, "Köfteci Yusuf" 3.7★/9582 review — finalize
-raporundaki sayılarla neredeyse birebir. Sıradaki adım: Batıkent'in kendi
-discovery akışı (dry-run → search → freshness → finalize → kendi
-retarget'ı), kullanıcı onayı bekliyor.
+raporundaki sayılarla neredeyse birebir. Sıradaki adım için bkz. aşağıdaki
+bölge-değişikliği kaydı (ikinci bölge Batıkent yerine artık Armada).
+
+## 2026-07-25 — Webapp: konum linki, veri güveni popup'ı, Nearby Search SKU doğrulaması
+
+Kullanıcı isteğiyle venue kartına `provider_place_id`'den üretilen bir
+Google Haritalar linki ve "Veri güveni" piline tıklanınca açılan, aktif
+`scoring.v5.toml`'dan dinamik değerler kullanan bir açıklama popup'ı
+eklendi. Statik varlıklara (`app.css`/`app.js`) içerik-hash'li bir cache
+buster eklendi — bir tarayıcının eski JS'i önbelleklemesi yüzünden
+"tıklanmıyor" raporu alındıktan sonra kalıcı çözüm olarak.
+
+Ayrıca kullanıcının "Google Cloud Console'dan fiyatı kontrol edelim"
+isteği üzerine Nearby Search'ün gerçek SKU'su Google'ın resmi
+dokümantasyonundan doğrulandı: field mask'imiz Enterprise SKU'yu
+tetikliyor ($35/1.000 istek, 1.000/ay ücretsiz). Bu araştırma sırasında
+kod okuması gerçek bir tasarım boşluğu ortaya çıkardı: `finalize` DB'ye
+hiç bağlanmadığı ve `search`'ün cache'i tamamlandıktan sonra kendiliğinden
+yenilenmediği için, `--reset` kullanılmadan çalıştırılan bir aylık
+discover ne yeni mekan bulabiliyor ne de takip sıralamasını gerçekten
+güncelliyor (sıralama hep ilk tarama anındaki donuk sayılarla kalıyor).
+Kullanıcı kararı: aylık discover akışı artık zorunlu olarak
+`search --reset` ile başlayacak — SKU hesabına göre bu maliyetsiz (iki
+bölgenin tam taraması ~732 istek, 1.000 ücretsiz kotanın altında). Kod
+değişikliği gerekmedi; `all_scanned_candidates` mekanizması bu senaryoyu
+zaten doğru destekleyecek şekilde tasarlanmıştı. README ("Bir kerelik
+discovery" → "Discovery (aylık, `--reset` ile tekrarlanır)") ve
+techContext.md güncellendi.
+
+## 2026-07-25 — İkinci bölge değişikliği: Batıkent → Armada
+
+Kullanıcı ikinci bölge olarak Batıkent'i iptal edip yerine **Armada**
+(Söğütözü, `39.911640, 32.809945`) koydu, yine `r=3km`. Batıkent'te hiç
+gerçek API çağrısı yapılmamıştı (katalog boştu), bu yüzden placeholder
+`config/catalog.batikent.yaml` + `config/data_collection.batikent.yaml`
+git'ten silindi ve aynı şablondan `config/*.armada.yaml` üretildi
+(yalnızca `region` ve `brand_stopwords` bölgeye özel; 166 tip, filtreler,
+`tracked_venue_limit=200`, biweekly cadence Eryaman'la birebir).
+
+"r=3km mantıklı mı?" sorusuna: WebSearch ile Söğütözü'nün gerçek bir
+yeme-içme yoğunluğu (56+ kafe, iş merkezi + sosyal yaşam kesişimi) olduğu
+doğrulandı — salt ofis/otoyol koridoru değil. Zero-cost
+`search --max-requests 0 --reset` dry-run'ı **276 hücre** verdi (Eryaman'la
+birebir; sayı salt grid geometrisinden geliyor, konumdan bağımsız).
+Eryaman-Armada merkez mesafesi `app/discovery/geo.py`'nin `distance_meters`'ı
+ile **~16,6km** — bölgeler arası koruma normalde tetiklenmez.
+
+`test_fetch_cli.py`'deki per-region config testi batikent→armada
+güncellendi; README ve tüm memory-bank dosyaları Batıkent→Armada geçişiyle
+tazelendi (2026-07-24 tarihli tarihsel narrative kayıtları, o gün Batıkent
+gerçekten plandaki bölge olduğu için değiştirilmedi — yalnızca güncel-durum
+ve sonraki-adım ifadeleri güncellendi). 77 test + ruff temiz. Henüz hiçbir
+gerçek Armada API çağrısı yapılmadı; sıradaki adım onaylı dry-run →
+smoke → tam koşu (Eryaman'da izlenen akışın aynısı).

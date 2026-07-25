@@ -3,10 +3,10 @@
 ora_bozdu, mekanların yalnızca bugün iyi veya kötü olup olmadığını değil, zaman
 içinde **Bozdu** mu yoksa **Coştu** mu olduğunu gösteren snapshot tabanlı bir
 webapp’tir. Faz 1, Eryaman’da 30 restoran/kafe ile local-first çalıştı. Faz 2,
-Eryaman ve Batıkent’te kategori bazlı (yalnızca "restoran"/"kafe" değil, Google
-Places API’nin tüm "Food and Drink" tip kümesi) neredeyse eksiksiz bir mekan
-envanteri hedefler; iki bölge ayrı `Region` kayıtları ve ayrı config
-dosyalarıyla yönetilir.
+Eryaman ve Armada’da (Söğütözü) kategori bazlı (yalnızca "restoran"/"kafe"
+değil, Google Places API’nin tüm "Food and Drink" tip kümesi) neredeyse
+eksiksiz bir mekan envanteri hedefler; her bölge ayrı `Region` kayıtları ve
+ayrı config dosyalarıyla yönetilir.
 
 ## Nasıl çalışır?
 
@@ -94,7 +94,7 @@ Her bölgenin kendi config/katalog/cache dosyası vardır:
 | Bölge | Config | Katalog | Search cache |
 | --- | --- | --- | --- |
 | Eryaman | [`config/data_collection.eryaman.yaml`](config/data_collection.eryaman.yaml) | [`config/catalog.eryaman.yaml`](config/catalog.eryaman.yaml) | `data/discovery-search-cache.eryaman.json` |
-| Batıkent | [`config/data_collection.batikent.yaml`](config/data_collection.batikent.yaml) | [`config/catalog.batikent.yaml`](config/catalog.batikent.yaml) | `data/discovery-search-cache.batikent.json` |
+| Armada | [`config/data_collection.armada.yaml`](config/data_collection.armada.yaml) | [`config/catalog.armada.yaml`](config/catalog.armada.yaml) | `data/discovery-search-cache.armada.json` |
 
 `app.discover` ve `app.fetch` CLI'ları `--data-collection-config` ve
 `--catalog` bayraklarıyla bu dosyalardan hangisinin kullanılacağını seçer
@@ -106,7 +106,7 @@ her iki dosyayı da kopyalayıp merkez koordinatını değiştirmek ve boş bir
 katalog dosyası (`venues: []`) oluşturmak yeterlidir — code değişikliği
 gerekmez.
 
-## Bir kerelik discovery
+## Discovery (aylık, `--reset` ile tekrarlanır)
 
 Her bölgenin dairesel arama alanı (`radius_meters`), örtüşen küçük dairelere
 (`cell_radius_meters`) bölünür — bir "hücre" aslında **hücre × tip-grubu**
@@ -115,6 +115,20 @@ kabul eder ve tam Food & Drink kapsamı ~150 tip içerir (config'teki
 `included_types` otomatik olarak ≤50'lik gruplara bölünür). Discovery, ücretli
 aşamaları ayrı ayrı sınırlar ve her başarılı hücre çağrısını cache dosyasına
 checkpoint eder.
+
+**Önemli — discovery tek seferlik değildir, aylık `--reset` gerekir.**
+`search`'ün cache'i tüm hücreler tarandıktan sonra (`search_completed: true`)
+tekrar çağrılırsa **hiçbir yeni istek yapmaz**, yalnızca durumu yazdırır.
+Bu yüzden `--reset` olmadan aylık bir `discover` koşusu iki şeyi de
+kaçırır: (1) yeni açılan mekanlar hiç bulunamaz, (2) `finalize`'ın takip
+edilen mekan sıralaması hep ilk tarama anındaki review sayılarına göre
+kalır — `app.fetch`'in biweekly topladığı güncel sayılar bu sıralamaya hiç
+girmez (`finalize` DB'ye hiç bağlanmaz, yalnızca cache/katalog dosyalarını
+okur). Bu yüzden **aylık discover akışı her zaman `search --reset` ile
+başlamalıdır**; Nearby Search'ün Enterprise SKU fiyatlandırmasına göre
+(1.000 istek/ay ücretsiz, `$35/1.000` sonrası) iki bölgenin tam yeniden
+taraması (~456 + ~276 = ~732 istek) bu kotanın altında kalır, yani aylık
+tam `--reset` bile ek maliyet getirmez.
 
 Sıfır maliyetli deneme (API çağrısı yapmaz, sadece grid'i hesaplayıp hücre
 sayısını gösterir — `cell_radius_meters`/`radius_meters`'ı ayarlamak için
@@ -212,8 +226,12 @@ raporda "yeterli review sayısına ulaşamadı" durumundadır. `app.fetch` yaln�
 kolonu üzerinden çift katmanlı, `active`/`is_active` ile aynı desen). Bu
 **sabit bir seçim değildir**: her `finalize` koşusunda yeniden hesaplanır, bu
 yüzden review sayısı artan bir mekan sonraki bir döngüde tekrar top-N'e
-girebilir. Hiç review verisi olmayan (ne bu turda taranmış ne daha önce
-bilinen) mekanlar mevcut `tracked` durumunda dokunulmadan bırakılır. Yeni
+girebilir — **ama yalnızca o `finalize`'dan önce `search --reset` ile taze
+bir tarama yapıldıysa**; `finalize` DB'ye hiç bağlanmadığından `app.fetch`'in
+topladığı güncel sayıları kendiliğinden görmez, `--reset`'siz bir `finalize`
+herkesi "son bilinen" (donmuş) sayısıyla sıralar. Hiç review verisi olmayan
+(ne bu turda taranmış ne daha önce bilinen) mekanlar mevcut `tracked`
+durumunda dokunulmadan bırakılır. Yeni
 keşfedilen mekanlara özel bir koruma/grace-period yoktur — Google Places API
 açılış tarihi vermediğinden güvenilir bir "ne kadar yeni" sinyali yok; düşük
 review sayısıyla başlayan bir mekan organik olarak review biriktirdikçe
@@ -224,12 +242,12 @@ edilmesini önlemek için, `catalog.<bölge>.yaml` dosyalarının hepsi
 (`config/catalog.*.yaml` glob'u ile) taranır ve diğer bölgelerde zaten
 kayıtlı `place_id`'ler hem freshness kontrolünden hem finalize'dan hariç
 tutulur (DB'deki global `uq_venue_provider_place_id` constraint'i son çare
-güvenlik ağıdır). Eryaman ve Batıkent merkezleri ~7.8km ayrık olduğundan
+güvenlik ağıdır). Eryaman ve Armada merkezleri ~16,6km ayrık olduğundan
 (sırasıyla ~3km yarıçaplı çemberlerle) bu çakışma normal koşulda
 beklenmez.
 
 **Yeni bir bölge eklerken:** ilk `search --reset` öncesi elle boş bir katalog
-dosyası oluşturulmalıdır (`config/catalog.batikent.yaml` zaten bu şekilde,
+dosyası oluşturulmalıdır (`config/catalog.armada.yaml` zaten bu şekilde,
 `venues: []` ile, hazır bulunuyor) — `load_catalog` dosya yoksa hata verir.
 
 **`excluded_primary_types` (2026-07-24 eklendi):** Nearby Search'ün
@@ -250,7 +268,7 @@ beklenen HTTP istek sayısını görmek için:
 
 ```bash
 uv run python -m app.fetch --region eryaman --plan
-uv run python -m app.fetch --region batikent --plan --data-collection-config config/data_collection.batikent.yaml --catalog config/catalog.batikent.yaml
+uv run python -m app.fetch --region armada --plan --data-collection-config config/data_collection.armada.yaml --catalog config/catalog.armada.yaml
 ```
 
 Çıktı hem retry'sız mantıksal istek sayısını (`estimated_http_requests`) hem de
@@ -293,8 +311,9 @@ Fetch akışı:
 Bir çağrı başarısız olursa venue için partial snapshot oluşmaz. Diğer venue’lar
 işlenmeye devam eder ve CLI non-zero exit code ile hata özetini yazdırır.
 
-**Zamanlama (2026-07-25 itibarıyla elle):** `app.discover` (search →
-freshness → finalize) ayda bir, `app.fetch` iki haftada bir çalıştırılır;
+**Zamanlama (2026-07-25 itibarıyla elle):** `app.discover` (**`search
+--reset`** → freshness → finalize — `--reset` zorunlu, bkz. yukarıdaki
+"Discovery" bölümü) ayda bir, `app.fetch` iki haftada bir çalıştırılır;
 ikisi de şu an bir scheduler'a bağlı değildir, proje sahibi elle tetikler.
 Otomatik zamanlama (ör. bir CI/CD pipeline'ında scheduled job) Faz 4
 kapsamında değerlendirilecek — `cron` doğası gereği takvim alanlarıyla
@@ -405,12 +424,12 @@ docker compose --profile jobs run --rm discover search --max-requests 1 --reset 
 ```
 
 Compose discovery servisi `app.discover` entrypoint'ini kullanır; stage ve
-argümanlar (örn. `--data-collection-config config/data_collection.batikent.yaml
---catalog config/catalog.batikent.yaml`) komut sonuna eklenir. `docker compose
+argümanlar (örn. `--data-collection-config config/data_collection.armada.yaml
+--catalog config/catalog.armada.yaml`) komut sonuna eklenir. `docker compose
 run <servis> <args>` o servisin sabit `command:`'ını **değiştirir**, üzerine
 eklemez — `fetch` servisinin varsayılan komutu `alembic upgrade head &&` ile
 başladığından, ekstra argümanlarla çalıştırılan bir `run` bu adımı atlar; ilk
-Batıkent koşularını (Eryaman'da da yapıldığı gibi) doğrudan `uv run` ile
+Armada koşularını (Eryaman'da da yapıldığı gibi) doğrudan `uv run` ile
 yapmak daha güvenlidir.
 
 Servisler aynı `uv.lock` dosyasını kullanır. `.env`, image içine kopyalanmadan

@@ -16,12 +16,17 @@
 
 ### `regions`
 
-Bölge kataloğu. Faz 1'de yalnızca `eryaman`; Faz 2'de `batikent` ikinci
-kayıt olarak eklendi (2026-07-24). `provider_place_id` unique constraint'i
-`venues` tablosunda global'dır (bölgeye özel değildir) — bu, aynı gerçek
-mekanın iki bölgede birden takip edilmesini DB seviyesinde engeller; asıl
-koruma discovery'nin `load_other_region_place_ids` ön-kontrolüdür (bkz.
-techContext.md Discovery bölümü), bu constraint son çare güvenlik ağıdır.
+Bölge kataloğu. DB'de şu an yalnızca `eryaman` var (tek `Region` kaydı,
+`region_id=1`) — ikinci bölge kaydı ancak o bölgenin ilk `app.fetch`/
+`sync_catalog` koşusunda oluşur. Faz 2'de ikinci bölge önce Batıkent olarak
+planlandı ama hiç gerçek koşu yapılmadan (katalog boşken) 2026-07-25'te
+iptal edilip yerine **Armada** (Söğütözü) kondu; Armada da henüz DB'ye
+sync edilmedi, ilk onaylı discovery+fetch akışında `Region` kaydı olacak.
+`provider_place_id` unique constraint'i `venues` tablosunda global'dır
+(bölgeye özel değildir) — bu, aynı gerçek mekanın iki bölgede birden takip
+edilmesini DB seviyesinde engeller; asıl koruma discovery'nin
+`load_other_region_place_ids` ön-kontrolüdür (bkz. techContext.md Discovery
+bölümü), bu constraint son çare güvenlik ağıdır.
 `Region`'ın kendisi hiçbir zaman koordinat/geometri taşımadı — bölge merkezi
 ve yarıçapı yalnızca `config/data_collection.<slug>.yaml`'da yaşar, DB'ye
 hiç yazılmaz.
