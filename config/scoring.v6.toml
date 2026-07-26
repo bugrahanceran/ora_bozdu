@@ -1,0 +1,107 @@
+version = "v6"
+
+[weights]
+rating_trajectory = 0.30
+review_velocity = 0.20
+sentiment_keyword_drift = 0.20
+stability = 0.30
+
+[rating_trajectory]
+full_scale_delta_per_30_days = 0.40
+min_snapshots = 2
+# Review count-split mode (v6): with a backfill corpus, trajectory compares the
+# mean star of the newest half of the corpus against the older half -- split by
+# COUNT, not calendar, so it works whatever span the reviews cover. Falls back to
+# the aggregate-snapshot delta only when the corpus can't be split (fewer than
+# 2 * review_min_per_split reviews). trajectory_full_scale_delta = the star gap
+# between the two halves that counts as a full-strength trend.
+review_split_enabled = true
+review_min_per_split = 5
+trajectory_full_scale_delta = 0.50
+review_full_reliability_count = 40
+
+[review_velocity]
+full_scale_acceleration = 1.0
+full_scale_velocity_per_day = 2.0
+min_snapshots_for_acceleration = 3
+review_recency_window_days = 90
+
+[sentiment_keyword_drift]
+recent_window_days = 60
+comparison_window_days = 180
+full_scale_sentiment_delta = 0.60
+min_reviews = 2
+
+[stability]
+high_rating_threshold = 4.20
+window_days = 90
+min_snapshots = 7
+min_coverage_days = 21
+max_rating_stddev = 0.12
+stable_high_value = 0.75
+stable_low_value = -0.10
+volatile_value = -0.25
+# Review-consistency mode (v6): with a backfill corpus, stability is derived from
+# how much the rating LEVEL moves across time-ordered buckets of the review
+# sequence, instead of waiting for many aggregate snapshots. level stddev above
+# review_max_level_stddev -> volatile; otherwise stable_high/low by mean rating.
+review_stability_enabled = true
+review_min_for_stability = 8
+review_stability_buckets = 5
+# Bucket means of integer 1-5 ratings over ~10-review buckets have a sampling
+# noise floor around 0.38 (sigma/sqrt(10)); the threshold sits well above it so
+# "volatile" flags genuine level swings, not small-sample noise.
+review_max_level_stddev = 0.65
+review_full_reliability_count = 40
+# Dormancy: no rating-count growth AND no new review for this many days
+# before any penalty starts (grace period covers normal cadence gaps).
+dormancy_grace_days = 60
+# Penalty reaches its full magnitude once inactivity reaches this many days;
+# it ramps linearly between the grace period and this point.
+dormancy_full_penalty_days = 365
+# Full penalty magnitude (subtracted from the rating-level stability value).
+dormancy_penalty_value = -1.0
+
+[confidence]
+early_phase_cap = 0.45
+full_history_snapshots = 14
+full_history_days = 60
+
+[classification]
+costu_threshold = 20.0
+bozdu_threshold = -20.0
+
+[keywords]
+positive = [
+    "lezzetli",
+    "taze",
+    "hızlı",
+    "ilgili",
+    "güler yüzlü",
+    "kaliteli",
+    "temiz",
+    "başarılı",
+    "delicious",
+    "fresh",
+    "fast",
+    "friendly",
+    "quality",
+    "clean",
+]
+negative = [
+    "pahalı",
+    "bayat",
+    "soğuk",
+    "yavaş",
+    "ilgisiz",
+    "kötü",
+    "bozulmuş",
+    "kirli",
+    "expensive",
+    "stale",
+    "cold",
+    "slow",
+    "rude",
+    "bad",
+    "dirty",
+]

@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -7,9 +9,39 @@ from app.models import (
     ScoreResult,
     SnapshotReview,
     Venue,
+    VenueReview,
     utcnow,
 )
-from app.scoring.engine import ScoreComputation, ScoringEngine
+from app.scoring.engine import ReviewInput, ScoreComputation, ScoringEngine
+
+
+def _reviews_for_scoring(
+    session: Session,
+    *,
+    venue_id: int,
+    snapshot_ids: list[int],
+    as_of_date: date,
+) -> list[ReviewInput]:
+    """Prefer the scraped backfill corpus; fall back to per-snapshot reviews.
+
+    When a venue has a `venue_reviews` corpus it is a far richer, date-consistent
+    substrate for the review-based signals (sentiment, review-window trajectory),
+    so it wins; otherwise the forward SnapshotReview rows keep v5 behavior. Bounded
+    to `as_of_date` so scoring a past snapshot never uses future reviews.
+    """
+    corpus = list(
+        session.scalars(
+            select(VenueReview).where(VenueReview.venue_id == venue_id)
+        ).all()
+    )
+    corpus = [review for review in corpus if review.published_at.date() <= as_of_date]
+    if corpus:
+        return corpus
+    return list(
+        session.scalars(
+            select(SnapshotReview).where(SnapshotReview.snapshot_id.in_(snapshot_ids))
+        ).all()
+    )
 
 
 def compute_venue_score(
@@ -34,10 +66,11 @@ def compute_venue_score(
         return None
     as_of = snapshots[-1]
     snapshot_ids = [snapshot.id for snapshot in snapshots]
-    reviews = list(
-        session.scalars(
-            select(SnapshotReview).where(SnapshotReview.snapshot_id.in_(snapshot_ids))
-        ).all()
+    reviews = _reviews_for_scoring(
+        session,
+        venue_id=venue_id,
+        snapshot_ids=snapshot_ids,
+        as_of_date=as_of.snapshot_date,
     )
     computation = engine.compute(snapshots, reviews)
     result = session.scalar(

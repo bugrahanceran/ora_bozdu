@@ -2,12 +2,25 @@ import re
 import statistics
 import unicodedata
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from itertools import pairwise
-from typing import Any
+from typing import Any, Protocol
 
-from app.models import PlaceSnapshot, SnapshotReview
-from app.scoring.config import ScoringConfig, StabilityConfig
+from app.models import PlaceSnapshot
+from app.scoring.config import RatingTrajectoryConfig, ScoringConfig, StabilityConfig
+
+
+class ReviewInput(Protocol):
+    """The review fields scoring needs, shared by SnapshotReview and VenueReview.
+
+    Lets the engine consume either the forward per-snapshot reviews or the
+    scraped backfill corpus without caring which ORM model produced them.
+    """
+
+    dedup_key: str
+    published_at: datetime
+    rating: int
+    text: str
 
 
 def _clip(value: float, lower: float = -1.0, upper: float = 1.0) -> float:
@@ -53,14 +66,14 @@ class ScoringEngine:
     def compute(
         self,
         snapshots: list[PlaceSnapshot],
-        reviews: list[SnapshotReview],
+        reviews: list[ReviewInput],
     ) -> ScoreComputation:
         if not snapshots:
             raise ValueError("At least one snapshot is required")
         ordered = sorted(snapshots, key=lambda snapshot: snapshot.snapshot_date)
         unique_reviews = list({review.dedup_key: review for review in reviews}.values())
         signals = {
-            "rating_trajectory": self._rating_trajectory(ordered),
+            "rating_trajectory": self._rating_trajectory(ordered, unique_reviews),
             "review_velocity": self._review_velocity(ordered, unique_reviews),
             "sentiment_keyword_drift": self._sentiment_drift(
                 ordered[-1].snapshot_date,
@@ -128,8 +141,16 @@ class ScoringEngine:
             change_story=story,
         )
 
-    def _rating_trajectory(self, snapshots: list[PlaceSnapshot]) -> SignalResult:
+    def _rating_trajectory(
+        self,
+        snapshots: list[PlaceSnapshot],
+        reviews: list[ReviewInput],
+    ) -> SignalResult:
         config = self.config.rating_trajectory
+        if config.review_split_enabled:
+            split = self._rating_trajectory_from_reviews(reviews, config=config)
+            if split is not None:
+                return split
         rated = [snapshot for snapshot in snapshots if snapshot.rating is not None]
         if len(rated) < config.min_snapshots:
             return SignalResult(False, 0.0, 0.0, "Rating geçmişi yetersiz.", {})
@@ -154,6 +175,7 @@ class ScoringEngine:
             reliability,
             f"Rating eğilimi {direction}.",
             {
+                "mode": "aggregate_snapshot",
                 "first_rating": rated[0].rating,
                 "latest_rating": rated[-1].rating,
                 "delta_per_30_days": round(delta_per_30_days, 4),
@@ -162,10 +184,59 @@ class ScoringEngine:
             },
         )
 
+    def _rating_trajectory_from_reviews(
+        self,
+        reviews: list[ReviewInput],
+        *,
+        config: RatingTrajectoryConfig,
+    ) -> SignalResult | None:
+        """Count-split trajectory: newest half of the corpus vs the older half.
+
+        The corpus is ordered by date and split into two equal halves *by count*
+        (not calendar), so the recent-vs-older comparison always works regardless
+        of how much wall-clock time the reviews span. A busy venue's newest 50
+        cover weeks and a quiet venue's cover years, yet both still yield a trend
+        the inertial aggregate rating hides. Returns None (so the aggregate
+        fallback runs) when the corpus is too thin to split.
+        """
+        rated = sorted(
+            (review for review in reviews if review.rating is not None),
+            key=lambda review: review.published_at,
+        )
+        if len(rated) < 2 * config.review_min_per_split:
+            return None
+        mid = len(rated) // 2
+        older = [review.rating for review in rated[:mid]]
+        recent = [review.rating for review in rated[mid:]]
+        older_mean = statistics.fmean(older)
+        recent_mean = statistics.fmean(recent)
+        delta = recent_mean - older_mean
+        value = _clip(delta / config.trajectory_full_scale_delta)
+        reliability = min(1.0, len(rated) / config.review_full_reliability_count)
+        span_days = (rated[-1].published_at.date() - rated[0].published_at.date()).days
+        direction = (
+            "yükseliyor" if value > 0.05 else "düşüyor" if value < -0.05 else "yatay"
+        )
+        return SignalResult(
+            True,
+            value,
+            reliability,
+            f"Rating eğilimi {direction} (yorumlardan).",
+            {
+                "mode": "review_split",
+                "recent_mean_star": round(recent_mean, 4),
+                "older_mean_star": round(older_mean, 4),
+                "delta": round(delta, 4),
+                "recent_review_count": len(recent),
+                "older_review_count": len(older),
+                "corpus_span_days": span_days,
+            },
+        )
+
     def _review_velocity(
         self,
         snapshots: list[PlaceSnapshot],
-        reviews: list[SnapshotReview],
+        reviews: list[ReviewInput],
     ) -> SignalResult:
         config = self.config.review_velocity
         counted = [
@@ -253,7 +324,7 @@ class ScoringEngine:
     def _sentiment_drift(
         self,
         as_of: date,
-        reviews: list[SnapshotReview],
+        reviews: list[ReviewInput],
     ) -> SignalResult:
         config = self.config.sentiment
         in_window = [
@@ -316,7 +387,7 @@ class ScoringEngine:
             },
         )
 
-    def _review_sentiment(self, review: SnapshotReview) -> tuple[float, int, int]:
+    def _review_sentiment(self, review: ReviewInput) -> tuple[float, int, int]:
         text = _normalized_text(review.text)
         positives = sum(
             len(pattern.findall(text)) for pattern in self._positive_patterns
@@ -334,10 +405,16 @@ class ScoringEngine:
     def _stability(
         self,
         snapshots: list[PlaceSnapshot],
-        reviews: list[SnapshotReview],
+        reviews: list[ReviewInput],
     ) -> SignalResult:
         config = self.config.stability
         as_of = snapshots[-1].snapshot_date
+        if config.review_stability_enabled:
+            review_based = self._stability_from_reviews(
+                snapshots, reviews, config=config, as_of=as_of
+            )
+            if review_based is not None:
+                return review_based
         window = [
             snapshot
             for snapshot in snapshots
@@ -419,10 +496,117 @@ class ScoringEngine:
             },
         )
 
+    def _stability_from_reviews(
+        self,
+        snapshots: list[PlaceSnapshot],
+        reviews: list[ReviewInput],
+        *,
+        config: StabilityConfig,
+        as_of: date,
+    ) -> SignalResult | None:
+        """Stability from the review corpus, or None when it is too thin.
+
+        Instead of waiting for many aggregate snapshots, this reads how much the
+        rating LEVEL moves across time-ordered buckets of the review sequence: a
+        venue whose reviews hover near 4.2 the whole way through reads as stable
+        now; one whose bucket means swing reads as volatile. Dormancy (no recent
+        activity) still applies exactly as in the snapshot path.
+        """
+        rated = sorted(
+            (review for review in reviews if review.rating is not None),
+            key=lambda review: review.published_at,
+        )
+        if len(rated) < config.review_min_for_stability:
+            return None
+        buckets = [
+            bucket
+            for bucket in self._even_chunks(
+                [review.rating for review in rated], config.review_stability_buckets
+            )
+            if bucket
+        ]
+        if len(buckets) < 2:
+            return None
+        bucket_means = [statistics.fmean(bucket) for bucket in buckets]
+        mean_rating = statistics.fmean([review.rating for review in rated])
+        level_stddev = statistics.pstdev(bucket_means)
+        reliability = min(1.0, len(rated) / config.review_full_reliability_count)
+        coverage_days = (
+            rated[-1].published_at.date() - rated[0].published_at.date()
+        ).days
+
+        if level_stddev > config.review_max_level_stddev:
+            state = "volatile"
+            base_value = config.volatile_value
+            base_summary = "Rating seviyesi yorumlar boyunca dalgalı."
+        elif mean_rating >= config.high_rating_threshold:
+            state = "stable_high"
+            base_value = config.stable_high_value
+            base_summary = (
+                "Yüksek rating seviyesini yorumlar boyunca istikrarlı koruyor."
+            )
+        else:
+            state = "stable_low"
+            base_value = config.stable_low_value
+            base_summary = "Rating seviyesi durağan (orta/düşük)."
+
+        days_since_activity = self._days_since_activity(snapshots, reviews, as_of)
+        dormancy_penalty = self._dormancy_penalty(days_since_activity, config)
+        value = base_value + dormancy_penalty
+        summary = base_summary
+        if dormancy_penalty < 0:
+            summary = (
+                f"{base_summary} Son {days_since_activity} gündür yeni oy/yorum yok, "
+                "bu skoru geriletiyor."
+            )
+        if (
+            days_since_activity is not None
+            and days_since_activity >= config.dormancy_full_penalty_days
+        ):
+            state = "dormant"
+            summary = (
+                f"Yaklaşık {days_since_activity} gündür yeni oy/yorum yok; "
+                "mekan sessizleşti."
+            )
+
+        return SignalResult(
+            True,
+            _clip(value),
+            reliability,
+            summary,
+            {
+                "state": state,
+                "mode": "review_consistency",
+                "mean_rating": round(mean_rating, 4),
+                "level_stddev": round(level_stddev, 4),
+                "bucket_count": len(bucket_means),
+                "review_count": len(rated),
+                "coverage_days": coverage_days,
+                "days_since_activity": days_since_activity,
+                "dormancy_penalty": round(dormancy_penalty, 4),
+            },
+        )
+
+    @staticmethod
+    def _even_chunks(items: list[int], count: int) -> list[list[int]]:
+        """Split items into `count` contiguous, roughly-equal buckets in order."""
+        if count <= 1 or len(items) <= 1:
+            return [items]
+        base, remainder = divmod(len(items), count)
+        chunks: list[list[int]] = []
+        start = 0
+        for index in range(count):
+            size = base + (1 if index < remainder else 0)
+            if size == 0:
+                continue
+            chunks.append(items[start : start + size])
+            start += size
+        return chunks
+
     @staticmethod
     def _days_since_activity(
         snapshots: list[PlaceSnapshot],
-        reviews: list[SnapshotReview],
+        reviews: list[ReviewInput],
         as_of: date,
     ) -> int | None:
         """Days since the last observed rating-count growth or new review.

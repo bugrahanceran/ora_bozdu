@@ -48,7 +48,7 @@ def seed_card(session: Session) -> None:
         ScoreResult(
             venue_id=venue.id,
             as_of_snapshot_id=snapshot.id,
-            score_version="v5",
+            score_version="v6",
             change_score=36,
             confidence=0.72,
             classification="costu",
@@ -246,7 +246,7 @@ def seed_insufficient_data_card(session: Session) -> None:
         ScoreResult(
             venue_id=venue.id,
             as_of_snapshot_id=snapshot.id,
-            score_version="v5",
+            score_version="v6",
             change_score=5,
             confidence=0.32,
             classification="dengede",

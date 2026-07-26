@@ -77,6 +77,187 @@ def test_scoring_config_has_four_signals_and_sums_to_one() -> None:
     assert config.weights["stability"] == 0.30
 
 
+V6_CONFIG_PATH = Path("config/scoring.v6.toml")
+
+
+def _corpus(as_of: date, *, recent_star: int, older_star: int, per_window: int = 15):
+    # per_window reviews in the recent [0,90) window and the older [90,180) one.
+    reviews = []
+    for index in range(per_window):
+        reviews.append(
+            make_review(
+                f"old-{index}",
+                datetime.combine(as_of - timedelta(days=140), datetime.min.time(), UTC),
+                older_star,
+                "lezzetli taze" if older_star >= 4 else "pahalı yavaş",
+            )
+        )
+        reviews.append(
+            make_review(
+                f"new-{index}",
+                datetime.combine(as_of - timedelta(days=15), datetime.min.time(), UTC),
+                recent_star,
+                "lezzetli taze" if recent_star >= 4 else "pahalı yavaş",
+            )
+        )
+    return reviews
+
+
+def test_v6_and_v5_scoring_configs_both_load() -> None:
+    v6 = load_scoring_config(V6_CONFIG_PATH)
+    v5 = load_scoring_config(CONFIG_PATH)
+
+    assert v6.version == "v6"
+    assert v6.rating_trajectory.review_split_enabled is True
+    assert v6.stability.review_stability_enabled is True
+    # v5 stays frozen and loadable with both review-corpus modes disabled.
+    assert v5.version == "v5"
+    assert v5.rating_trajectory.review_split_enabled is False
+    assert v5.stability.review_stability_enabled is False
+
+
+def test_v6_review_split_catches_decline_the_flat_aggregate_hides() -> None:
+    # Aggregate rating is flat (4.3 -> 4.3) -- v5 would call this "yatay". But the
+    # newest half of the review corpus crashed to 2 stars from the older half's 5.
+    as_of = date(2026, 7, 25)
+    snapshots = make_snapshots([4.3, 4.3], start=as_of - timedelta(days=4))
+    reviews = _corpus(as_of, recent_star=2, older_star=5)
+
+    result = ScoringEngine(load_scoring_config(V6_CONFIG_PATH)).compute(
+        snapshots, reviews
+    )
+
+    trajectory = result.signal_breakdown["rating_trajectory"]
+    assert trajectory["details"]["mode"] == "review_split"
+    assert trajectory["value"] < 0  # decline detected despite flat aggregate
+    assert result.classification == "bozdu"
+
+
+def test_v6_review_split_works_for_busy_venue_short_span() -> None:
+    # A busy venue: 30 reviews all within ~50 days -- fixed calendar windows would
+    # fail (older window empty), but count-split still compares newest 15 vs older
+    # 15 and catches the 4 -> 3 slide.
+    as_of = date(2026, 7, 25)
+    snapshots = make_snapshots([3.7, 3.7], start=as_of - timedelta(days=6))
+    reviews = []
+    for index in range(15):
+        older_at = datetime.combine(
+            as_of - timedelta(days=50), datetime.min.time(), UTC
+        )
+        newer_at = datetime.combine(as_of - timedelta(days=8), datetime.min.time(), UTC)
+        reviews.append(make_review(f"old-{index}", older_at, 4, "iyi"))
+        reviews.append(make_review(f"new-{index}", newer_at, 3, "vasat"))
+
+    result = ScoringEngine(load_scoring_config(V6_CONFIG_PATH)).compute(
+        snapshots, reviews
+    )
+
+    trajectory = result.signal_breakdown["rating_trajectory"]
+    assert trajectory["available"] is True
+    assert trajectory["details"]["mode"] == "review_split"
+    assert trajectory["details"]["corpus_span_days"] <= 60
+    assert trajectory["value"] < 0
+
+
+def test_v6_falls_back_to_aggregate_when_corpus_cannot_split() -> None:
+    as_of = date(2026, 7, 25)
+    snapshots = make_snapshots([4.0, 4.6], start=as_of - timedelta(days=4))
+    # Only 4 reviews total -- below 2 * review_min_per_split (10), so the corpus
+    # can't be split and the aggregate-snapshot delta is used.
+    reviews = _corpus(as_of, recent_star=5, older_star=5, per_window=2)
+
+    result = ScoringEngine(load_scoring_config(V6_CONFIG_PATH)).compute(
+        snapshots, reviews
+    )
+
+    assert result.signal_breakdown["rating_trajectory"]["details"]["mode"] == (
+        "aggregate_snapshot"
+    )
+
+
+def test_v5_never_uses_review_split_even_with_a_rich_corpus() -> None:
+    as_of = date(2026, 7, 25)
+    snapshots = make_snapshots([4.3, 4.3], start=as_of - timedelta(days=4))
+    reviews = _corpus(as_of, recent_star=2, older_star=5)
+
+    result = ScoringEngine(load_scoring_config(CONFIG_PATH)).compute(snapshots, reviews)
+
+    # v5 has review_split_enabled=False, so it stays on the aggregate snapshot delta.
+    assert result.signal_breakdown["rating_trajectory"]["details"]["mode"] == (
+        "aggregate_snapshot"
+    )
+
+
+def _flat_corpus(as_of: date, stars: list[int]):
+    # Reviews time-ordered oldest -> newest, one every ~4 days ending near as_of.
+    return [
+        make_review(
+            f"r-{index}",
+            datetime.combine(
+                as_of - timedelta(days=(len(stars) - index) * 4),
+                datetime.min.time(),
+                UTC,
+            ),
+            star,
+            "lezzetli" if star >= 4 else "pahalı",
+        )
+        for index, star in enumerate(stars)
+    ]
+
+
+def test_v6_stability_from_reviews_reads_stable_high() -> None:
+    # 20 reviews hovering at 4-5 the whole way -> stable_high, available now from
+    # the corpus without waiting for many aggregate snapshots to pile up.
+    as_of = date(2026, 7, 25)
+    snapshots = make_snapshots([4.5, 4.5], start=as_of - timedelta(days=6))
+    reviews = _flat_corpus(as_of, [5, 4] * 10)
+
+    result = ScoringEngine(load_scoring_config(V6_CONFIG_PATH)).compute(
+        snapshots, reviews
+    )
+
+    stability = result.signal_breakdown["stability"]
+    assert stability["available"] is True
+    assert stability["details"]["mode"] == "review_consistency"
+    assert result.stability_state == "stable_high"
+    assert stability["value"] > 0
+
+
+def test_v6_review_stability_lifts_confidence_above_early_cap() -> None:
+    # Only 2 snapshots -> the v5 snapshot path is insufficient and caps confidence
+    # at 0.45. v6 derives stability from the corpus, so confidence rises past it.
+    as_of = date(2026, 7, 25)
+    snapshots = make_snapshots([4.5, 4.5], start=as_of - timedelta(days=6))
+    reviews = _flat_corpus(as_of, [5, 4] * 12)
+
+    result = ScoringEngine(load_scoring_config(V6_CONFIG_PATH)).compute(
+        snapshots, reviews
+    )
+
+    assert (
+        result.signal_breakdown["stability"]["details"]["state"] != "insufficient_data"
+    )
+    assert result.confidence > 0.45
+
+
+def test_v6_stability_from_reviews_flags_volatile() -> None:
+    # Bucket means swing 5 -> 2 -> 5 -> 1 -> 5 across the sequence -> volatile.
+    as_of = date(2026, 7, 25)
+    snapshots = make_snapshots([3.5, 3.5], start=as_of - timedelta(days=6))
+    reviews = _flat_corpus(
+        as_of, [5, 5, 5, 5, 2, 2, 2, 2, 5, 5, 5, 5, 1, 1, 1, 1, 5, 5, 5, 5]
+    )
+
+    result = ScoringEngine(load_scoring_config(V6_CONFIG_PATH)).compute(
+        snapshots, reviews
+    )
+
+    assert result.signal_breakdown["stability"]["details"]["mode"] == (
+        "review_consistency"
+    )
+    assert result.stability_state == "volatile"
+
+
 def test_high_stability_is_positive_and_gets_state() -> None:
     snapshots = make_snapshots([4.5] * 7)
 

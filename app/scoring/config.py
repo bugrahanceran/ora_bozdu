@@ -15,6 +15,17 @@ SIGNAL_NAMES = {
 class RatingTrajectoryConfig:
     full_scale_delta_per_30_days: float
     min_snapshots: int
+    # Review count-split mode (v6+): when a backfill review corpus is present,
+    # trajectory compares the mean star of the newest half of the corpus against
+    # the older half -- split by COUNT, not calendar, so it works no matter how
+    # much wall-clock time the reviews span (a busy venue's newest 50 cover weeks,
+    # a quiet venue's cover years). review_split_enabled=False (default) keeps the
+    # v5 aggregate-snapshot behavior, so configs that omit these fields are
+    # unchanged.
+    review_split_enabled: bool = False
+    review_min_per_split: int = 5
+    trajectory_full_scale_delta: float = 1.0
+    review_full_reliability_count: int = 40
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,6 +54,17 @@ class StabilityConfig:
     stable_high_value: float
     stable_low_value: float
     volatile_value: float
+    # Review-consistency mode (v6+): when a backfill corpus is present, stability
+    # is derived from how much the rating LEVEL moves across time-ordered buckets
+    # of the review sequence -- so a venue whose 50 reviews stay near 4.2 reads as
+    # stable immediately, without waiting for many aggregate snapshots to pile up.
+    # review_stability_enabled=False (default) keeps the v5 snapshot-volatility
+    # behavior for configs that omit these fields.
+    review_stability_enabled: bool = False
+    review_min_for_stability: int = 8
+    review_stability_buckets: int = 5
+    review_max_level_stddev: float = 0.40
+    review_full_reliability_count: int = 40
     # Defaults keep dormancy fully neutral for older configs (e.g. the
     # frozen scoring.v4.toml) that predate this field and never set it.
     dormancy_grace_days: int = 36_500
