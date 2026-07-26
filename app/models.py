@@ -58,6 +58,7 @@ class Venue(Base):
 
     region: Mapped[Region] = relationship(back_populates="venues")
     snapshots: Mapped[list["PlaceSnapshot"]] = relationship(back_populates="venue")
+    backfill_reviews: Mapped[list["VenueReview"]] = relationship(back_populates="venue")
 
 
 class FetchRun(Base):
@@ -188,6 +189,30 @@ class SnapshotReviewAppearance(Base):
     rank: Mapped[int] = mapped_column(Integer)
 
     review: Mapped[SnapshotReview] = relationship(back_populates="appearances")
+
+
+class VenueReview(Base):
+    __tablename__ = "venue_reviews"
+    __table_args__ = (
+        UniqueConstraint("venue_id", "dedup_key", name="uq_venue_review_key"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    venue_id: Mapped[int] = mapped_column(ForeignKey("venues.id"), index=True)
+    source: Mapped[str] = mapped_column(String(40), default="backfill")
+    provider_review_id: Mapped[str | None] = mapped_column(String(255))
+    dedup_key: Mapped[str] = mapped_column(String(64))
+    author_name: Mapped[str] = mapped_column(String(255))
+    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    rating: Mapped[int] = mapped_column(Integer)
+    text: Mapped[str] = mapped_column(Text, default="")
+    language: Mapped[str | None] = mapped_column(String(20))
+    sub_ratings: Mapped[dict[str, Any] | None] = mapped_column(JSON)
+    scraped_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow
+    )
+
+    venue: Mapped[Venue] = relationship(back_populates="backfill_reviews")
 
 
 class FetchRunWarning(Base):
