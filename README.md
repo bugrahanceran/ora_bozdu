@@ -79,11 +79,15 @@ change-story metni gösterilmez; sinyal açıklamaları ayrı bölümde kalır.
 
 ```dotenv
 GOOGLE_MAPS_API_KEY=your-key
+APIFY_TOKEN=your-apify-token
 DATABASE_URL=sqlite:///./data/ora_bozdu.db
 VENUE_CATALOG_PATH=config/catalog.eryaman.yaml
 DATA_COLLECTION_CONFIG_PATH=config/data_collection.eryaman.yaml
-SCORING_CONFIG_PATH=config/scoring.v5.toml
+SCORING_CONFIG_PATH=config/scoring.v6.toml
 ```
+
+`APIFY_TOKEN` yalnızca review backfill (`app.backfill fetch`) için gerekir;
+diğer akışlar (discovery/fetch/scoring/webapp) onsuz çalışır.
 
 API key kodda tutulmaz ve `.env` git’e girmez. Google Cloud project’te Places
 API (New) Nearby Search ve Places API Legacy erişimi açık olmalıdır. Legacy
@@ -260,7 +264,13 @@ koşusunda bulunan somut örneklere (kuaför, berber, market, klinik, havuz,
 oyun evi, simülasyon merkezi vb.) dayanır. Eleme, freshness'tan **önce**
 olur — bu mekanlar için gereksiz Legacy Place Details isteği atılmaz.
 
-## Periyodik fetch
+## Periyodik fetch (Google Place Details — supersede edildi)
+
+> **Not:** Periyodik snapshot artık **Apify** ile alınıyor (bkz. "Veri çekimi —
+> Apify"); Apify agregat rating/sayıyı da verdiğinden bu paralı Google Place
+> Details akışına gerek kalmadı. Aşağıdaki `app.fetch` komutu çalışır durumda
+> tutuluyor ama biweekly toplama için artık `app.backfill fetch` kullanılır.
+> (Discover hâlâ Google Nearby Search'tedir.)
 
 Onay öncesi, provider'a hiç çıkmadan ve API key gerektirmeden hangi venue'ların
 atlanacağını, hangilerinin freshness cache'inden seed alacağını ve toplam
@@ -306,15 +316,19 @@ Fetch akışı:
 3. Her venue için `newest` review sıralamasını alır.
 4. Çağrı başarılıysa snapshot ve alt kayıtları tek transaction’da yazar.
 5. Aynı cadence periodunda mevcut snapshot varsa API çağrısı yapmadan atlar.
-6. Aktif Scoring v5 sonuçlarını son snapshot’a kadar yeniden hesaplar.
+6. Aktif Scoring v6 sonuçlarını son snapshot’a kadar yeniden hesaplar.
 
 Bir çağrı başarısız olursa venue için partial snapshot oluşmaz. Diğer venue’lar
 işlenmeye devam eder ve CLI non-zero exit code ile hata özetini yazdırır.
 
-**Zamanlama (2026-07-25 itibarıyla elle):** `app.discover` (**`search
+**Zamanlama (2026-07-26 itibarıyla elle):** `app.discover` (**`search
 --reset`** → freshness → finalize — `--reset` zorunlu, bkz. yukarıdaki
-"Discovery" bölümü) ayda bir, `app.fetch` iki haftada bir çalıştırılır;
-ikisi de şu an bir scheduler'a bağlı değildir, proje sahibi elle tetikler.
+"Discovery" bölümü) ve `app.backfill fetch` (Apify snapshot + review corpus;
+eski Google `app.fetch` supersede edildi) **ayda bir** elle çalıştırılır; ikisi
+de şu an bir scheduler'a bağlı değildir, proje sahibi elle tetikler. (Snapshot
+`cadence` config'i şu an `biweekly`; aylık period bucket istenirse
+`period_start_for`'a küçük bir "monthly" eklemesi gerekir — Armada task'ıyla
+değerlendirilecek.)
 Otomatik zamanlama (ör. bir CI/CD pipeline'ında scheduled job) Faz 4
 kapsamında değerlendirilecek — `cron` doğası gereği takvim alanlarıyla
 çalışır ve "iki haftada bir" gibi epoch-tabanlı bir periyodu doğrudan ifade
@@ -325,10 +339,56 @@ parity kontrolü job seviyesinde de ayrıca uygulanmalıdır.
 değiştirilebilir; `biweekly` seçiliyken `cadence_anchor_date` zorunludur
 (periyot sınırlarının hangi Pazartesi'ye hizalanacağını belirler).
 
-## Scoring v5
+## Veri çekimi — Apify (snapshot + review backfill)
+
+Google Places Place Details her çağrıda bir mekanın yalnızca **~5 review'unu**
+verir ve agregat rating popüler mekanlarda atıldır; üstelik bu SKU **paralıdır**.
+Apify'ın [Google Maps Reviews Scraper](https://apify.com/compass/google-maps-reviews-scraper)
+actor'ü her review item'ında hem mekanın **agregatını** (`totalScore` = rating,
+`reviewsCount` = toplam sayı, `title` = ad) hem de **~50 en yeni review'u** (tarih
++ yıldız + metin + kategori alt-puanları) döndürür. Bu yüzden Apify **tek koşuda**
+hem `place_snapshots` (skorun stability/velocity/trajectory zaman serisi) hem de
+`venue_reviews` corpus'unu (`source=backfill`; daha güçlü `sentiment_keyword_drift`
++ v6 count-split trajesi + review-consistency istikrarı) üretir ve **paralı Google
+Place Details fetch'inin yerini alır** (bu nedenle `app.fetch` artık supersede
+edilmiştir; yalnızca discover Nearby Search'te Google'da kalır).
+
+**Kapsam / kayıplar:** Apify reviews çıktısında `business_status` ve `price_level`
+yoktur. `price_level` skorda zaten kullanılmıyordu (zararsız). `business_status`
+kapalı-tespiti için kullanılıyordu; kapanan mekan yeni review almadığından
+**dormancy sinyali onu doğal olarak yakalar**, o yüzden Apify snapshot'larında bu
+alanlar `NULL` bırakılır. Agregat rating/sayı hâlâ Google'ın gösterdiği değerdir
+(Apify onu okur), yani ground-truth kaybı yoktur.
+
+Apify **pay-per-event** (~$0.30/1000 review); disiplin discover/fetch ile aynı:
+`APIFY_TOKEN` `.env`'de, `--plan` ile maliyet-şeffaf ön izleme, onay sonrası gerçek
+çağrı. (200 tracked mekan × 50 review = üst sınır ~$3; Apify ücretsiz planındaki
+aylık $5 kredi bunu karşılayabilir.)
+
+Akış:
+
+```bash
+# 1. Ön izleme (actor çalıştırılMAZ): kaç mekan, cadence/period, tahmini review, maliyet
+uv run python -m app.backfill fetch --region eryaman --plan
+
+# 2. Onay sonrası gerçek çağrı: Apify actor'ünü tracked place_id'lerle çalıştırır,
+#    ham yanıtı data/apify-eryaman.json'a yazar, place_snapshots + venue_reviews'e
+#    yazar ve v6 skorlarını yeniden hesaplar (tek komut).
+uv run python -m app.backfill fetch --region eryaman
+```
+
+Apify her review item'ında Google'ın `ChIJ...` `placeId`'sini döndürdüğünden join
+**doğrudan `provider_place_id` üzerinden** yapılır (slug köprüsü yok). Hem snapshot
+(`venue + cadence + period_start`) hem review (`venue_id + dedup_key`) upsert'i
+idempotenttir — aynı yanıt/period iki kez işlenince duplicate oluşmaz. Kaydedilmiş
+bir Apify JSON'u yalnızca corpus'a `app.backfill import --input <dosya>` ile de
+alınabilir (yeni çağrı olmadan).
+
+## Scoring v6
 
 Score formülü swappable ve versioned’dır. Aktif ağırlıklar
-[`config/scoring.v5.toml`](config/scoring.v5.toml) dosyasındadır:
+[`config/scoring.v6.toml`](config/scoring.v6.toml) dosyasındadır (v5 frozen
+kalır, hâlâ yüklenebilir):
 
 - Rating trajectory: `%30`
 - Review velocity/acceleration: `%20`
@@ -362,10 +422,36 @@ kimsenin artık ilgilenmediği bir mekanı doğru şekilde Bozdu yönüne çeker
 ceza mekanı hiçbir zaman kataloğdan/webapp’ten çıkarmaz, yalnızca skoru
 etkiler.
 
+**Yorum-tabanlı traje ve istikrar (v6):** Agregat rating popüler mekanlarda
+atıldır — 3000+ review'lu bir yerde gerçek bir kalite düşüşü (300 taze 1-yıldız)
+ortalamayı neredeyse hiç oynatmaz. v6, bir mekanın **backfill review corpus'u
+varsa** (bkz. aşağıdaki "Veri çekimi — Apify") iki sinyali doğrudan yorumlardan
+üretir:
+
+- **`rating_trajectory` — count-split:** corpus tarihe göre sıralanıp **newest
+  yarı vs older yarı** (takvime göre değil, **sayıya** göre) yıldız ortalaması
+  karşılaştırılır. 50 review kaç günü kaplarsa kaplasın çalışır — yoğun mekanın
+  newest 50'si haftaları, sakin mekanınki yılları kaplar, ikisi de trend verir.
+  Corpus bölünemeyecek kadar inceyse (`< 2 × review_min_per_split`) v5'in agregat
+  snapshot deltasına düşer. `details.mode` = `review_split` / `aggregate_snapshot`.
+- **`stability` — review-consistency:** corpus 5 zaman-sıralı bucket'a bölünür,
+  bucket yıldız-ortalamalarının stddev'i rating **seviyesinin** oynaklığını verir
+  (`> review_max_level_stddev` → volatile; `≥ high_rating_threshold` → stable_high;
+  yoksa stable_low). Böylece istikrar **snapshot birikmesini beklemeden** çıkar.
+  Eşik (0.65), 10'luk bucket'larda integer-rating gürültü tabanının (~0.38)
+  üstüne konur ki "volatile" gerçek savrulmayı işaretlesin, gürültüyü değil.
+  Corpus yoksa v5'in snapshot-volatilite davranışına düşer. `details.mode` =
+  `review_consistency` / (snapshot fallback).
+
+Aynı corpus `sentiment_keyword_drift`'i de besler (5-10 yerine ~50 review).
+Corpus `stability`'yi `available` yaptığından erken-faz güven tavanı (0.45) artık
+yalnızca ne snapshot ne corpus'u olan mekanlarda uygulanır — dolayısıyla corpus'lu
+mekanlarda güven gerçek sinyal gücünü yansıtır.
+
 Geçmiş skorları yeniden hesaplamak için:
 
 ```bash
-uv run python -m app.scoring.recompute --region eryaman --score-version v5
+uv run python -m app.scoring.recompute --region eryaman --score-version v6
 ```
 
 ## Operasyonel uyarılar
@@ -405,8 +491,10 @@ mantığı (freshness dahil), takip edilen (tracked) mekan seçimi ve yeniden
 sıralaması, bölgeler arası koruma, Legacy review sort parse (adapter genel
 çoklu-sort'u destekler, aktif config tek `newest` ister), review
 deduplication, günlük/haftalık/iki haftalık cadence idempotency,
-partial-fetch rollback, operasyonel uyarılar, fetch `--plan`, Scoring v5 ve
-web kartı fixture’larla doğrulanır.
+partial-fetch rollback, operasyonel uyarılar, fetch `--plan`, review backfill
+(Apify parse, placeId join, idempotent upsert, `fetch --plan`), Scoring v6
+(count-split trajesi + review-consistency istikrarı + corpus-tercihi + fallback) ve web kartı
+fixture’larla doğrulanır (backfill testleri Apify actor'ünü çağırmaz).
 
 ## Docker
 
@@ -449,6 +537,7 @@ Ana tablolar:
 - `fetch_runs`, `fetch_run_warnings`
 - `place_snapshots`, `snapshot_payloads`
 - `snapshot_reviews`, `snapshot_review_appearances`
+- `venue_reviews` (scraped backfill corpus, `source=backfill`)
 - `score_results`
 
 Gelecekteki üçüncü parti review backfill’i `source=backfill` ile eklenebilir;

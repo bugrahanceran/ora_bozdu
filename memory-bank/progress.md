@@ -515,3 +515,166 @@ gerçekten plandaki bölge olduğu için değiştirilmedi — yalnızca güncel-
 ve sonraki-adım ifadeleri güncellendi). 77 test + ruff temiz. Henüz hiçbir
 gerçek Armada API çağrısı yapılmadı; sıradaki adım onaylı dry-run →
 smoke → tam koşu (Eryaman'da izlenen akışın aynısı).
+
+## 2026-07-25 — Faz 3: Review backfill (harici scraper) + Scoring v6
+
+Places API fetch başına ~5 review veriyor ve agregat rating popüler mekanlarda
+atıl olduğundan `sentiment_keyword_drift` (gürültü) ve `rating_trajectory`
+(yavaş + atıl) zayıf. Kullanıcı harici bir Google Reviews scraper'ıyla her
+tracked mekanın son 12 ayının newest review'larını çekmek istedi. Uzun bir
+netleştirme turu: scraper (`google-reviews-scraper-pro`, MIT, SeleniumBase UC)
+incelendi, ToS/risk dürüstçe konuşuldu (local + ticari değil = en düşük risk),
+ve kritik teknik nokta düzeltildi — scraping mevcut `stability`'yi (agregat
+volatilitesi, snapshot'lardan) beslemez; asıl kazanç sentiment (50× veri) ve
+**review-window rating trajesi** (kayan-pencere yıldız ortalaması, agregatın
+gizlediği düşüşü yakalar). Mimari ilke: mutlak seviye API'de (ground-truth),
+scraper yalnızca trend/geçmiş/sentiment; `source=backfill` ile ayrı. Filtre:
+son 12 ay + `max_reviews: 200`.
+
+Plan onaylı, tamamlandı: migration `0005_add_venue_reviews` (`venue_reviews`
+tablosu, venue'ya bağlı corpus); `app/backfill.py` iki komut —
+`generate-config` (tracked katalogdan scraper businesses YAML'ı, her mekan
+`custom_params.ora_bozdu_slug` ile; scraper place_id'si `ChIJ...` olmadığından
+join slug üzerinden — scraper'ın `CustomParamsTask`'inin JSON'a slug'ı eklediği
+kod okumasıyla doğrulandı) ve `import` (JSON → idempotent upsert,
+`description: {lang:text}` birleştirilir); Scoring v6 — engine `ReviewInput`
+Protocol'ü (SnapshotReview + VenueReview ortak), `rating_trajectory`
+review_window modu (corpus varsa; yoksa agregat fallback, `details.mode`),
+`compute_venue_score` corpus-preference (`_reviews_for_scoring`);
+`scoring.v6.toml` + aktif version v6 (v5 frozen, review_window kapalı default).
+Scraper HARİCİ kalır (heavy deps repoya girmez). 88 test (10 yeni), ruff temiz,
+migration scratch DB'de upgrade→downgrade→upgrade→`alembic check` temiz. Canlı
+sanity: flat 4.3 agregat + son review 5→2 yıldız → v6 review_window yakalıyor,
+**bozdu** (v5 kaçırırdı).
+
+Adım 8-A yapıldı (kullanıcı onayıyla): migration gerçek DB'ye uygulandı,
+v6 recompute (206 mekan; corpus yokken agregat fallback = webapp v6'da çalışır),
+scraper config üretildi.
+
+## 2026-07-25 — Backfill aracı değişti: google-reviews-scraper-pro → Outscraper API
+
+google-reviews-scraper-pro gerçek ortamda denendi: onay + kurulum (ayrı venv,
+seleniumbase/boto3), tek-mekan smoke başarılı (MRADA CAFE 30 review, 44 sn,
+slug-join + import çalıştı). Ama 200-mekan tam koşusu ~3-5 saat (mekan başına
+~25-30 sn'si sadece browser navigasyonu, API değil tarayıcı otomasyonu olduğu
+için) + anti-detection kırılganlığı olduğundan kullanıcı bu aracı bıraktı ve
+**Outscraper Google Maps Reviews API**'sine geçti.
+
+Temizlik: klon + scraper venv + smoke artefaktları silindi; smoke'ta gerçek
+DB'ye giren 30 `venue_reviews` satırı temizlendi (0). Yeniden mimari (kullanıcı
+"aracımız API'yi doğrudan çağırsın" seçti): `pyproject`'e `outscraper` dep
+(lazy import — modül/testler onsuz çalışır), `OUTSCRAPER_API_KEY` Settings/`.env`;
+`app/backfill.py` baştan yazıldı:
+- `fetch` — Outscraper SDK'sını tracked place_id'lerle (25'lik gruplar) çağırır
+  (`reviews_limit=100 sort=newest cutoff=12ay language=tr`), ham yanıtı
+  `data/outscraper-<region>.json`'a persist'ten önce yazar, sonra import eder.
+- `fetch --plan` — maliyet-şeffaf ön izleme (mekan/API-çağrısı/tahmini-review/
+  cost-note), API çağırmaz.
+- `import --input` — kayıtlı Outscraper JSON'u alır.
+**place_id join temizlendi:** Outscraper `ChIJ...` döndürdüğünden doğrudan
+`provider_place_id` join; eski slug/custom-param köprüsü + `generate-config`
+kaldırıldı. Testler Outscraper formatına yeniden yazıldı (API çağırmadan),
+**90 test geçiyor**, ruff temiz. `venue_reviews` + Scoring v6 (review-window)
+dokunulmadan duruyor.
+
+**Güvenlik olayı:** bir `grep` `.env`'deki gerçek `GOOGLE_MAPS_API_KEY`'i
+terminale bastı; kullanıcıya rotate bildirildi (bkz. feedback belleği). Bundan
+sonra `.env`'e hassas grep yok.
+
+**Henüz yapılmadı (Outscraper 6, onay + key bekliyor):** gerçek `app.backfill
+fetch --region eryaman` (paralı) → v6 recompute → raporla.
+
+## 2026-07-25 — Backfill aracı değişti: Outscraper → Apify (maliyet)
+
+Outscraper'ın gerçek `fetch`'i hiç koşulmadan, fiyatı (mekan başı 100 review →
+üst sınır ~$58.5) pahalı bulundu; kullanıcı **Apify Google Maps Reviews Scraper**
+actor'üne (`compass/google-maps-reviews-scraper`) geçti ve mekan başı review'u
+**100 → 50**'ye çekti (sentiment + 12-ay trajesi için yeterli).
+
+`app/backfill.py` Apify'a göre baştan yazıldı:
+- `fetch` — tüm tracked place_id'leri **tek Apify run**'ında çalıştırır
+  (`client.actor(...).call(run_input={placeIds, maxReviews=50,
+  reviewsSort='newest', reviewsStartDate='365 days', language='tr',
+  reviewsOrigin='all', personalData=True})`), dataset'i iterate eder, ham yanıtı
+  `data/apify-<region>.json`'a persist'ten önce yazar. Batch'leme kalktı (Apify
+  kuyruğu içeride yönetiyor).
+- `persist_reviews` (eski `persist_places`) artık Apify'ın **düz review-item**
+  listesini alır (her item `placeId` taşır) — Outscraper'ın nested `reviews_data`
+  yapısı yerine. Parse: `publishedAtDate` (ISO), `stars`, `text`, `name`,
+  `reviewId`. `placeId` → `provider_place_id` join, `(venue_id, dedup_key)`
+  idempotent upsert korundu.
+- `fetch --plan` fiyatı Apify'a göre (~$0.30/1000, pay-per-event): 200 × 50 =
+  10.000 review → **üst sınır $3** (Apify'ın aylık $5 ücretsiz kredisi
+  karşılayabilir → potansiyel $0).
+
+Config/dep: `OUTSCRAPER_API_KEY` → `APIFY_TOKEN` (Settings `SecretStr`, `.env`
+sessiz `sed` ile — secret bastırılmadı), `pyproject` `outscraper` → `apify-client`
+(lazy import). `.gitignore` `data/outscraper-*` → `data/apify-*`. Testler Apify
+formatına yeniden yazıldı (actor çağırmadan). Dokümanlar (README/techContext/
+dataModel) Apify'a güncellendi. `venue_reviews` + Scoring v6 dokunulmadı.
+
+**Henüz yapılmadı (onay + `APIFY_TOKEN` bekliyor):** gerçek `app.backfill fetch
+--region eryaman` (paralı, ~$3 üst sınır) → v6 recompute → raporla. `uv.lock`
+Apify dep için henüz pin'lenmedi (uv PATH'te yok).
+
+## 2026-07-25 — Apify birleşik pipeline: Place Details fetch supersede
+
+Kullanıcı token'ı ekledi + iki karar: **(1)** `reviewDetailedRating → sub_ratings`
+eklendi (kategori Food/Service/Atmosphere; reviewer doldurmadıysa `{}` → None).
+**(2)** `apify-client` 3.1.0 kuruldu (`.venv` pip; `pyproject` pin `>=3.0`), SDK
+yüzeyi (`actor().call()` + `dataset().iterate_items()`) ağsız doğrulandı.
+
+**Büyük mimari değişiklik:** Apify her review item'ında mekan agregatını
+(`totalScore`→rating, `reviewsCount`→user_ratings_total, `title`→name) da verdiği
+için **paralı Google Place Details `fetch`'i supersede edildi**. `app/backfill.py`'ye
+`persist_snapshots` eklendi: Apify agregatından `place_snapshots` üretir
+(`FetchRun(provider="apify")`, `(venue,cadence,period_start)` idempotent,
+name-change WARNING). `fetch` artık **tek koşuda** `persist_reviews` (corpus) +
+`persist_snapshots` (agregat) + `recompute_region` (v6) çalıştırır; cadence/period
+`data_collection.<region>.yaml`'dan gelir (CLI `--data-collection-config`/`--date`
+eklendi).
+
+Kararlar (kullanıcı, AskUserQuestion): business_status kaybı → **dormancy yeter**
+(ekstra Google çağrısı yok; Apify snapshot'larında business_status/price_level
+NULL); **şimdi birleşik kur** (throwaway koşu yok). Discover hâlâ Google Nearby
+Search'te ("sadece discover dursun; sonra onu da scraper'a bakarız"). Scoring kodu
+**hiç değişmedi** — zaten `place_snapshots` + `venue_reviews` corpus'undan besleniyor.
+
+Doğrulama: **98 test** (4 yeni snapshot testi), ruff temiz. `fetch --plan` gerçek
+katalogda: 200 mekan, biweekly period 2026-07-13, 10k max review, **$3 üst sınır**,
+`produces: place_snapshots + venue_reviews + v6 recompute`. Dokümanlar (README/
+techContext/dataModel) güncellendi; `app.fetch` supersede notlarıyla korundu.
+
+**Henüz yapılmadı (onay bekliyor):** gerçek `app.backfill fetch --region eryaman`
+(paralı ~$3). `uv.lock` Apify dep için pin'lenmeli (uv PATH'te yok).
+
+## 2026-07-26 — Apify gerçek koşu + v6 count-split/review-consistency + aylık plan
+
+**Apify gerçek koşusu yapıldı** (onaylı; ~$5 = Apify aylık ücretsiz kredisi doldu):
+200 tracked mekan, **8336 review** → `venue_reviews` corpus (181 mekan; 19'u
+pencerede review döndürmedi), 0 unmatched, sub_ratings ~%100. Snapshot'lar bu
+periyodu (2026-07-13) Google zaten tuttuğundan skip edildi; v6 recompute 206 mekan.
+Küçük canlı smoke (3 mekan) alan şekillerini doğruladı ve **apify-client 3.x'te
+`.call()` dict değil `Run` nesnesi döndürüyor** bug'ını yakaladı →
+`run.default_dataset_id` düzeltmesi.
+
+**v6 evriltildi (kullanıcı yönlendirmesi — takvim penceresi yanlıştı):**
+- `rating_trajectory` **review_window → count-split**: 50 review takvime
+  sıkıştırılmıyor; tarihe göre sıralanıp newest yarı vs older yarı (sayıya göre)
+  karşılaştırılıyor. Yoğun mekan (Halimbey 50 review = 69 gün) da çalışıyor.
+- `stability` **review-consistency eklendi**: 50 review 5 zaman-bucket'ı, bucket
+  ortalamalarının stddev'i → seviye oynaklığı. Snapshot beklemeden `available` →
+  `early_phase_cap` (0.45) kalkıyor.
+- **volatile eşik kalibrasyonu 0.40→0.65:** ilk recompute'ta 109 mekan volatile
+  çıktı; sebep 10'luk bucket integer-rating gürültü tabanının (~0.38) eşiğe denk
+  gelmesi. 0.65'e çekince 56 (gerçek savrulanlar; Arabica/IL FORNO stable'a döndü).
+
+**Sonuç (Halimbey):** trajectory kanıt gücü %1→%100, veri güveni %35→%84,
+stability insufficient_data→stable_low. Bölge geneli: confidence ort 0.45→0.73,
+177/206 mekan >%45; **88 dengede / 70 coştu / 48 bozdu**. **102 test**, ruff temiz.
+
+**Operasyonel plan (kullanıcı):** bundan sonra discover + Apify snapshot **ayda
+bir** elle. Yavaş genişleme; **sıradaki task: Armada** bölgesi. Not: `cadence`
+config `biweekly`; aylık period bucket için `period_start_for`'a "monthly"
+eklemesi gerekir (Armada'yla değerlendirilecek). Versiyon: v6 evriltildi
+(yayınlanmamıştı; istenirse v7).

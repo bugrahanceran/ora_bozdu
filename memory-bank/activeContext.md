@@ -330,12 +330,119 @@ gösteriyor. Kullanılmayan `has_place_id` alanı kaldırıldı. Sınır: 3 non-
 (seçilmeyen option C) çözerdi. Gerçek Arabica verisiyle canlı doğrulandı; 1
 yeni web testi + mevcut teste yeni assertion'lar, toplam 78 test geçiyor.
 
+> **NOT (kısmen geçersiz):** Aşağıdaki entry, backfill'in ilk denemesi olan
+> local `google-reviews-scraper-pro`'yu anlatır. O araç bırakıldı (200 mekan
+> ~3-5 saat + anti-detection kırılganlığı); yerine **Outscraper API** geldi.
+> `venue_reviews` + Scoring v6 (review-window) aynen duruyor; yalnızca ingestion
+> katmanı değişti. Güncel durum için aşağıdaki "2026-07-25 (devamı) — backfill
+> aracı değişti: Outscraper" kaydına bak. `generate-config`/slug-köprüsü artık
+> yok; `fetch` (API) + place_id join var.
+
+**2026-07-25 — Faz 3: Review backfill (harici scraper) + Scoring v6.**
+Kullanıcı, Places API'nin fetch başına yalnızca ~5 review vermesinin ve
+agregat rating'in popüler mekanlarda atıl olmasının scoring'i zayıflattığını
+belirtip harici bir Google Reviews scraper'ıyla geçmişe dönük review
+çekmek istedi. Uzun bir netleştirme turu oldu: (1) scraper'ın (`google-reviews-
+scraper-pro`, MIT, SeleniumBase UC anti-detection) ne olduğu incelendi ve ToS/
+risk dürüstçe konuşuldu (local + ticari değil → en düşük risk); (2) kritik
+teknik düzeltme yapıldı — scraping mevcut `stability`'yi (agregat volatilitesi,
+snapshot'lardan gelir) BESLEMEZ; asıl kazanç `sentiment_keyword_drift` (50×
+veri) ve **review-window rating trajesi** (kayan-pencere yıldız ortalaması,
+agregatın gizlediği düşüşü yakalar); (3) mutlak seviye API'de kalır
+(ground-truth), scraper yalnızca trend/geçmiş/sentiment verir; (4) filtre
+kullanıcıyla netleşti: son 12 ay + `max_reviews: 200` cap (sabit sayı drift
+için zaman-span'i garanti etmez, tarih filtresi eder).
+
+Uygulama (plan onaylı, hepsi bitti): migration `0005_add_venue_reviews`
+(`venue_reviews`, venue'ya bağlı corpus, `source=backfill`); `app/backfill.py`
+iki komut — `generate-config` (tracked katalogdan scraper businesses YAML'ı,
+her mekan `custom_params.ora_bozdu_slug` ile — çünkü scraper'ın place_id'si
+`ChIJ...` değil) ve `import` (JSON → `venue_reviews` idempotent upsert, slug→
+Venue join, `description: {lang: text}` dict'i birleştirilir); Scoring v6 —
+engine `ReviewInput` Protocol'ü alıyor (SnapshotReview + VenueReview ortak),
+`rating_trajectory` corpus varsa **review_window modu** (yoksa agregat
+fallback, `details.mode` yazılır), `sentiment` aynı formül-zengin girdi;
+`compute_venue_score` corpus varsa onu geçiriyor (`_reviews_for_scoring`);
+`scoring.v6.toml` + aktif version v6'ya yükseltildi (v5 frozen, review_window
+kapalı default'la). Scraper HARİCİ kalır (heavy deps repoya girmez), repomuz
+yalnızca config-üretici + importer sağlar.
+
+Doğrulama: 88 test (10 yeni — backfill parse/import, v6 review-window/fallback,
+corpus-preference service, config load), ruff temiz, migration scratch DB'de
+upgrade→downgrade→upgrade→`alembic check` temiz. Canlı sanity: flat 4.3 agregat
++ son review'lar 5→2 yıldız → v6 `review_window` yakalıyor, classification
+**bozdu** (v5 kaçırırdı).
+
+**2026-07-25 (devamı) — backfill aracı değişti: google-reviews-scraper-pro →
+Outscraper API.** İlk aracı gerçek ortamda denedik: onay + kurulum (ayrı
+venv, seleniumbase/boto3), tek-mekan smoke başarılı (MRADA CAFE 30 review,
+44 sn, `ora_bozdu_slug` JSON'da → slug-join çalıştı, import 30 satır). Ama
+200-mekan tam koşusu ~3-5 saat (mekan başına ~25-30 sn'si sadece browser
+navigasyonu) + anti-detection kırılganlığı olduğundan kullanıcı bu aracı
+bıraktı, **Outscraper Google Maps Reviews API**'sine geçti. Klon + venv + smoke
+artefaktları silindi; smoke'ta gerçek DB'ye giren 30 satır temizlendi
+(`venue_reviews` 0). Yeniden mimari (kullanıcı "A: aracımız API'yi çağırsın"
+seçti): `pyproject`'e `outscraper` dep (lazy import), `OUTSCRAPER_API_KEY`
+config/`.env`; `app/backfill.py` baştan yazıldı — `fetch` (Outscraper SDK'sını
+25'lik place_id gruplarıyla çağırır, `reviews_limit=100 sort=newest cutoff=12ay`,
+ham yanıtı `data/outscraper-<region>.json`'a persist'ten önce yazar) + `--plan`
+(maliyet-şeffaf, API'siz) + `import` (kayıtlı JSON). **place_id join temizlendi:**
+Outscraper `ChIJ...` döndürdüğü için doğrudan `provider_place_id` join, slug/
+custom-param köprüsü kalktı. `generate-config` kaldırıldı. Testler Outscraper
+formatına yeniden yazıldı (API çağırmadan: parse/persist/plan), **90 test
+geçiyor**, ruff temiz. `venue_reviews` + Scoring v6 (review-window) dokunulmadan
+duruyor.
+
+**⚠️ Güvenlik olayı (2026-07-25):** Bir `grep` komutu `.env`'deki gerçek
+`GOOGLE_MAPS_API_KEY`'i terminal çıktısına bastı (httpx-log sızıntısıyla aynı
+kategori). Kullanıcıya rotate etmesi bildirildi. Bundan sonra `.env`'e karşı
+hassas grep yapılmayacak.
+
+**2026-07-25 (devamı) — backfill aracı değişti: Outscraper → Apify (maliyet).**
+Outscraper'ın gerçek `fetch`'i hiç koşulmadan pahalı bulundu (mekan başı 100
+review → üst sınır ~$58.5). Kullanıcı **Apify Google Maps Reviews Scraper**
+actor'üne (`compass/google-maps-reviews-scraper`) geçti ve mekan başı review'u
+**100 → 50**'ye çekti. `app/backfill.py` yeniden yazıldı: tüm tracked place_id
+**tek Apify run**'ında (`client.actor(...).call(run_input={placeIds,
+maxReviews=50, reviewsSort='newest', reviewsStartDate='365 days', ...})`),
+dataset iterate, ham yanıt `data/apify-<region>.json`. `persist_reviews` artık
+Apify'ın **düz review-item** listesini alır (Outscraper'ın nested `reviews_data`
+yapısı yerine), her item'ın `placeId`'siyle `provider_place_id` join. Parse
+alanları: `publishedAtDate`/`stars`/`text`/`name`/`reviewId`. Config: `APIFY_TOKEN`
+(`.env` sessiz `sed` — secret bastırılmadı), `pyproject` `apify-client` (lazy).
+`--plan` fiyatı: 200 × 50 = 10.000 review → **üst sınır $3** (~$0.30/1000
+pay-per-event; Apify'ın aylık $5 kredisi karşılayabilir). Testler Apify formatına
+yeniden yazıldı, dokümanlar güncellendi.
+
+**2026-07-25 (devamı) — Apify birleşik pipeline; Place Details fetch supersede.**
+Kullanıcı `APIFY_TOKEN` ekledi. İki küçük iş: `reviewDetailedRating → sub_ratings`
+(kategori puanları; `{}` → None) + `apify-client` 3.1.0 kuruldu (SDK yüzeyi ağsız
+doğrulandı, pin `>=3.0`). **Büyük değişiklik:** Apify her review item'ında agregatı
+(`totalScore`→rating, `reviewsCount`→user_ratings_total, `title`→name) da verdiği
+için **paralı Google Place Details `fetch`'i supersede edildi**. `persist_snapshots`
+eklendi (Apify agregatından `place_snapshots`, `FetchRun(provider="apify")`,
+`(venue,cadence,period_start)` idempotent, name-change WARNING). `backfill fetch`
+artık tek koşuda corpus + snapshot + v6 recompute; cadence/period
+`data_collection.<region>.yaml`'dan. Kararlar (AskUserQuestion): business_status →
+**dormancy yeter** (Apify'da yok → NULL; price_level de NULL, zaten kullanılmıyor);
+**şimdi birleşik kur**. Discover Google Nearby Search'te kalıyor. Scoring kodu hiç
+değişmedi. **98 test**, ruff temiz; `fetch --plan`: 200 mekan, biweekly 2026-07-13,
+$3 üst sınır, `produces: place_snapshots + venue_reviews + v6 recompute`.
+
+**2026-07-26 — Apify gerçek koşusu yapıldı + v6 evriltildi.** `app.backfill fetch
+--region eryaman` (onaylı, ~$5 Apify kredisi doldu): **8336 review corpus**, 181
+mekan, v6 recompute 206. v6 iki sinyali corpus'tan üretecek şekilde değişti:
+`rating_trajectory` **count-split** (newest yarı vs older yarı, takvim değil sayı)
++ `stability` **review-consistency** (5 bucket seviye-stddev); volatile eşik 0.65
+(gürültü tabanı üstü). Halimbey güveni %35→%84, bölge ort 0.45→0.73. **102 test**.
+`uv.lock` hâlâ pin'lenmeli (uv PATH'te yok). Detay: progress.md 2026-07-26.
+
 ## Kesinleşen kararlar
 
 - Puanlama yaklaşımı: **A — normalize edilmiş ağırlıklı change score +
-  confidence**, aktif version `scoring.v5` (2026-07-24'te `v4`'ten devraldı;
-  ağırlıklar değişmedi, stability'ye dormancy cezası eklendi — bkz. aşağıdaki
-  2026-07-24 kaydı).
+  confidence**, aktif version `scoring.v6` (2026-07-25'te `v5`'ten devraldı;
+  ağırlıklar aynı, `rating_trajectory`'ye backfill-corpus'undan review-window
+  modu eklendi — bkz. yukarıdaki 2026-07-25 Faz 3 kaydı). v5/v4 frozen kalır.
 - Ağırlıklar (v4'ten beri sabit): rating trajectory `%30`, review velocity
   `%20`, sentiment/keyword drift `%20` ve stability `%30`.
 - Domain `change_score` değeri `-100..+100`, UI bar position `0..100` olur.
@@ -601,6 +708,20 @@ score version olarak kararlaştırılacaktır.
 
 ## Son doğrulama sonuçları
 
+- 2026-07-25 (Faz 3 devamı: Apify'a geçiş): `pytest`: **90 test** geçti
+  (`test_backfill.py` Apify formatına yeniden yazıldı — parse ISO date/date-only,
+  placeId join, idempotent upsert, nested-list, `fetch --plan` + cost; actor
+  çağırmaz). `ruff check`/`format`: temiz. `app.backfill fetch --plan` gerçek
+  katalogda çalıştı: 200 mekan, tek Apify run, 10k max review, **üst sınır $3**.
+  `venue_reviews` şu an boş. Gerçek Apify `fetch` (paralı) henüz yapılmadı —
+  onay + `APIFY_TOKEN` bekliyor.
+- 2026-07-25 (Faz 3 ara: Outscraper denemesi): 90 test; `app/backfill.py`
+  Outscraper SDK'sına yazılmıştı, gerçek `fetch` hiç koşulmadan maliyet (~$58.5)
+  nedeniyle Apify'a geçildi (yukarı bak).
+- 2026-07-25 (Faz 3 ilk hali: review backfill + Scoring v6): 88 test; v6
+  scoring/`venue_reviews`/migration doğrulandı, migration gerçek DB'ye
+  uygulandı ve v6 recompute (206 mekan) yapıldı. Backfill ingestion o zaman
+  google-reviews-scraper-pro içindi (sonra Outscraper'a geçildi).
 - 2026-07-25 (takip edilen mekan + biweekly cadence): `pytest`: 75 test
   geçti (24 yeni: `rank_tracked_venues`, biweekly `period_start_for`,
   seed-safety bugfix, `is_tracked` katalog/DB round-trip, `FetchConfig`
@@ -660,9 +781,20 @@ score version olarak kararlaştırılacaktır.
    yapıldı, kullanıcının "%32 mi %45 mi neye göre" sorusuna cevaben veri
    güveni açıklama popup'ı eklendi.) Devam eden bir denetim değil, daha
    fazla snapshot biriktikçe doğal olarak gözden geçirilecek.
-5. Faz 4: discover (aylık)/fetch (2 haftada bir) tetiklemesini scheduled bir
-   pipeline'a (örn. Jenkins) bağlamak — yalnızca not düşüldü, tasarım
-   yapılmadı (bkz. techContext.md "Faz 4'te netleştirilecek").
+5. **(2026-07-26'da yapıldı: Apify gerçek koşusu — 8336 review corpus, v6
+   count-split + review-consistency + volatile tune, Halimbey %35→%84; bkz.
+   progress.md 2026-07-26 kaydı.)**
+6. **Sıradaki task: Armada bölgesi** (kullanıcı: "yavaş yavaş genişleyeceğiz, ilk
+   armada"). `config/catalog.armada.yaml` + `data_collection.armada.yaml` zaten
+   var; Armada için discover koşusu (search --reset → freshness → finalize) +
+   Apify backfill gerekir. Bu turda **monthly cadence** eklemesi de değerlendir
+   (`period_start_for`'a "monthly" branch + FetchConfig validator + yaml cadence;
+   kullanıcı ayda bir çalıştıracak).
+7. **Operasyonel cadence (kullanıcı, 2026-07-26):** discover + Apify snapshot
+   **ayda bir** elle. Sonraki iterasyon: sub-rating (`sub_ratings`) kategori-drift
+   sinyali (corpus'ta toplanıyor, henüz skora girmiyor).
+8. Faz 4: aylık discover/Apify snapshot tetiklemesini scheduled bir pipeline'a
+   bağlamak — yalnızca not düşüldü, tasarım yapılmadı.
 
 ## Açık konular
 

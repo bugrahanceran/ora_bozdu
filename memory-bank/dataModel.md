@@ -94,6 +94,17 @@ migration'ıyla şemadan kaldırılmıştır; periyodik fetch field mask'i bu
 alanları hiçbir zaman istemediği için sürekli boş kalıyorlardı. Field mask
 genişlerse yeni bir migration ile geri eklenir.
 
+**İki kaynak (2026-07-25):** snapshot'lar iki yoldan gelebilir. Eski Google Place
+Details fetch'i (`FetchRun.provider="places_api"`, tüm alanlar dolu) **supersede
+edildi**; biweekly snapshot artık **Apify**'dan üretilir
+(`FetchRun.provider="apify"`, `app.backfill`'deki `persist_snapshots`):
+`rating`←`totalScore`, `user_ratings_total`←`reviewsCount`, provider name←`title`.
+Apify reviews çıktısında `business_status`/`price_level` olmadığından bu iki alan
+Apify snapshot'larında `NULL`'dur (business_status kaybını dormancy sinyali
+karşılar, price_level skorda kullanılmıyor). Apify snapshot'larına
+`snapshot_payloads`/`snapshot_reviews` yazılmaz — review'lar ayrı `venue_reviews`
+corpus'una gider, scoring absolute agregatı `place_snapshots`'tan okur.
+
 `venue_id + cadence + period_start` unique constraint cadence-aware idempotency
 sağlar. `snapshot_payloads` içindeki request-variant unique constraint ile
 birlikte aynı period + venue + review sort duplicate olamaz. Snapshot ve alt
@@ -150,6 +161,29 @@ review metni yalnızca bir kez tutulur. Aktif config tek sort istediğinden
 (2026-07-25) yeni snapshot'larda bu yalnızca tek appearance ile sonuçlanır;
 mekanizma değişmedi, girdi çeşitliliği azaldı.
 
+### `venue_reviews`
+
+Apify Google Maps Reviews Scraper actor'ünden gelen, **venue'ya bağlı** tarihsel
+review corpus'u (`snapshot_reviews`'un aksine bir fetch snapshot'ına değil
+doğrudan venue'ya bağlı). `0005_add_venue_reviews` (2026-07-25) ile eklendi.
+
+Temel alanlar: `id`, `venue_id`, `source` (default `backfill`),
+`provider_review_id`, `dedup_key`, `author_name`, `published_at`, `rating`
+(1-5), `text`, `language`, `sub_ratings` (JSON, kategori-bazlı puanlar —
+sağlayıcı veriyorsa), `scraped_at`. `venue_id + dedup_key` unique (idempotent
+import). `dedup_key` Apify'ın stabil `reviewId`'sinden (varsa) türetilir;
+yoksa `make_review_key` ile içerik-hash'i. Import Apify'ın düz review-item
+listesini alır ve her item'ın `placeId`'sini (Google `ChIJ...`) doğrudan
+`Venue.provider_place_id`'ye join eder (bkz. techContext.md "Review backfill").
+
+Scoring bir venue'nun `venue_reviews` corpus'u varsa review-tabanlı sinyalleri
+(sentiment, v6 count-split rating trajesi, review-consistency stability)
+`snapshot_reviews` yerine bundan besler (corpus daha zengin ve tarih-tutarlı);
+corpus yoksa `snapshot_reviews` fallback. `SnapshotReview` ve `VenueReview` ortak `ReviewInput` protokolünü
+(dedup_key/published_at/rating/text) sağladığından engine ikisini de tüketebilir.
+Mutlak seviye (agregat rating, toplam sayı) hâlâ `place_snapshots`'tan (Places
+API ground-truth) gelir; Apify yalnızca trend/geçmiş/sentiment verir.
+
 ### `score_results`
 
 Versioned scoring çıktısıdır ve yeniden üretilebilir.
@@ -179,6 +213,15 @@ Task 1 üçüncü parti backfill yapmaz. İleride son 6 aya ait review'lar geldi
 
 ## Schema değişiklik geçmişi
 
+- **2026-07-25 — `0005_add_venue_reviews`:** `venue_reviews` tablosu eklendi
+  (Apify'dan gelen tarihsel review corpus'u, `source=backfill`,
+  `venue_id + dedup_key` unique — bkz. yukarıdaki `venue_reviews` bölümü ve
+  techContext.md "Review backfill + Scoring v6" bölümü). Scratch DB'de
+  upgrade→downgrade→upgrade→`alembic check` temiz. Şemayla birlikte gelen
+  davranış: aktif scoring version `scoring.v6.toml`'a yükseltildi (v5 frozen);
+  v6, corpus varsa `rating_trajectory`'yi count-split (newest yarı vs older yarı)
+  ve `stability`'yi review-consistency ile hesaplıyor (score girdisi değişikliği
+  → yeni version; bkz. 2026-07-26 kaydı).
 - **2026-07-25 — `0004_add_venue_is_tracked`:** `venues.is_tracked`
   (`Boolean`, `default=true`) eklendi — dinamik top-N "takip edilen mekan"
   seçimi için (bkz. yukarıdaki `venues` bölümü ve techContext.md "Takip
