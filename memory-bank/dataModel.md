@@ -16,15 +16,15 @@
 
 ### `regions`
 
-Bölge kataloğu. DB'de şu an yalnızca `eryaman` var (tek `Region` kaydı,
-`region_id=1`) — ikinci bölge kaydı ancak o bölgenin ilk `app.fetch`/
-`sync_catalog` koşusunda oluşur. Faz 2'de ikinci bölge önce Batıkent olarak
-planlandı ama hiç gerçek koşu yapılmadan (katalog boşken) 2026-07-25'te
-iptal edilip yerine **Armada** (Söğütözü) kondu; Armada da henüz DB'ye
-sync edilmedi, ilk onaylı discovery+fetch akışında `Region` kaydı olacak.
+Bölge kataloğu. Repository'de Eryaman ve Armada için ayrı config ve venue
+kataloğu bulunur. DB'deki `Region` kayıtları, ilgili katalog `sync_catalog`
+akışında veritabanına sync edildiğinde oluşur; yerel DB'nin hangi bölgeleri
+içerdiği çalışma ortamına bağlıdır ve git'teki kataloglardan çıkarılamaz.
+İkinci bölge önce Batıkent olarak planlandı, 2026-07-25'te yerine
+**Armada** (Söğütözü) kondu.
 `provider_place_id` unique constraint'i `venues` tablosunda global'dır
-(bölgeye özel değildir) — bu, aynı gerçek mekanın iki bölgede birden takip
-edilmesini DB seviyesinde engeller; asıl koruma discovery'nin
+(bölgeye özel değildir) — bu, aynı gerçek mekanın birden çok bölge kataloğuna
+eklenmesini DB seviyesinde engeller; asıl koruma discovery'nin
 `load_other_region_place_ids` ön-kontrolüdür (bkz. techContext.md Discovery
 bölümü), bu constraint son çare güvenlik ağıdır.
 `Region`'ın kendisi hiçbir zaman koordinat/geometri taşımadı — bölge merkezi
@@ -200,19 +200,24 @@ ham snapshot'ları değiştirmez.
 `score_results` üretiminde kullanılmaz. Name değişikliği yalnızca
 `fetch_run_warnings` üzerinden operasyonel olarak izlenir.
 
-## Backfill hazırlığı
+## Backfill ve kaynak ayrımı
 
-Task 1 üçüncü parti backfill yapmaz. İleride son 6 aya ait review'lar geldiğinde:
-
-- `source=backfill` ile kaynak ayrımı korunur.
-- Provider review ID varsa öncelikli dedup anahtarı olur.
-- Cross-provider eşleştirme ayrı bir normalization/dedup servisi olarak ele
-  alınır; Places verisi otomatik olarak üzerine yazılmaz.
-- Review'un kendi `published_at` değeri event time, ingest zamanı ise ayrı
-  `captured_at`/run zamanı olarak korunur.
+Apify Google Maps Reviews Scraper'dan alınan review corpus'u
+`venue_reviews` tablosunda `source=backfill` ile tutulur; Google Places Legacy
+snapshot review'ları `snapshot_reviews` içinde `source=places_api` olarak
+ayrıdır. Provider review ID varsa öncelikli dedup anahtarı olur. Review'un
+`published_at` değeri event time, ingest zamanı ise scrape/run zamanı olarak
+korunur. Apify agregatları `place_snapshots`'a yazılır; review import'u
+mevcut Places kayıtlarını otomatik olarak üzerine yazmaz.
 
 ## Schema değişiklik geçmişi
 
+- **2026-11-02 — Discovery freshness aşamasının kaldırılması:** DB şeması
+  değişmedi. `app.discover` içinden Legacy Places Details freshness stage'i
+  kaldırıldı; adaylar hard filtreler sonrası doğrudan kataloğa eklenir ve
+  rapordaki seçim sırası review hacmine dayanır. Discovery cache artık
+  freshness sonuçlarını/payload'larını içermez. Apify review corpus'u ve
+  Scoring v6 dormancy sinyali değişmedi.
 - **2026-07-25 — `0005_add_venue_reviews`:** `venue_reviews` tablosu eklendi
   (Apify'dan gelen tarihsel review corpus'u, `source=backfill`,
   `venue_id + dedup_key` unique — bkz. yukarıdaki `venue_reviews` bölümü ve

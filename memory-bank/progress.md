@@ -673,8 +673,25 @@ Küçük canlı smoke (3 mekan) alan şekillerini doğruladı ve **apify-client 
 stability insufficient_data→stable_low. Bölge geneli: confidence ort 0.45→0.73,
 177/206 mekan >%45; **88 dengede / 70 coştu / 48 bozdu**. **102 test**, ruff temiz.
 
-**Operasyonel plan (kullanıcı):** bundan sonra discover + Apify snapshot **ayda
-bir** elle. Yavaş genişleme; **sıradaki task: Armada** bölgesi. Not: `cadence`
-config `biweekly`; aylık period bucket için `period_start_for`'a "monthly"
-eklemesi gerekir (Armada'yla değerlendirilecek). Versiyon: v6 evriltildi
-(yayınlanmamıştı; istenirse v7).
+**Operasyonel plan (2026-07-26'da kararlaştırıldı):** discover + Apify snapshot
+ayda bir elle çalıştırılır. O tarihte sıradaki task Armada bölgesiydi; Armada
+config/katalog güncellemesi 2026-11-02'de kaydedildi (aşağıdaki ilerleme
+notu). `cadence` config `biweekly`; aylık period bucket desteği ayrı bir
+değerlendirme olarak duruyor. Scoring v6 aktif sürüm olarak korunuyor.
+
+## 2026-11-02 — Discovery akışının sadeleştirilmesi ve Armada yenilemesi
+
+Discovery'deki Legacy Places Details freshness aşaması kaldırıldı. `app.discover`
+CLI artık yalnızca `search`, `status` ve `finalize` aşamalarını sunuyor; cache
+artık freshness sonuçlarını veya ham freshness payload'larını saklamıyor.
+Katalog seçimi, `OPERATIONAL`, review-count, yarıçap ve hariç tutulan ana tip
+filtrelerini geçen tüm yeni adayları ekliyor. Aday rapor sıralaması yalnızca
+review hacmine dayanıyor; discovery sırasında review tarihi için ek Legacy
+isteği yok. Durgunluk sinyali, review corpus'u bulunan mekanlarda Scoring v6
+Apify verisini kullanmaya devam ediyor.
+
+Armada discovery config'i ve kataloğu yenilendi; Armada grid hücre yarıçapı
+400 m, `tracked_venue_limit` 500 olarak ayarlandı. Eryaman config'indeki eski
+freshness-cezası ayarları da kaldırıldı. Katalog ve discovery raporu commit
+edildi. Faz 2'nin bu güncellemesi DB şema değişikliği gerektirmedi; discovery
+testleri kaldırılan freshness stage/selection API'sine göre güncellendi.

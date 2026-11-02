@@ -17,8 +17,10 @@
 Places API tarihsel rating/review time series sağlamaz. Sistem bu nedenle
 snapshot-first tasarlanır:
 
-- Her başarılı periyodik fetch, venue state ve API'den dönen ham payload'ları
-  timestamp ile append-only saklar.
+- Apify actor'ünün ham JSON yanıtı `data/apify-<region>.json` dosyasına
+  persist'ten önce yazılır; parse edilmiş snapshot agregatları ve review
+  corpus'u SQLite'ta tutulur. Apify akışındaki snapshot'lar için
+  `snapshot_payloads` satırı üretilmez.
 - Rating trajectory, review-count velocity ve breakpoint analizi snapshot'lar
   biriktikçe oluşur.
 - İlk dönemde mevcut yorumların tarihleri, puanları, metinleri, sentiment ve
@@ -29,11 +31,9 @@ snapshot-first tasarlanır:
   `daily`/`weekly`/`biweekly` arasında değiştirilebilir; `biweekly` periyot
   sınırları `cadence_anchor_date`'e göre hizalanır (bkz. "Takip edilen mekan"
   bölümü). Eksik/başarısız venue'lar güvenli biçimde tekrar denenebilir.
-- Adapter birden fazla zorunlu review-sort response'unu destekler (hepsi
-  memory'de toplanır; snapshot, raw payload, review ve appearance kayıtları
-  ancak tümü başarılı olduğunda tek DB transaction'ında yazılır, yarım
-  snapshot commit edilmez) ama aktif config artık tek sort (`newest`) ister
-  (bkz. "Periyodik fetch" bölümü).
+- Eski Places Legacy fetch adapter'ı birden fazla review-sort response'unu
+  destekler; bunların atomik persistence davranışı yalnızca bu uyumluluk
+  akışı için geçerlidir (bkz. "Legacy Google fetch" bölümü).
 - Ham snapshot'lar korunduğu için yeni bir score version geçmiş verinin
   tamamında `recompute` ile çalıştırılabilir.
 
@@ -44,22 +44,23 @@ tek production davranışıdır.
 
 ## Provider adapter yaklaşımı
 
-Fetch orchestration ve persistence, veri sağlayıcısından ayrılır. Ortak adapter
-sözleşmesi normalize edilmiş venue state, ham response ve review kayıtlarını
-döndürür. Task 1'de yalnızca official Places API adapter'ı uygulanır.
+Discovery, provider katmanında Google Places API (New) Nearby Search kullanır.
+Periyodik snapshot ve review corpus'u `app.backfill` içindeki Apify akışı
+sağlar. Eski Google Places Legacy fetch adapter'ı kodda uyumluluk/manuel
+kullanım için bulunur, ancak standart toplama akışı değildir. Ham provider
+payload'ları ve normalize edilmiş venue/review kayıtları ayrı katmanlarda
+tutulur.
 
-Gelecekteki bir task'ta üçüncü parti sağlayıcıdan son 6 aylık tam review
-backfill eklenebilir. Bunun için şema review source değerini (`places_api`,
-`backfill`) ve provider'a ait external kimlikleri taşıyabilir; Task 1'de
-backfill adapter'ı veya üçüncü parti çağrı uygulanmaz.
+## Discovery — Places API (New) Nearby Search + grid (son durum: 2026-11-02)
 
-## Discovery — Places API (New) Nearby Search + grid (Faz 2, 2026-07-24)
-
-Venue seçimi `python -m app.discover` ile, webapp ve periyodik fetch'ten ayrı bir
-adım olarak yapılır. 2026-07-24'te Faz 2 kapsamında mekanizma tamamen
-değiştirildi: hedef "en iyi N'i seç"ten "hard filtreyi geçen neredeyse
-herkesi al"a döndüğü için Text Search (New)'ün sorgu başına ~60 sonuç tavanı
-yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
+Venue seçimi `python -m app.discover` ile, webapp ve periyodik veri
+toplamasından ayrı yapılır. Grid tabanlı Nearby Search korunur. **2026-11-02
+güncellemesi:** Legacy Places Details freshness aşaması kaldırıldı; güncel CLI
+yalnızca `search`, `status` ve `finalize` aşamalarına sahiptir. Hard filtreyi
+geçen yeni adaylar, yorum tarihi kontrolü yapılmadan kataloğa eklenir. Bu
+karar, eski tazelik kontrolünün Discovery'de yinelenen ücretli bir istek
+oluşturmasını önler; zaman içindeki durgunluk Scoring v6'nın Apify review
+corpus'una dayalı dormancy sinyalinde ele alınır.
 
 - **İki bölge:** Eryaman (`config/data_collection.eryaman.yaml`) ve Armada
   (`config/data_collection.armada.yaml`, Söğütözü — 2026-07-25'te Batıkent'in
@@ -77,22 +78,21 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
   çemberi, `cell_radius_meters` boyutunda kare hücrelere bölünür; her karenin
   çevrel dairesi (yarıçapı `cell_radius_meters`) Nearby Search'e gönderilir —
   kareler düzlemi boşluksuz kapladığı için bu tüm bölgeyi de kapsar.
-  `radius_meters=3000, cell_radius_meters=500` için 69 coğrafi hücre üretir
-  (elle hesaplandı ve gerçek `search --max-requests 0` dry-run çıktısıyla
-  doğrulandı).
+  Eryaman'ın `radius_meters=3000, cell_radius_meters=500` ayarı 69 coğrafi
+  hücre üretir. Armada'nın hücre yarıçapı 2026-11-02'de 400 m'ye
+  güncellendiğinden grid sayısı farklıdır; güncel toplamı `search
+  --max-requests 0` gösterir.
 - **Tip gruplama:** Nearby Search `includedTypes` başına en fazla 50 tip
   kabul eder; `config/data_collection.*.yaml`'daki `included_types` alanı
-  Google Places API (New) Table A'nın **tüm** "Food and Drink" kategorisini
-  içerir (~166 tip — yalnızca `restaurant`/`cafe` değil, `bistro`, `bakery`,
+  Google Places API (New) Table A'nın Food and Drink tiplerini içerir
+  (yalnızca `restaurant`/`cafe` değil, `bistro`, `bakery`,
   `pastry_shop`, `dessert_shop`, `ice_cream_shop`, `candy_store` ve tüm
   mutfak-spesifik `*_restaurant` tipleri dahil — kullanıcı kararı: "yeme
-  içmeyle alakalı tüm types"). Bu liste `chunk_types` ile ≤50'lik gruplara
-  bölünür (~166 tip için 4 grup); gerçek "arama birimi" coğrafi hücre × tip
+  içmeyle alakalı tüm types"). Config'teki liste `chunk_types` ile ≤50'lik
+  gruplara bölünür; gerçek "arama birimi" coğrafi hücre × tip
   grubu kombinasyonudur (`GridCellState`, `cell_id` örn. `"r2c3.batch0"`) —
-  bu yüzden Eryaman/Armada'nın taraması tam olarak ~69×4=276 arama birimi
-  yapar (Armada için 2026-07-25'te zero-cost dry-run'la da doğrulandı: 276) —
-  bu artık kesin bir sayıdır (bkz. aşağıdaki "tavana çarpma" notu:
-  bölme kaldırıldığı için sabit kalır, büyümez).
+  güncel toplamı bölgenin grid ve tip grubuna bağlıdır (aşağıdaki
+  `--max-requests 0` dry-run notuna bakın).
 - **Tavana çarpma: bölme yok, sabit istek sayısı (2026-07-24'te revize edildi).**
   İlk tasarımda bir birim tam `max_result_count` (20) döndürürse (kırpılma
   ihtimali) yarı yarıçaplı 4 alt birime bölünüyordu (`split_cell`, tek
@@ -127,10 +127,11 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
 - **Take-all seçim (hedef sayı yok):** `target_count`/`minimum_candidate_pool`
   ve seçimi hedef sayıya kırpan `select_candidates`/`DiscoverySelectionError`
   tamamen kaldırıldı. `apply_hard_filters`'ı (`OPERATIONAL` + minimum review
-  count + bölge yarıçapı) geçen **her** aday, freshness'ı bilindiği anda
-  kataloğa eklenir (`accept_all_candidates` — artık yalnızca insan-okur rapor
-  için skor sıralaması yapar, seçim/kırpma yapmaz). Aynı markanın şube sayısı
-  hâlâ sınırlanmaz (`brand_key`/`normalize_brand` yalnızca raporlama içindir).
+  count + bölge yarıçapı) geçen **her** yeni aday kataloğa eklenir.
+  `selection_score` yalnızca rapor sıralamasıdır ve review hacmine göre
+  hesaplanır; review recency discovery seçiminde kullanılmaz. Aynı markanın
+  şube sayısı sınırlanmaz (`brand_key`/`normalize_brand` yalnızca raporlama
+  içindir).
 - **`excluded_primary_types` filtresi (2026-07-24 eklendi):** Nearby
   Search'ün `includedTypes`'ı Google'ın kendi FAQ'sinde belirttiği gibi bir
   mekanın TÜM tip etiketlerine bakar (`includedPrimaryTypes`'tan farklı
@@ -142,9 +143,8 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
   dükkanı), `swimming_pool`, `amusement_center` (çocuk oyun evi),
   `video_arcade` (simülasyon merkezi) — 410'da 8 mekan (~%2). `apply_hard_filters`'a
   Google'ın atadığı `primary_type`'a göre local bir eleme eklendi
-  (`rejected_irrelevant_primary_type`); bu, freshness'tan **önce** çalışır
-  (`_filtered_candidates`/`freshness_shortlist` içinde), yani bu tip mekanlar
-  için gereksiz Legacy Place Details isteği hiç atılmaz. Liste
+  (`rejected_irrelevant_primary_type`); filtre `finalize` sırasında çalışır.
+  Liste
   (`config/data_collection.*.yaml`'da) bu 8 kategoriyle başlıyor; 3 sınırda
   kalan kategori (`sports_complex` — "...Pool Cafe", `garden_center` —
   "Ankara Barbekü", `wedding_venue` — düğün salonu) isimlerinde yemek/ikram
@@ -157,15 +157,14 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
   zaten kayıtlı bir `place_id`'nin başka bir bölgede ikinci kez taranıp
   eklenmesini önlemek için `app/catalog.py`'deki `load_other_region_place_ids`,
   `catalog.*.yaml` glob'unu tarayıp diğer tüm bölgelerin `place_id`'lerini
-  toplar; bu küme hem freshness kontrolünden (boşuna ücretli çağrı
-  yapılmasın diye) hem finalize'dan hariç tutulur. DB constraint'i son çare
+  toplar; bu küme finalize sırasında adayları hariç tutar. DB constraint'i son çare
   güvenlik ağıdır (Eryaman/Armada çemberleri ~16,6km ayrık ve çakışmadığı
   için bu normalde tetiklenmez).
 - Discovery field mask yorumsuz ve minimaldir: place ID, display name,
   business status, user rating count, type ve konum
   (`app/adapters/places_nearby.py`, `NEARBY_SEARCH_FIELD_MASK`).
-- Ücret kontrolü için discovery hâlâ staged çalışır: `search`, `freshness`,
-  `finalize`. `search --max-requests 0`, hiçbir API çağrısı yapmadan yalnızca
+- Ücret kontrolü için discovery `search`, `status`, `finalize` aşamalarına
+  ayrılır. `search --max-requests 0`, hiçbir API çağrısı yapmadan yalnızca
   grid'i hesaplayıp `total_cells` gösterir — yeni bir bölge veya
   `cell_radius_meters` denemesi için ücretsiz bir "dry-run" olarak kullanılır.
 - Search birimleri ve normalize adaylar `data/discovery-search-cache.<bölge>.json`
@@ -179,11 +178,11 @@ yapısal olarak yetersiz kaldı (bkz. aşağıdaki "Nereden buraya" notu).
   `businessStatus` ve `userRatingCount` alanları Nearby Search'te
   **Enterprise SKU**'yu tetikliyor (`id`/`displayName`/`primaryType`/
   `location` yalnızca Pro olurdu, ama Google en yüksek kademeli alana göre
-  fiyatlandırıyor — toplamıyor). Enterprise: aylık **1.000 istek ücretsiz**,
-  sonrası **$35,00/1.000 istek**. Eryaman'ın 456 isteklik taraması tek
-  başına, Armada'nın beklenen ~276 isteklik taraması da birlikte
-  (456+276=732) aylık ücretsiz kotanın altında kalıyor — ayda bir kez her
-  iki bölgeyi de `--reset` ile baştan taramak bile $0 maliyetli.
+  fiyatlandırıyor — toplamıyor). 2026-07-25'te doğrulanan fiyat o tarihte
+  aylık **1.000 istek ücretsiz**, sonrası **$35,00/1.000 istek** idi.
+  Güncel grid boyutu Armada config'inde değiştiğinden istek adetleri ve fiyat
+  canlı koşu öncesi `search --max-requests 0` ve resmi fiyat sayfasıyla tekrar
+  doğrulanmalıdır; eski koşu adetleri güncel tahmin değildir.
 
 ### Nereden buraya: Text Search tabanlı toplu keşif neden kaldırıldı
 
@@ -218,8 +217,8 @@ kullanılmayan (yalnızca kendi testinden çağrılan) `DiscoveryService` sını
 
 ### Bölge değişikliği: Batıkent → Armada (2026-07-25)
 
-İkinci bölge olarak planlanan Batıkent'te hiçbir gerçek API çağrısı hiç
-yapılmamıştı (katalog hep boştu) — kullanıcı kararıyla tamamen iptal edildi,
+İkinci bölge olarak planlanan Batıkent'te gerçek API çağrısı yapılmamıştı
+(katalog hep boştu) — kullanıcı kararıyla iptal edildi,
 yerine **Armada** (Söğütözü, `39.911640, 32.809945`) geldi. Eski
 `config/catalog.batikent.yaml`/`config/data_collection.batikent.yaml`
 silindi (git'ten de kaldırıldı, geri dönüş ihtimaline karşı dursun
@@ -238,9 +237,9 @@ salt geometriden gelen bir sayı, konumdan bağımsız). Eryaman-Armada merkez
 mesafesi `app/discovery/geo.py`'nin kendi `distance_meters` fonksiyonuyla
 hesaplandı: **~16,6km** — 2×3km=6km çakışma eşiğinin çok üzerinde, bölgeler
 arası koruma mekanizmasının normalde hiç tetiklenmeyeceği teyit edildi.
-Henüz hiçbir gerçek Nearby Search/freshness API çağrısı yapılmadı; sıradaki
-adım onaylı dry-run/smoke/tam koşu aşamalarıdır (Eryaman'da izlenen akışın
-aynısı).
+Bu paragraftaki 2026-07-25 koşu durumu tarihsel nottur. Armada discovery
+pipeline'ı ve kataloğu 2026-11-02'de yenilendi; güncel komutlar ve config
+değerleri README ile bu belgenin üstteki discovery bölümündedir.
 
 ## Periyodik fetch — Places API Legacy (2026-07-25 itibarıyla supersede edildi)
 
@@ -279,7 +278,7 @@ aynısı).
   HTTP isteği teknik olarak aşılmaz (bölge başına kataloğun büyüklüğü sabit
   değildir ama tracked alt kümesi `tracked_venue_limit` ile üstten
   sınırlıdır; `--plan` çıktısı gerçek sayıyı verir).
-- **Seed-safety bugfix (2026-07-25):** freshness aşamasının cache'lediği
+- **Seed-safety bugfix (tarihsel, 2026-07-25):** freshness aşamasının cache'lediği
   `newest` payload'u yalnızca `fields=reviews` ile alınır (`name` içermez).
   Eski `reusable` mantığı bunu sort eşleşmesine göre (state içerip
   içermediğine bakmadan) "yeniden kullanılabilir" sayıyordu; dual-sort
@@ -292,7 +291,10 @@ aynısı).
   içeren payload'ları seed olarak kabul eder; state'siz bir seed varsa
   `missing_sorts`'a düşer ve taze, tam-alanlı bir istek yapılır. Sonucu:
   freshness seed reuse artık pratikte hiç HTTP tasarrufu sağlamaz (tek sort
-  zaten her zaman eksik sayılır) — kabul edilen, bilinçli bir basitleştirme.
+  zaten her zaman eksik sayılır) — o tarihte kabul edilen basitleştirme.
+  Discovery freshness aşaması ve buna bağlı cache alanları 2026-11-02'de
+  kaldırıldı; bu not mevcut Discovery akışının tarifi değil, geçmiş hata
+  kaydını korur.
 - Yeni snapshot'taki provider name değeri bir önceki tamamlanmış snapshot'tan
   farklıysa `venue_name_changed` koduyla WARNING log üretilir. Aynı şekilde
   `business_status` değişirse `venue_status_changed` WARNING'i üretilir; ikisi
@@ -300,27 +302,18 @@ aynısı).
   ve yeni değer fetch özetinde gösterilir. Bu kontroller yalnızca
   operasyoneldir; score ve confidence'ı etkilemez ve venue kataloğunu otomatik
   değiştirmez.
-- `python -m app.fetch --plan`, provider'a hiç çıkmadan hangi venue'ların
-  atlanacağını (`skip_existing`), hangilerinin freshness cache'inden seed
-  alarak tek istekle (`fetch`, seeded) veya iki istekle (`fetch`/`new_venue`)
-  işleneceğini ve toplam beklenen HTTP istek sayısını JSON olarak basar.
-  `--plan` API key gerektirmez ve DB'ye yazmaz; `--venue` ile birlikte
-  kullanılabilir. Çıktı hem retry'sız mantıksal sayıyı
-  (`estimated_http_requests`) hem de `max_retries` etkinken gerçek üst sınırı
-  (`worst_case_http_requests_with_retries` = mantıksal sayı ×
-  (`max_retries`+1)) ayrı ayrı gösterir; 2026-07-24'te eklendi çünkü ilk
-  implementasyon yalnızca retry'sız sayıyı gösteriyordu ve retry açıkken
-  (varsayılan, `--no-retries` verilmediğinde) onay akışının dayandığı "azami
-  istek sayısı" iddiasını gerçek dışı bırakıyordu.
-- Legacy endpoint erişilemez olursa otomatik olarak başka endpoint/provider'a
-  geçilmez; durum proje sahibine bildirilir ve alternatif birlikte kararlaştırılır.
+- `app.fetch` ve onun `--plan` seçeneği eski Google Place Details akışıdır;
+  uyumluluk/manuel kullanım için tutulur, fakat standart periyodik toplama
+  `app.backfill fetch` üzerinden Apify ile yapılır. `app.backfill fetch --plan`
+  actor çağrısı yapmadan tracked venue sayısı ve tahmini maliyeti gösterir.
 
 ## Takip edilen mekan (tracked) seçimi ve iki haftalık cadence (Faz 2, 2026-07-25)
 
-Eryaman kataloğu 432 mekana çıktıktan sonra hepsini 2 haftada bir Legacy
-Detail ile izlemek gereksiz maliyetti. Kullanıcı kararı: yalnızca
-`user_ratings_total`'a göre en popüler `tracked_venue_limit` (varsayılan
-`200`) kadarını aktif izle, geri kalanı kataloğda tut ama fetch etme. Bu
+Eryaman kataloğu büyüdükten sonra hepsini izlemek yerine kullanıcı kararıyla
+`user_ratings_total`'a göre en popüler `tracked_venue_limit` kadarını izle,
+geri kalanı katalogda tut ama periyodik toplama alma. Limit bölge config'ine
+özeldir (Eryaman 200, Armada 2026-11-02 config'inde 500). Güncel periyodik
+sağlayıcı Apify'dır; eski Google `app.fetch` akışı supersede edilmiştir. Bu
 **sabit bir seçim değil** — her `finalize` (aylık discover döngüsünün son
 adımı) koşusunda yeniden hesaplanır, böylece review sayısı büyüyen bir mekan
 sonraki bir döngüde tekrar top-N'e girebilir.
@@ -368,29 +361,27 @@ sonraki bir döngüde tekrar top-N'e girebilir.
   period_start'ı — keyfi ama anlamlı bir referans).
   `FetchConfig.review_sorts` validator'ü de `{"newest", "most_relevant"}`
   yerine `{"newest"}` zorunlu kılacak şekilde daraltıldı.
-- **Zamanlama hâlâ elle:** discover (search→freshness→finalize, retarget'ı
-  da içerir) ayda bir, fetch iki haftada bir; proje sahibi doğal dille
-  tetikler ("2 hafta oldu detail çağrını yap" gibi). Otomasyon fikri "Faz
-  4'te netleştirilecek" bölümünde artık bu somut mekanizmaya bağlı.
+- **Zamanlama hâlâ elle:** discovery (`search --reset` → bounded `search` →
+  `finalize`) ve Apify (`app.backfill fetch`) operasyonel plan gereği ayda bir
+  çalıştırılır; scheduler yoktur. Config cadence'i hâlâ `biweekly` ve anchor
+  tarihine hizalıdır, aylık period bucket desteği eklenmemiştir.
 - **Aylık discover `--reset` gerektirir (2026-07-25 netleşti):**
   `app.discover search`'ün cache'i `search_completed=true` olduktan sonra
   tekrar çağrılması **sıfır yeni istek** yapar (yalnızca durumu yazdırır) —
   keşfedilen hücreler asla otomatik yeniden taranmaz. Bu, iki gerçek sonuç
   doğurur: (1) yeni açılan bir mekan `--reset` olmadan asla bulunamaz; (2)
   `rank_tracked_venues`'ın kullandığı `current_review_counts`
-  (`cache.domain_candidates()`'tan gelir) de dondurulur — `app.fetch`'in
-  biweekly topladığı güncel review sayıları asla `finalize`'ın sıralamasına
-  girmez (`_run_finalize` hiçbir zaman DB'ye bağlanmaz, yalnızca cache/
+  (`cache.domain_candidates()`'tan gelir) de dondurulur — Apify'ın
+  `app.backfill fetch` ile topladığı güncel review sayıları `finalize`'ın
+  sıralamasına girmez (`_run_finalize` hiçbir zaman DB'ye bağlanmaz, yalnızca cache/
   katalog dosyalarını okur). Yani `--reset` olmadan hem yeni mekan keşfi
   hem de dinamik yeniden sıralama fiilen çalışmaz. Karar: aylık discover
-  akışına `search --reset` **standart, zorunlu bir adım** olarak eklenir —
-  yukarıdaki SKU doğrulamasına göre bu maliyetsiz (aylık 732 istek < 1.000
-  ücretsiz kota). `--reset` sonrası `existing_place_ids` filtresi zaten yeni
-  aday havuzunu (freshness için) mevcut kataloğa daraltıyor, ama
-  `all_scanned_candidates` (dedup edilmemiş `domain_candidates()`) hem yeni
-  hem zaten-katalogtaki adayların güncel review sayısını taşıdığı için
-  ranking doğru şekilde tazeleniyor — kod bu senaryo için zaten doğru
-  tasarlanmıştı, ek bir düzeltme gerekmedi.
+  akışına `search --reset` **standart bir adım** olarak eklenir. İstek sayısı
+  güncel config'e göre `--max-requests 0` ile önceden hesaplanır; SKU fiyatı
+  ve ücretsiz kota canlı koşudan önce yeniden kontrol edilir. `--reset` sonrası
+  mevcut venue'lar katalogda korunur; `all_scanned_candidates`
+  (`domain_candidates()`'ın dedup edilmiş hali) yeni ve katalogdaki
+  mekanların review sayılarını sağlar, böylece ranking yenilenir.
 
 ## Review backfill + Scoring v6 (Faz 3, 2026-07-25)
 
@@ -414,8 +405,9 @@ ayının en yeni ~50 review'unu çekip `venue_reviews` corpus'una almak.
   eklendi ama **lazy import** — yalnızca gerçek `fetch` çağrısında yüklenir, modül
   ve testler onsuz çalışır. Places API'yle aynı disiplin: `fetch --plan` maliyet-
   şeffaf ön izleme (mekan sayısı, `reviews_limit`, cutoff, tahmini review, cost
-  note), onay sonrası gerçek çağrı. Fiyat pay-per-event ~$0.30/1000 review; 200
-  mekan × 50 = üst sınır ~$3 (Apify'ın aylık $5 ücretsiz kredisi karşılayabilir).
+  note), onay sonrası gerçek çağrı. Maliyet mekan sayısı, dönen review miktarı
+  ve güncel fiyatlandırmaya bağlıdır; fiyat ve plan kredisi varsayımları her
+  canlı koşu öncesinde tekrar kontrol edilmelidir.
   **Not:** (İki iterasyon önce local SeleniumBase `google-reviews-scraper-pro`
   denenmişti — çok yavaş; sonra Outscraper API — çok pahalı ($3/1000); Apify
   hem API hem ~10× ucuz olduğu için ona geçildi.)
@@ -479,9 +471,8 @@ ayının en yeni ~50 review'unu çekip `venue_reviews` corpus'una almak.
   içermediğinden davranışı hiç değişmiyor). Aktif `SCORING_CONFIG_PATH`
   (app/config.py default + `.env`) `scoring.v6.toml`.
 - **Zamanlama (operasyonel plan, 2026-07-26):** discover + Apify snapshot **ayda
-  bir** elle çalıştırılır (yeni snapshot + corpus tazeleme). **Not:** `cadence`
-  config şu an `biweekly`; aylık period bucket istenirse `period_start_for`'a
-  küçük bir "monthly" eklemesi gerekir (Armada task'ıyla değerlendirilecek).
+  bir** elle çalıştırılır (yeni snapshot + corpus tazeleme). `cadence` config
+  `biweekly`; aylık period bucket henüz desteklenmiyor.
 - **Sonraki iterasyon (not):** sub-rating (Servis/Yemek/Temizlik) kategori-drift
   sinyali — Apify `sub_ratings`'i corpus'ta (`venue_reviews.sub_ratings`) topluyor
   ama henüz skora girmiyor; ayrı bir kategori-drift sinyali eklenebilir.
@@ -495,8 +486,8 @@ ayının en yeni ~50 review'unu çekip `venue_reviews` corpus'una almak.
 - Her bölgenin venue kataloğu discovery tarafından kendi `config/catalog.<bölge>.yaml`
   dosyasına yazılır (Eryaman, Armada). Yeni bir bölge eklemek elle bir config
   + boş katalog dosyası oluşturmaktan ibarettir, code değişikliği gerektirmez.
-- Cadence, bölge yarıçapı, grid hücre boyutu, aranacak type listesi, filtre
-  eşikleri ve freshness cezası hardcode edilmez; data-collection config'tedir.
+- Cadence, bölge yarıçapı, grid hücre boyutu, aranacak type listesi ve filtre
+  eşikleri hardcode edilmez; data-collection config'tedir.
   Category kotası, brand şube sınırı ve hedef venue sayısı (`target_count`)
   ürün kararıyla tamamen kaldırıldı (bkz. Discovery bölümü) — discovery artık
   hard filtreyi geçen herkesi alır, bir "N tanesini seç" kavramı yok.
@@ -521,17 +512,11 @@ ayının en yeni ~50 review'unu çekip `venue_reviews` corpus'una almak.
 
 ## Faz 4'te netleştirilecek
 
-- **Zamanlama otomasyonu (2026-07-24 kullanıcı notu, 2026-07-25'te
-  mekanizma netleşti):** discover (search→freshness→finalize, ayda bir) ve
-  fetch (`biweekly` cadence, `cadence_anchor_date`'e hizalı, iki haftada
-  bir) artık somut, çalışan bir mekanizma (bkz. "Takip edilen mekan"
-  bölümü) ama ikisi de kullanıcı tarafından elle tetiklenir ("2 hafta oldu
-  detail çağrını yap" gibi), bir scheduler'a bağlı değildir. Faz 4'te bu
-  muhtemelen scheduled bir pipeline'a (örn. Jenkins) bağlanacak — böyle bir
-  otomasyon, `cron`'un takvim-tabanlı doğası "iki haftada bir" gibi
-  epoch-tabanlı bir periyodu ifade edemediğinden `cadence_anchor_date` ile
-  aynı parity kontrolünü job seviyesinde de ayrıca uygulamalı. Şimdilik
-  yalnızca not düşüldü, tasarım/implementasyon yapılmadı.
+- **Zamanlama otomasyonu:** discovery (`search --reset` → bounded `search` →
+  `finalize`) ve Apify (`app.backfill fetch`) elle tetiklenir; scheduler yoktur.
+  Operasyon planı aylıktır, snapshot cadence'i `biweekly` ve anchor tarihine
+  hizalıdır. Faz 4'te scheduled pipeline değerlendirilebilir; iki haftalık
+  periyot için job'un `cadence_anchor_date` ile uyumu ayrıca sağlanmalıdır.
 
 ## Scoring v5
 
@@ -644,12 +629,9 @@ uv run alembic upgrade head
 uv run python -m app.discover search --max-requests 0 --reset --data-collection-config config/data_collection.eryaman.yaml --catalog config/catalog.eryaman.yaml
 uv run python -m app.discover search --max-requests 1 --reset --no-retries --data-collection-config config/data_collection.eryaman.yaml --catalog config/catalog.eryaman.yaml
 uv run python -m app.discover status --data-collection-config config/data_collection.eryaman.yaml --catalog config/catalog.eryaman.yaml
-uv run python -m app.discover freshness --max-requests N --no-retries --data-collection-config config/data_collection.eryaman.yaml --catalog config/catalog.eryaman.yaml
 uv run python -m app.discover finalize --data-collection-config config/data_collection.eryaman.yaml --catalog config/catalog.eryaman.yaml
 uv run python -m app.catalog
 uv run uvicorn app.main:app --reload
-uv run python -m app.fetch --region eryaman --plan
-uv run python -m app.fetch --region eryaman
 uv run python -m app.backfill fetch --region eryaman --plan
 uv run python -m app.backfill fetch --region eryaman
 uv run python -m app.backfill import --input data/apify-eryaman.json --region eryaman

@@ -34,23 +34,28 @@ kapsamında değildir.
 - Ham veriler korunduğu için score formülü versioned ve yeniden hesaplanabilir
   olur.
 
-## Phase 1 kapsamı
+## İlk Phase 1 kapsamı (tamamlandı; başlangıç planı)
 
-- Eryaman bölgesinde 30 restoran/kafe ile çalışan local-first MVP.
-- Places API (New) Text Search ile deterministik katalog discovery.
-- Official Places API Legacy üzerinden başlangıçta haftalık, append-only ham
-  snapshot toplama.
+- Eryaman'da 30 restoran/kafe ile local-first MVP; bu başlangıç kapsamı daha
+  sonra çok bölgeli discovery ve daha geniş kataloglara evrildi.
+- Places API (New) ile deterministik discovery; ilk Text Search yaklaşımı
+  sonradan Nearby Search + grid ile değiştirildi.
+- Append-only snapshot toplama. Google Places Legacy ilk fetch sağlayıcısıydı;
+  standart periyodik toplama artık Apify snapshot + review corpus pipeline'ı
+  üzerinden yürür.
 - Yalnızca DB içindeki mekanlarda arama.
 - Sade venue kartında Bozdu/Coştu change score, genel veri güveni ve skoru
   besleyen sinyallerin kısa açıklamaları.
 - FastAPI + Jinja2 webapp, SQLite, SQLAlchemy, Alembic ve bağımsız fetch CLI.
-- Sonraki task'ta kod değişikliği olmadan yaklaşık 40 mekana genişleyebilme.
 
-## Phase 1 dışı
+## Başlangıç Phase 1'inin dışı
 
 - Instagram içerik üretimi ve görsel şablonları.
 - Cloud deployment.
-- Üçüncü parti veri sağlayıcıları ve geçmiş review backfill uygulaması.
 - Kullanıcı hesabı, auth ve favoriler.
 - Eryaman dışındaki bölgeler için kullanıcı arayüzü.
 - Kullanıcıya açık canlı API venue search.
+
+Ürün şu anda Instagram içeriği ve Cloud deployment olmadan local-first webapp
+olarak ilerler. Güncel uygulama durumu, discovery ve veri toplama ayrıntıları
+`activeContext.md` ile `techContext.md` dosyalarındadır.
