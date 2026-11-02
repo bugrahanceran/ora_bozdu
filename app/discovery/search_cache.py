@@ -6,7 +6,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from app.adapters.base import DiscoveryCandidate, RawPlacePayload
+from app.adapters.base import DiscoveryCandidate
 from app.data_collection_config import DataCollectionConfig
 from app.discovery.grid import GridCellSpec, build_grid, chunk_types
 
@@ -75,33 +75,6 @@ class CellSearchRecord(BaseModel):
     raw_payload: dict[str, Any]
 
 
-class CachedFreshnessPayload(BaseModel):
-    request_variant: str
-    review_sort: str
-    fetched_at: datetime
-    raw_payload: dict[str, Any]
-    payload_hash: str
-
-    @classmethod
-    def from_domain(cls, payload: RawPlacePayload) -> "CachedFreshnessPayload":
-        return cls(
-            request_variant=payload.request_variant,
-            review_sort=payload.review_sort,
-            fetched_at=payload.fetched_at,
-            raw_payload=payload.body,
-            payload_hash=payload.payload_hash,
-        )
-
-    def to_domain(self) -> RawPlacePayload:
-        return RawPlacePayload(
-            request_variant=self.request_variant,
-            review_sort=self.review_sort,
-            fetched_at=self.fetched_at,
-            body=self.raw_payload,
-            payload_hash=self.payload_hash,
-        )
-
-
 class DiscoverySearchCache(BaseModel):
     version: str = "discovery-search.v2"
     collection_config_hash: str
@@ -111,8 +84,6 @@ class DiscoverySearchCache(BaseModel):
     cells: list[GridCellState]
     candidates: list[CachedCandidate] = Field(default_factory=list)
     cell_search_records: list[CellSearchRecord] = Field(default_factory=list)
-    freshness_results: dict[str, str | None] = Field(default_factory=dict)
-    freshness_payloads: dict[str, CachedFreshnessPayload] = Field(default_factory=dict)
 
     @property
     def search_completed(self) -> bool:

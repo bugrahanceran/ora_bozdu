@@ -1,6 +1,6 @@
 from collections import Counter
 from dataclasses import asdict, dataclass
-from datetime import date, datetime
+from datetime import date
 from typing import Any
 
 from app.adapters.base import DiscoveryCandidate
@@ -29,7 +29,6 @@ def build_discovery_result(
     as_of_date: date,
     searched: tuple[DiscoveryCandidate, ...],
     grid_summary: dict[str, int],
-    freshness_by_place_id: dict[str, datetime | None],
     all_scanned_candidates: tuple[DiscoveryCandidate, ...],
 ) -> DiscoveryResult:
     existing = existing_catalog.venues
@@ -43,20 +42,8 @@ def build_discovery_result(
     filtered = apply_hard_filters(
         unique_new_candidates, config=config.discovery, region=config.region
     )
-    missing_freshness = {
-        candidate.place_id for candidate in filtered.candidates
-    } - freshness_by_place_id.keys()
-    if missing_freshness:
-        raise ValueError(
-            f"Freshness stage is incomplete for {len(missing_freshness)} candidates"
-        )
     scored = tuple(
-        score_candidate(
-            candidate,
-            newest_review_at=freshness_by_place_id[candidate.place_id],
-            as_of_date=as_of_date,
-            config=config.discovery,
-        )
+        score_candidate(candidate, config=config.discovery)
         for candidate in filtered.candidates
     )
     added = accept_all_candidates(scored)
@@ -105,7 +92,7 @@ def build_discovery_result(
             "review_count": filtered.rejected_review_count,
             "outside_radius": filtered.rejected_outside_radius,
         },
-        "freshness_checked": len(scored),
+        "new_candidates_scored": len(scored),
         "added_count": len(new_entries),
         "catalog_total": len(venues),
         "tracked_count": sum(1 for entry in venues if entry.tracked),
@@ -117,10 +104,6 @@ def build_discovery_result(
             {
                 **asdict(entry),
                 "selection_score": round(item.score, 6),
-                "freshness_state": item.freshness_state,
-                "newest_review_at": (
-                    item.newest_review_at.isoformat() if item.newest_review_at else None
-                ),
             }
             for entry, item in zip(ranked_new_entries, added, strict=True)
         ],

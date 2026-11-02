@@ -1,4 +1,3 @@
-from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from app.adapters.base import DiscoveryCandidate
@@ -105,35 +104,17 @@ def test_hard_filters_reject_irrelevant_primary_types() -> None:
 
 def test_accept_all_candidates_includes_everyone_regardless_of_score() -> None:
     config = load_data_collection_config(CONFIG_PATH).discovery
-    today = date(2026, 7, 18)
-    fresh = datetime(2026, 7, 17, tzinfo=UTC)
-    stale = datetime.combine(
-        today - timedelta(days=config.stale_after_days),
-        datetime.min.time(),
-        tzinfo=UTC,
-    )
     raw = (
-        candidate("popular-stale", "Popular Stale Place", "cafe", 1000),
-        candidate("modest-fresh", "Modest Fresh Place", "cafe", 60),
+        candidate("popular", "Popular Place", "cafe", 1000),
+        candidate("modest", "Modest Place", "cafe", 60),
     )
-    scored = tuple(
-        score_candidate(
-            item,
-            newest_review_at=stale if item.place_id == "popular-stale" else fresh,
-            as_of_date=today,
-            config=config,
-        )
-        for item in raw
-    )
+    scored = tuple(score_candidate(item, config=config) for item in raw)
 
     added = accept_all_candidates(scored)
 
-    # No target_count to compete over: a popular-but-stale place and a modest
-    # fresh one are both added, nothing is discarded as "not selected".
-    assert {item.candidate.place_id for item in added} == {
-        "popular-stale",
-        "modest-fresh",
-    }
+    # No target_count to compete over: a high-volume place and a modest one are
+    # both added, nothing is discarded as "not selected".
+    assert {item.candidate.place_id for item in added} == {"popular", "modest"}
 
 
 def catalog_entry(
@@ -223,17 +204,12 @@ def test_rank_tracked_venues_demotes_incumbent_when_a_rival_grows() -> None:
 
 def test_accept_all_candidates_orders_by_score_then_place_id() -> None:
     config = load_data_collection_config(CONFIG_PATH).discovery
-    today = date(2026, 7, 18)
-    fresh = datetime(2026, 7, 17, tzinfo=UTC)
     raw = (
         candidate("cafe-b", "Cafe B", "cafe", 1000),
         candidate("cafe-a", "Cafe A", "cafe", 1000),
         candidate("rest-a", "Rest A", "restaurant", 300),
     )
-    scored = tuple(
-        score_candidate(item, newest_review_at=fresh, as_of_date=today, config=config)
-        for item in raw
-    )
+    scored = tuple(score_candidate(item, config=config) for item in raw)
 
     added = accept_all_candidates(scored)
 

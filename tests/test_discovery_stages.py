@@ -6,22 +6,15 @@ import pytest
 from app.adapters.base import (
     DiscoveryCandidate,
     NearbySearchCellResult,
-    RawPlacePayload,
-    ReviewFreshnessResult,
 )
-from app.catalog import VenueCatalog
 from app.data_collection_config import load_data_collection_config
 from app.discovery.search_cache import (
-    CachedCandidate,
     DiscoverySearchCache,
     GridCellState,
     load_search_cache,
     write_search_cache,
 )
-from app.services.discovery_stages import (
-    DiscoveryFreshnessStage,
-    DiscoveryGridSearchStage,
-)
+from app.services.discovery_stages import DiscoveryGridSearchStage
 
 CONFIG_PATH = Path("config/data_collection.eryaman.yaml")
 
@@ -93,30 +86,6 @@ class FakeNearbySearchProvider:
             fetched_at=datetime(2026, 7, 19, tzinfo=UTC),
             raw_payload={"places": [{"id": place_id} for place_id in place_ids]},
             hit_result_cap=hit_cap,
-        )
-
-    async def aclose(self) -> None:
-        return None
-
-
-class FakeFreshnessProvider:
-    provider_name = "places_api"
-
-    def __init__(self) -> None:
-        self.calls: list[str] = []
-
-    async def fetch_review_freshness(self, place_id: str) -> ReviewFreshnessResult:
-        self.calls.append(place_id)
-        latest = datetime(2026, 7, 18, tzinfo=UTC)
-        return ReviewFreshnessResult(
-            latest_review_at=latest,
-            payload=RawPlacePayload(
-                request_variant="details_newest",
-                review_sort="newest",
-                fetched_at=latest,
-                body={"status": "OK", "result": {"reviews": []}},
-                payload_hash=f"hash-{place_id}",
-            ),
         )
 
     async def aclose(self) -> None:
@@ -201,60 +170,3 @@ def test_cells_flagged_for_review_ignores_historical_split_parents() -> None:
     cache = _cache([split_parent, resolved_child, capped_child])
 
     assert [cell.cell_id for cell in cache.cells_flagged_for_review] == ["r0c0.ne"]
-
-
-@pytest.mark.asyncio
-async def test_freshness_stage_honors_request_budget(tmp_path: Path) -> None:
-    config = load_data_collection_config(CONFIG_PATH)
-    catalog = VenueCatalog(region_slug="eryaman", region_name="Eryaman", venues=())
-    cache = _cache(
-        [_searched_cell("r0c0.batch0")],
-        candidates=[
-            CachedCandidate.from_domain(_candidate("cafe-a")),
-            CachedCandidate.from_domain(_candidate("cafe-b")),
-            CachedCandidate.from_domain(_candidate("restaurant-a")),
-        ],
-    )
-    freshness_provider = FakeFreshnessProvider()
-    cache_path = tmp_path / "search-cache.json"
-
-    summary = await DiscoveryFreshnessStage(freshness_provider).run(
-        cache=cache,
-        config=config,
-        catalog=catalog,
-        max_requests=1,
-        checkpoint=lambda value: write_search_cache(cache_path, value),
-    )
-
-    assert summary.requests_this_run == 1
-    assert summary.freshness_required == 3
-    assert summary.freshness_completed == 1
-    assert summary.freshness_remaining == 2
-    assert freshness_provider.calls == ["cafe-a"]
-    assert cache.freshness_payloads["cafe-a"].review_sort == "newest"
-
-
-@pytest.mark.asyncio
-async def test_freshness_stage_skips_cross_region_place_ids() -> None:
-    config = load_data_collection_config(CONFIG_PATH)
-    catalog = VenueCatalog(region_slug="eryaman", region_name="Eryaman", venues=())
-    cache = _cache(
-        [_searched_cell("r0c0.batch0")],
-        candidates=[
-            CachedCandidate.from_domain(_candidate("cafe-a")),
-            CachedCandidate.from_domain(_candidate("other-region-place")),
-        ],
-    )
-    freshness_provider = FakeFreshnessProvider()
-
-    summary = await DiscoveryFreshnessStage(freshness_provider).run(
-        cache=cache,
-        config=config,
-        catalog=catalog,
-        max_requests=5,
-        checkpoint=lambda value: None,
-        cross_region_place_ids=frozenset({"other-region-place"}),
-    )
-
-    assert summary.freshness_required == 1
-    assert freshness_provider.calls == ["cafe-a"]

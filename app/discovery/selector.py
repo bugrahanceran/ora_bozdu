@@ -2,7 +2,6 @@ import math
 import re
 import unicodedata
 from dataclasses import dataclass, replace
-from datetime import UTC, date, datetime
 
 from app.adapters.base import DiscoveryCandidate
 from app.catalog import VenueCatalogEntry
@@ -14,8 +13,6 @@ from app.discovery.geo import distance_meters
 class ScoredCandidate:
     candidate: DiscoveryCandidate
     brand_key: str
-    newest_review_at: datetime | None
-    freshness_state: str
     score: float
 
 
@@ -114,26 +111,11 @@ def apply_hard_filters(
 def score_candidate(
     candidate: DiscoveryCandidate,
     *,
-    newest_review_at: datetime | None,
-    as_of_date: date,
     config: DiscoveryConfig,
 ) -> ScoredCandidate:
-    if newest_review_at is None:
-        freshness_state = "no_recent_review_data"
-        freshness_adjustment = -config.stale_penalty
-    else:
-        review_date = newest_review_at.astimezone(UTC).date()
-        age_days = max(0, (as_of_date - review_date).days)
-        if age_days >= config.stale_after_days:
-            freshness_state = "stale"
-            freshness_adjustment = -config.stale_penalty
-        else:
-            freshness_state = "fresh"
-            freshness_adjustment = 0.0
-    score = (
-        config.review_count_log_weight * math.log1p(candidate.user_ratings_total)
-        + freshness_adjustment
-    )
+    # Ranking is purely by review volume now; recency/staleness is caught later
+    # by the v6 dormancy signal after the Apify backfill, not at selection time.
+    score = config.review_count_log_weight * math.log1p(candidate.user_ratings_total)
     return ScoredCandidate(
         candidate=candidate,
         brand_key=normalize_brand(
@@ -141,8 +123,6 @@ def score_candidate(
             stopwords=config.brand_stopwords,
             aliases=config.brand_aliases,
         ),
-        newest_review_at=newest_review_at,
-        freshness_state=freshness_state,
         score=score,
     )
 

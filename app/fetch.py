@@ -15,7 +15,6 @@ from app.catalog import load_catalog, sync_catalog
 from app.config import get_settings
 from app.data_collection_config import load_data_collection_config
 from app.db import SessionLocal
-from app.discovery.search_cache import load_search_cache
 from app.scoring.config import load_scoring_config
 from app.scoring.engine import ScoringEngine
 from app.scoring.service import recompute_region
@@ -87,15 +86,10 @@ async def run(args: argparse.Namespace) -> int:
             entry for entry in active_entries if entry.slug == args.venue
         )
     snapshot_date = args.date or datetime.now(ZoneInfo(settings.app_timezone)).date()
+    # Freshness-payload seeding was removed together with the Google freshness
+    # stage; this (superseded) Google fetch always requests fresh now. Apify is
+    # the review/snapshot source going forward.
     seed_payloads_by_place_id = {}
-    cache_path = collection_config.discovery.search_cache_path
-    if cache_path.exists():
-        discovery_cache = load_search_cache(cache_path)
-        if discovery_cache.as_of_date == snapshot_date:
-            seed_payloads_by_place_id = {
-                place_id: (payload.to_domain(),)
-                for place_id, payload in discovery_cache.freshness_payloads.items()
-            }
 
     if args.plan:
         with SessionLocal() as session:

@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date
 from pathlib import Path
 
 from app.adapters.base import DiscoveryCandidate
@@ -23,8 +23,8 @@ def _candidate(place_id: str, display_name: str, category: str) -> DiscoveryCand
 
 
 def test_build_discovery_result_adds_every_eligible_candidate_take_all() -> None:
-    # No target_count to compete over: every candidate that passes hard
-    # filters and has a freshness result gets added, however many there are.
+    # No target_count to compete over: every candidate that passes the hard
+    # filters gets added, however many there are.
     config = load_data_collection_config(CONFIG_PATH)
     existing = VenueCatalog(region_slug="eryaman", region_name="Eryaman", venues=())
     searched = (
@@ -32,9 +32,6 @@ def test_build_discovery_result_adds_every_eligible_candidate_take_all() -> None
         _candidate("restaurant-place", "Fixture Restaurant", "restaurant"),
         _candidate("bakery-place", "Fixture Bakery", "bakery"),
     )
-    freshness = {
-        candidate.place_id: datetime(2026, 7, 17, tzinfo=UTC) for candidate in searched
-    }
 
     result = build_discovery_result(
         config=config,
@@ -42,7 +39,6 @@ def test_build_discovery_result_adds_every_eligible_candidate_take_all() -> None
         as_of_date=date(2026, 7, 18),
         searched=searched,
         grid_summary={"total_cells": 9},
-        freshness_by_place_id=freshness,
         all_scanned_candidates=searched,
     )
 
@@ -88,7 +84,6 @@ def test_build_discovery_result_preserves_existing_and_skips_duplicates() -> Non
         as_of_date=date(2026, 7, 18),
         searched=searched,
         grid_summary={"total_cells": 9},
-        freshness_by_place_id={"new-place": datetime(2026, 7, 17, tzinfo=UTC)},
         all_scanned_candidates=searched,
     )
 
@@ -115,9 +110,6 @@ def test_build_discovery_result_untracks_the_lowest_ranked_when_over_limit() -> 
         _candidate("mid", "Mid Place", "cafe"),
         _candidate("low", "Low Place", "cafe"),
     )
-    freshness = {
-        candidate.place_id: datetime(2026, 7, 17, tzinfo=UTC) for candidate in searched
-    }
 
     result = build_discovery_result(
         config=config,
@@ -125,7 +117,6 @@ def test_build_discovery_result_untracks_the_lowest_ranked_when_over_limit() -> 
         as_of_date=date(2026, 7, 18),
         searched=searched,
         grid_summary={"total_cells": 9},
-        freshness_by_place_id=freshness,
         all_scanned_candidates=searched,
     )
 

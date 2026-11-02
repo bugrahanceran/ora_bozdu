@@ -7,13 +7,8 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from app.adapters.places_legacy import (
-    LegacyPlacesUnavailableError,
-    PlacesLegacyAdapter,
-)
 from app.adapters.places_nearby import PlacesNearbySearchAdapter, PlacesNewAccessError
 from app.catalog import (
-    VenueCatalog,
     load_catalog,
     load_other_region_place_ids,
     write_catalog,
@@ -32,9 +27,7 @@ from app.discovery.search_cache import (
 from app.discovery.selector import deduplicate_candidates
 from app.services.discovery_service import build_discovery_result
 from app.services.discovery_stages import (
-    DiscoveryFreshnessStage,
     DiscoveryGridSearchStage,
-    freshness_shortlist,
     grid_search_stage_summary,
 )
 
@@ -51,20 +44,13 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("--reset", action="store_true")
     search.add_argument("--no-retries", action="store_true")
 
-    freshness = subparsers.add_parser(
-        "freshness", help="Run bounded Legacy newest-review checks"
-    )
-    freshness.add_argument("--max-requests", type=int, required=True)
-    freshness.add_argument("--no-retries", action="store_true")
-
     subparsers.add_parser("status", help="Show cached discovery progress")
     subparsers.add_parser(
-        "finalize", help="Build catalog locally after freshness is complete"
+        "finalize", help="Build catalog locally after search is complete"
     )
 
     for subparser in (
         search,
-        freshness,
         subparsers.choices["status"],
         subparsers.choices["finalize"],
     ):
@@ -123,28 +109,11 @@ def _require_key(settings) -> str:
 def _status_payload(
     cache: DiscoverySearchCache,
     *,
-    config: DataCollectionConfig,
-    catalog: VenueCatalog,
-    cross_region_place_ids: frozenset[str] = frozenset(),
     requests_this_run: int = 0,
 ) -> dict:
     summary = grid_search_stage_summary(cache, requests_this_run=requests_this_run)
     payload = asdict(summary)
     payload["as_of_date"] = cache.as_of_date.isoformat()
-    if cache.search_completed:
-        required = freshness_shortlist(
-            cache,
-            config=config,
-            catalog=catalog,
-            cross_region_place_ids=cross_region_place_ids,
-        )
-        payload["freshness_required"] = len(required)
-        payload["freshness_completed"] = sum(
-            candidate.place_id in cache.freshness_results for candidate in required
-        )
-    else:
-        payload["freshness_required"] = None
-        payload["freshness_completed"] = 0
     if cache.cell_search_records:
         latest = cache.cell_search_records[-1]
         latest_cell = next(
@@ -181,7 +150,7 @@ async def _run_search(args: argparse.Namespace) -> int:
         settings,
         config,
         _catalog_path,
-        catalog,
+        _catalog,
         cache_path,
         config_hash,
         catalog_hash,
@@ -209,7 +178,7 @@ async def _run_search(args: argparse.Namespace) -> int:
     if cache.search_completed or args.max_requests == 0:
         print(
             json.dumps(
-                _status_payload(cache, config=config, catalog=catalog),
+                _status_payload(cache),
                 ensure_ascii=False,
                 indent=2,
             )
@@ -237,12 +206,7 @@ async def _run_search(args: argparse.Namespace) -> int:
         await adapter.aclose()
     print(
         json.dumps(
-            _status_payload(
-                cache,
-                config=config,
-                catalog=catalog,
-                requests_this_run=summary.requests_this_run,
-            ),
+            _status_payload(cache, requests_this_run=summary.requests_this_run),
             ensure_ascii=False,
             indent=2,
         )
@@ -250,62 +214,12 @@ async def _run_search(args: argparse.Namespace) -> int:
     return 0
 
 
-async def _run_freshness(args: argparse.Namespace) -> int:
-    (
-        settings,
-        config,
-        catalog_path,
-        catalog,
-        cache_path,
-        config_hash,
-        catalog_hash,
-    ) = _load_context(args)
-    if not cache_path.exists():
-        raise SystemExit("Discovery cache does not exist; run search first")
-    cache = load_search_cache(cache_path)
-    _validate_cache(
-        cache,
-        config=config,
-        config_hash=config_hash,
-        catalog_hash=catalog_hash,
-    )
-    cross_region_place_ids = load_other_region_place_ids(
-        catalog_path, current_region_slug=config.region.slug
-    )
-    adapter = PlacesLegacyAdapter(
-        _require_key(settings),
-        timeout_seconds=settings.http_timeout_seconds,
-        max_retries=0 if args.no_retries else settings.http_max_retries,
-        review_sorts=config.fetch.review_sorts,
-        fields=config.fetch.fields,
-        reviews_no_translations=config.fetch.reviews_no_translations,
-    )
-    try:
-        summary = await DiscoveryFreshnessStage(adapter).run(
-            cache=cache,
-            config=config,
-            catalog=catalog,
-            max_requests=args.max_requests,
-            checkpoint=lambda value: write_search_cache(cache_path, value),
-            cross_region_place_ids=cross_region_place_ids,
-        )
-    except LegacyPlacesUnavailableError as exc:
-        raise SystemExit(
-            "Places API Legacy erişilemez; otomatik fallback yapılmadı. "
-            f"Proje sahibiyle alternatif kararlaştırılmalı: {exc}"
-        ) from exc
-    finally:
-        await adapter.aclose()
-    print(json.dumps(asdict(summary), ensure_ascii=False, indent=2))
-    return 0
-
-
 def _run_status(args: argparse.Namespace) -> int:
     (
         _settings,
         config,
-        catalog_path,
-        catalog,
+        _catalog_path,
+        _catalog,
         cache_path,
         config_hash,
         catalog_hash,
@@ -319,17 +233,9 @@ def _run_status(args: argparse.Namespace) -> int:
         config_hash=config_hash,
         catalog_hash=catalog_hash,
     )
-    cross_region_place_ids = load_other_region_place_ids(
-        catalog_path, current_region_slug=config.region.slug
-    )
     print(
         json.dumps(
-            _status_payload(
-                cache,
-                config=config,
-                catalog=catalog,
-                cross_region_place_ids=cross_region_place_ids,
-            ),
+            _status_payload(cache),
             ensure_ascii=False,
             indent=2,
         )
@@ -361,16 +267,6 @@ def _run_finalize(args: argparse.Namespace) -> int:
     cross_region_place_ids = load_other_region_place_ids(
         catalog_path, current_region_slug=config.region.slug
     )
-    freshness = {
-        place_id: datetime.fromisoformat(value) if value else None
-        for place_id, value in cache.freshness_results.items()
-    }
-    shortlisted = freshness_shortlist(
-        cache,
-        config=config,
-        catalog=catalog,
-        cross_region_place_ids=cross_region_place_ids,
-    )
     grid_summary = {
         "total_cells": len(cache.cells),
         "cells_searched": sum(1 for cell in cache.cells if cell.status == "searched"),
@@ -378,13 +274,20 @@ def _run_finalize(args: argparse.Namespace) -> int:
         "cells_flagged_for_review": len(cache.cells_flagged_for_review),
     }
     all_scanned_candidates = deduplicate_candidates(cache.domain_candidates())
+    # Candidates eligible to be added to THIS region's catalog: everything scanned
+    # except venues already tracked in another region (cross-region de-dup). The
+    # build step additionally drops any already in this region's catalog.
+    searched = tuple(
+        candidate
+        for candidate in all_scanned_candidates
+        if candidate.place_id not in cross_region_place_ids
+    )
     result = build_discovery_result(
         config=config,
         existing_catalog=catalog,
         as_of_date=cache.as_of_date,
-        searched=shortlisted,
+        searched=searched,
         grid_summary=grid_summary,
-        freshness_by_place_id=freshness,
         all_scanned_candidates=all_scanned_candidates,
     )
     result.report["cross_region_duplicate_count"] = len(
@@ -405,8 +308,6 @@ def _run_finalize(args: argparse.Namespace) -> int:
 async def run(args: argparse.Namespace) -> int:
     if args.stage == "search":
         return await _run_search(args)
-    if args.stage == "freshness":
-        return await _run_freshness(args)
     if args.stage == "status":
         return _run_status(args)
     if args.stage == "finalize":

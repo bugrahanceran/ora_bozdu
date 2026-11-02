@@ -2,4 +2,6542 @@ version: catalog.v1
 region:
   slug: armada
   name: Armada
-venues: []
+venues:
+- slug: mersinli-cigerci-apo
+  display_name: Mersinli Ciğerci Apo
+  place_id: ChIJyzHfIkZP0xQReMKJ1vMp9rY
+  category: restaurant
+  brand_key: mersinli-cigerci-apo
+  active: true
+  tracked: true
+  user_ratings_total: 19991
+- slug: yildiz-aspava-emek
+  display_name: YILDIZ ASPAVA EMEK
+  place_id: ChIJmzWzHjdP0xQRLpka-mVZYRk
+  category: restaurant
+  brand_key: yildiz-aspava-emek
+  active: true
+  tracked: true
+  user_ratings_total: 12113
+- slug: masabasi-kebapcisi
+  display_name: Masabaşı Kebapçısı
+  place_id: ChIJgW6-HUZP0xQRlzmpFu_D_9E
+  category: kebab_shop
+  brand_key: masabasi-kebapcisi
+  active: true
+  tracked: true
+  user_ratings_total: 12086
+- slug: meshur-gulcimen-aspava-emek
+  display_name: MEŞHUR GÜLÇİMEN ASPAVA EMEK
+  place_id: ChIJSZpIsd5P0xQRO4zN6t5zsPE
+  category: restaurant
+  brand_key: meshur-gulcimen-aspava-emek
+  active: true
+  tracked: true
+  user_ratings_total: 10409
+- slug: quick-china-armada
+  display_name: Quick China Armada
+  place_id: ChIJCSA5AMBJ0xQRZFHOnCFE59M
+  category: chinese_restaurant
+  brand_key: quick-china
+  active: true
+  tracked: true
+  user_ratings_total: 10342
+- slug: cigerci-bahattin-balgat
+  display_name: Ciğerci Bahattin - Balgat
+  place_id: ChIJ8VxnJVdP0xQR_R5fkzAgzQA
+  category: turkish_restaurant
+  brand_key: cigerci-bahattin-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 9984
+- slug: liva-pastanesi
+  display_name: Liva Pastanesi
+  place_id: ChIJ6c1D4MVP0xQRkZO4x4WX6sc
+  category: pastry_shop
+  brand_key: liva-pastanesi
+  active: true
+  tracked: true
+  user_ratings_total: 6888
+- slug: pecenek-doner-balgat-subesi
+  display_name: Peçenek Döner Balgat Şubesi
+  place_id: ChIJX6Or50FP0xQRQXKF1fUDveA
+  category: turkish_restaurant
+  brand_key: pecenek-doner-balgat-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 6655
+- slug: midyeci-ahmet-bahcelievler
+  display_name: Midyeci Ahmet Bahçelievler
+  place_id: ChIJARsxdyRP0xQRVx-_wkTd-Xo
+  category: restaurant
+  brand_key: midyeci-ahmet-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 6554
+- slug: hacibaba-gaziantep-mutfagi-merkez-restorani-baklavaci-hacibaba-a-s
+  display_name: Hacıbaba Gaziantep Mutfağı Merkez Restoranı - Baklavacı Hacıbaba A.Ş.
+  place_id: ChIJb4MAP_xF0xQRlWLpPeZzvww
+  category: turkish_restaurant
+  brand_key: hacibaba-gaziantep-mutfagi-merkez-restorani-baklavaci-hacibaba-a-s
+  active: true
+  tracked: true
+  user_ratings_total: 6459
+- slug: zeugma-kunefe-balgat
+  display_name: Zeugma Künefe - Balgat
+  place_id: ChIJ6WxnulFP0xQR7QqYQomW8xs
+  category: dessert_restaurant
+  brand_key: zeugma-kunefe-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 6446
+- slug: filotto
+  display_name: FİLOTTO
+  place_id: ChIJP3dX6VRP0xQRP1ZCTUbX3hE
+  category: restaurant
+  brand_key: filotto
+  active: true
+  tracked: true
+  user_ratings_total: 6370
+- slug: kafes-firin
+  display_name: KAFES FIRIN
+  place_id: ChIJa645SWY40xQRHptLq68CM8E
+  category: bakery
+  brand_key: kafes-firin
+  active: true
+  tracked: true
+  user_ratings_total: 6250
+- slug: odtu-mezunlari-dernegi-visnelik-tesisleri
+  display_name: ODTÜ Mezunları Derneği Vişnelik Tesisleri
+  place_id: ChIJp6TUGRpG0xQRNcOsX_gCRDM
+  category: family_restaurant
+  brand_key: odtu-mezunlari-dernegi-visnelik-tesisleri
+  active: true
+  tracked: true
+  user_ratings_total: 5126
+- slug: muslum-kebap
+  display_name: Müslüm Kebap
+  place_id: ChIJu_LDQIk40xQRh0iaALEGHGg
+  category: turkish_restaurant
+  brand_key: muslum-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 5051
+- slug: ozikizler-kunefe-cukurambar-kunefe-katmer-tatli
+  display_name: Özikizler Künefe Çukurambar | Künefe - Katmer - Tatlı
+  place_id: ChIJW6TJX01P0xQRnznA9e1NthU
+  category: restaurant
+  brand_key: ozikizler-kunefe-cukurambar-kunefe-katmer-tatli
+  active: true
+  tracked: true
+  user_ratings_total: 4997
+- slug: fevzi-hoca-balik-lokantasi
+  display_name: Fevzi Hoca Balık Lokantası
+  place_id: ChIJZ_rPvc5I0xQRcCFiEAOE4ZQ
+  category: restaurant
+  brand_key: fevzi-hoca-balik-lokantasi
+  active: true
+  tracked: true
+  user_ratings_total: 4951
+- slug: bayram-usta-yaprak-kebap-cukurambar
+  display_name: Bayram Usta Yaprak Kebap Çukurambar
+  place_id: ChIJc-CYXmJF0xQRowjPa5Z47SY
+  category: kebab_shop
+  brand_key: bayram-usta-yaprak-kebap-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 4804
+- slug: cukuraga-sofrasi
+  display_name: Çukurağa Sofrası
+  place_id: ChIJtbG8YxxP0xQRCPuMXmztY_c
+  category: restaurant
+  brand_key: cukuraga-sofrasi
+  active: true
+  tracked: true
+  user_ratings_total: 4636
+- slug: germec-pilic
+  display_name: Germeç Piliç
+  place_id: ChIJuVConBtP0xQRSgN5wjlYbwU
+  category: restaurant
+  brand_key: germec-pilic
+  active: true
+  tracked: true
+  user_ratings_total: 4603
+- slug: kofteci-yusuf
+  display_name: Köfteci Yusuf
+  place_id: ChIJ08X8UfdJ0xQRelm7MP1Lk0o
+  category: restaurant
+  brand_key: kofteci-yusuf
+  active: true
+  tracked: true
+  user_ratings_total: 4595
+- slug: cigerci-bahattin-bahcelievler
+  display_name: Ciğerci Bahattin Bahçelievler
+  place_id: ChIJbYoYAptP0xQRd3IHP_ZSmQQ
+  category: restaurant
+  brand_key: cigerci-bahattin-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 4570
+- slug: seyir-cafe
+  display_name: Seyir Cafe
+  place_id: ChIJYVN069hO0xQRgiiNZMehdD0
+  category: restaurant
+  brand_key: seyir-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 4549
+- slug: celal-et-restaurant
+  display_name: Celal Et Restaurant
+  place_id: ChIJwZyR4X9P0xQRbJV6js1Cvh0
+  category: turkish_restaurant
+  brand_key: celal-et-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 4539
+- slug: sitki-usta-ankara-cukurambar
+  display_name: SITKI USTA ANKARA ÇUKURAMBAR
+  place_id: ChIJ0RtPSVNP0xQRG17Ay8uktmA
+  category: dessert_restaurant
+  brand_key: sitki-usta-ankara-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 4306
+- slug: ayme-karadeniz-kahvalti-pide
+  display_name: Ayme Karadeniz Kahvaltı & Pide
+  place_id: ChIJHxVC0NFO0xQRC4m_Mg2qcd4
+  category: restaurant
+  brand_key: ayme-karadeniz-kahvalti-pide
+  active: true
+  tracked: true
+  user_ratings_total: 4052
+- slug: hmbrgr-bahcelievler
+  display_name: HMBRGR Bahçelievler
+  place_id: ChIJZyV6qSBP0xQRzk6gHDRvgXQ
+  category: hamburger_restaurant
+  brand_key: hmbrgr-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 3830
+- slug: liman-kitap-kahve
+  display_name: LİMAN Kitap Kahve
+  place_id: ChIJwSkEp01P0xQRCtcjGac2gCg
+  category: cafe
+  brand_key: liman-kitap-kahve
+  active: true
+  tracked: true
+  user_ratings_total: 3827
+- slug: yildiz-aspava-balgat
+  display_name: Yıldız Aspava Balgat
+  place_id: ChIJDVxAZfhF0xQR1A3Ts4_6kn0
+  category: restaurant
+  brand_key: yildiz-aspava-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 3751
+- slug: dayi-nin-yeri
+  display_name: Dayı'nın yeri
+  place_id: ChIJj99KX19P0xQR7PR2f2Tzvlo
+  category: turkish_restaurant
+  brand_key: dayi-nin-yeri
+  active: true
+  tracked: true
+  user_ratings_total: 3732
+- slug: central-bar-ankara
+  display_name: Central Bar Ankara
+  place_id: ChIJw_1dPRBG0xQRbVeCD5fmeCM
+  category: event_venue
+  brand_key: central-bar
+  active: true
+  tracked: true
+  user_ratings_total: 3710
+- slug: unique-burgers
+  display_name: Unique Burgers
+  place_id: ChIJSdHO2e9P0xQRwhohCLBYnBQ
+  category: hamburger_restaurant
+  brand_key: unique-burgers
+  active: true
+  tracked: true
+  user_ratings_total: 3665
+- slug: meshur-cengiz-yildirim-aspava-balgat
+  display_name: Meşhur Cengiz Yıldırım Aspava - Balgat
+  place_id: ChIJ0aROsldP0xQREoCW70uhG2w
+  category: restaurant
+  brand_key: meshur-cengiz-yildirim-aspava-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 3664
+- slug: a-la-lune-patisserie-bahcelievler-ankara-kruvasan-kahve
+  display_name: Â La Lune Patisserie - Bahçelievler Ankara (Kruvasan & Kahve)
+  place_id: ChIJN8x9BAxP0xQRufCZfTUt2XY
+  category: cafe
+  brand_key: a-la-lune-patisserie-bahcelievler-ankara-kruvasan-kahve
+  active: true
+  tracked: true
+  user_ratings_total: 3610
+- slug: bayram-usta-yaprak-kebap
+  display_name: Bayram Usta Yaprak Kebap
+  place_id: ChIJQ5hJ3P5F0xQRul6gWMrPWJE
+  category: kebab_shop
+  brand_key: bayram-usta-yaprak-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 3449
+- slug: liva-pastacilik
+  display_name: Liva Pastacılık
+  place_id: ChIJT7vITt9O0xQRazYBqX0nW2g
+  category: pastry_shop
+  brand_key: liva-pastacilik
+  active: true
+  tracked: true
+  user_ratings_total: 3409
+- slug: varuna-gezgin-cafe-ankara-bahcelievler
+  display_name: Varuna Gezgin Cafe - Ankara - Bahçelievler
+  place_id: ChIJmSmSwiJP0xQR2HAjlXGiFzA
+  category: cafe
+  brand_key: varuna-gezgin-cafe-ankara-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 3320
+- slug: odtu-carsi
+  display_name: ODTÜ Çarşı
+  place_id: ChIJ1c80exZG0xQRxPTjB0XPlzg
+  category: shopping_mall
+  brand_key: odtu-carsi
+  active: true
+  tracked: true
+  user_ratings_total: 3314
+- slug: the-italian-cut-pizza-kitchen
+  display_name: The Italian Cut - Pizza & Kitchen
+  place_id: ChIJb1RzySJP0xQRzZ1gDbg32fE
+  category: pizza_restaurant
+  brand_key: the-italian-cut-pizza-kitchen
+  active: true
+  tracked: true
+  user_ratings_total: 3188
+- slug: senorita-chocolate-bahcelievler
+  display_name: Senorita Chocolate Bahçelievler
+  place_id: ChIJAy73eSNP0xQRcNz41HShMew
+  category: chocolate_shop
+  brand_key: senorita-chocolate-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 3149
+- slug: osmanli-cafe
+  display_name: Osmanlı Cafe
+  place_id: ChIJCfb5tQkWzBQRohJFFka4JyI
+  category: cafe
+  brand_key: osmanli-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 3136
+- slug: emirgan-sutis-cukurambar
+  display_name: Emirgan Sütiş Çukurambar
+  place_id: ChIJTbVZPVVP0xQRDXDXch_1NKY
+  category: restaurant
+  brand_key: emirgan-sutis-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 3024
+- slug: coffee-prime-bahcelievler
+  display_name: Coffee Prime Bahçelievler
+  place_id: ChIJW5MkF9ZP0xQRilnkknRRQ1I
+  category: coffee_shop
+  brand_key: coffee-prime-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 3003
+- slug: kruvasante-armada
+  display_name: Kruvasante Armada
+  place_id: ChIJv2fCtzFP0xQR3oIZDxhEU-0
+  category: cafe
+  brand_key: kruvasante
+  active: true
+  tracked: true
+  user_ratings_total: 3001
+- slug: corbaci-hasan-usta-balgat
+  display_name: Çorbacı Hasan Usta (Balgat)
+  place_id: ChIJm0-ABz9P0xQRCqGQFOF7aFE
+  category: soup_restaurant
+  brand_key: corbaci-hasan-usta-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 2968
+- slug: arjantin-pide-kebap
+  display_name: Arjantin Pide Kebap
+  place_id: ChIJx15QeQZG0xQRtwtzN3rg0Jo
+  category: turkish_restaurant
+  brand_key: arjantin-pide-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 2869
+- slug: beyoglu-halimbey
+  display_name: Beyoğlu Halimbey
+  place_id: ChIJp-kl9QFG0xQRw3VSNovLWtI
+  category: restaurant
+  brand_key: beyoglu-halimbey
+  active: true
+  tracked: true
+  user_ratings_total: 2818
+- slug: kahveci-hacibaba
+  display_name: Kahveci Hacıbaba
+  place_id: ChIJYcyoO1VP0xQRGSi3pZvNPjA
+  category: cafe
+  brand_key: kahveci-hacibaba
+  active: true
+  tracked: true
+  user_ratings_total: 2803
+- slug: bosco-caffe-e-tiramisu
+  display_name: Bosco caffè e tiramisù
+  place_id: ChIJayP9qyhP0xQR7Ge_SP4V0wE
+  category: cafe
+  brand_key: bosco-caffe-e-tiramisu
+  active: true
+  tracked: true
+  user_ratings_total: 2767
+- slug: koroglu-cukurambar-subesi
+  display_name: Köroğlu Çukurambar Şubesi
+  place_id: ChIJpwPayqxI0xQRFG8l0QIOxIc
+  category: restaurant
+  brand_key: koroglu-cukurambar-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 2740
+- slug: ankara-gedikli-meyhane-canli-muzik-fasil-kutlamalar-7-kapi
+  display_name: Ankara Gedikli Meyhane | Canlı Müzik | Fasıl | Kutlamalar | 7 Kapı
+  place_id: ChIJUeebHZdP0xQR7iegNwVvVSI
+  category: bar
+  brand_key: ankara-gedikli-meyhane-canli-muzik-fasil-kutlamalar-7-kapi
+  active: true
+  tracked: true
+  user_ratings_total: 2674
+- slug: cigkofteci-bey
+  display_name: ÇİĞKÖFTECİ BEY
+  place_id: ChIJBe64gHBP0xQRhGkdeELHxWY
+  category: restaurant
+  brand_key: cigkofteci-bey
+  active: true
+  tracked: true
+  user_ratings_total: 2647
+- slug: timboo-cafe-armada
+  display_name: Timboo Cafe Armada
+  place_id: ChIJt8nYoExP0xQRD91ZbAEJce8
+  category: restaurant
+  brand_key: timboo-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 2640
+- slug: beylerbeyi-kafe-restaurant
+  display_name: Beylerbeyi Kafe & Restaurant
+  place_id: ChIJ1xADzVFP0xQRAZAX7qviMCw
+  category: cafe
+  brand_key: beylerbeyi-kafe-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 2612
+- slug: hattena-hatay-sofrasi
+  display_name: Hattena Hatay Sofrası
+  place_id: ChIJF_6NE0VP0xQRlFmmzrkYKhw
+  category: turkish_restaurant
+  brand_key: hattena-hatay-sofrasi
+  active: true
+  tracked: true
+  user_ratings_total: 2608
+- slug: cukurambar-aspava
+  display_name: Çukurambar Aspava
+  place_id: ChIJl955FVNP0xQRCrnu8ZMLYjM
+  category: family_restaurant
+  brand_key: cukurambar-aspava
+  active: true
+  tracked: true
+  user_ratings_total: 2592
+- slug: cigerci-goksel-tantuni-balgat
+  display_name: Ciğerci Göksel Tantuni - Balgat
+  place_id: ChIJeyzPsVFP0xQRBVliaYsd2M0
+  category: restaurant
+  brand_key: cigerci-goksel-tantuni-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 2583
+- slug: ab-bas-waffle
+  display_name: Ab'bas Waffle
+  place_id: ChIJqw1yuDxP0xQRQBf3ohc7rpw
+  category: cafe
+  brand_key: ab-bas-waffle
+  active: true
+  tracked: true
+  user_ratings_total: 2496
+- slug: cicek-lokantasi
+  display_name: Çiçek Lokantası
+  place_id: ChIJZ33Xva9I0xQRXsH4Vl-Qx_M
+  category: turkish_restaurant
+  brand_key: cicek-lokantasi
+  active: true
+  tracked: true
+  user_ratings_total: 2478
+- slug: dayi-kunefe-ve-katmer
+  display_name: Dayı Künefe ve katmer
+  place_id: ChIJ4-PxfWpP0xQR9QO8MwsDcoc
+  category: dessert_shop
+  brand_key: dayi-kunefe-ve-katmer
+  active: true
+  tracked: true
+  user_ratings_total: 2477
+- slug: taka-balik-restaurant-fish-fine-dining
+  display_name: TAKA BALIK RESTAURANT ( FISH FİNE DİNİNG)
+  place_id: ChIJwZlq6LNI0xQRmNGvaAt2cT4
+  category: restaurant
+  brand_key: taka-balik-restaurant-fish-fine-dining
+  active: true
+  tracked: true
+  user_ratings_total: 2433
+- slug: hogwarts-express-cafe
+  display_name: Hogwarts Express Cafe
+  place_id: ChIJW5-WT3pP0xQR97Y4ehnMz_k
+  category: coffee_shop
+  brand_key: hogwarts-express-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 2370
+- slug: 100-burger-emek
+  display_name: 100 Burger-Emek
+  place_id: ChIJlyixYQ9P0xQR_TRnqR9CYls
+  category: hamburger_restaurant
+  brand_key: 100-burger-emek
+  active: true
+  tracked: true
+  user_ratings_total: 2316
+- slug: the-bigos
+  display_name: The Bigos
+  place_id: ChIJE4V5dyRP0xQR5oxNXiSOYSE
+  category: restaurant
+  brand_key: the-bigos
+  active: true
+  tracked: true
+  user_ratings_total: 2279
+- slug: pelit-pastanesi-cukurambar
+  display_name: Pelit Pastanesi Çukurambar
+  place_id: ChIJtxyFiKxI0xQRe4vWkns1Sk8
+  category: pastry_shop
+  brand_key: pelit-pastanesi-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 2254
+- slug: develi-doner-emek
+  display_name: Develi Döner&Emek
+  place_id: ChIJdZWTfTdP0xQR7h7RU0eTyqM
+  category: restaurant
+  brand_key: develi-doner-emek
+  active: true
+  tracked: true
+  user_ratings_total: 2212
+- slug: kaburgaci
+  display_name: KABURGACI
+  place_id: ChIJzb-XpmFP0xQR8CyzeC8CQ60
+  category: kebab_shop
+  brand_key: kaburgaci
+  active: true
+  tracked: true
+  user_ratings_total: 2168
+- slug: route-ny
+  display_name: Route NY
+  place_id: ChIJOZJQ4yBP0xQRESO7-m-blKw
+  category: bar
+  brand_key: route-ny
+  active: true
+  tracked: true
+  user_ratings_total: 2165
+- slug: kukla-kebap
+  display_name: Kukla Kebap
+  place_id: ChIJUfR6wk5P0xQR52HG7Y6fsPQ
+  category: kebab_shop
+  brand_key: kukla-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 2133
+- slug: hamsi-balik-lokantasi-balgat
+  display_name: Hamsi Balık Lokantası - Balgat
+  place_id: ChIJU6c6K05P0xQRm_SJuCiiK4A
+  category: restaurant
+  brand_key: hamsi-balik-lokantasi-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 2122
+- slug: mehmet-bey-iskender
+  display_name: Mehmet Bey iskender
+  place_id: ChIJ_dR9vX1P0xQRWep6Jf9DEnk
+  category: restaurant
+  brand_key: mehmet-bey-iskender
+  active: true
+  tracked: true
+  user_ratings_total: 2114
+- slug: giyma-adana-kebapcisi
+  display_name: Gıyma - Adana Kebapçısı
+  place_id: ChIJR18ZUalP0xQRRhhLO9aQFVg
+  category: kebab_shop
+  brand_key: giyma-adana-kebapcisi
+  active: true
+  tracked: true
+  user_ratings_total: 2113
+- slug: antik-sirdan
+  display_name: ANTİK ŞIRDAN
+  place_id: ChIJkTTm-WJO0xQRDHtIwzjeGqA
+  category: turkish_restaurant
+  brand_key: antik-sirdan
+  active: true
+  tracked: true
+  user_ratings_total: 2097
+- slug: castello-doner
+  display_name: Castello Döner
+  place_id: ChIJfwxzEtdP0xQRYis4dkYBOS4
+  category: turkish_restaurant
+  brand_key: castello-doner
+  active: true
+  tracked: true
+  user_ratings_total: 2057
+- slug: fabb-s-pub
+  display_name: Fabb's Pub
+  place_id: ChIJHcIw9exP0xQROjp0r_scLYs
+  category: bar
+  brand_key: fabb-s-pub
+  active: true
+  tracked: true
+  user_ratings_total: 1986
+- slug: last-penny-bahcelievler
+  display_name: Last Penny Bahçelievler
+  place_id: ChIJPVUB6SBP0xQR_Df5zIldw68
+  category: bar
+  brand_key: last-penny-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1952
+- slug: coffee-lab-bahceli-7
+  display_name: Coffee LAB Bahçeli 7
+  place_id: ChIJx5eu1KZP0xQRrDR6tVQow3k
+  category: coffee_shop
+  brand_key: coffee-lab-bahceli-7
+  active: true
+  tracked: true
+  user_ratings_total: 1938
+- slug: ali-baba-nargile-restaurant
+  display_name: Ali Baba Nargile Restaurant
+  place_id: ChIJuVxky01P0xQRvQtunUwj_b4
+  category: restaurant
+  brand_key: ali-baba-nargile-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 1936
+- slug: sungurbey
+  display_name: SungurBey
+  place_id: ChIJcdkrwdhO0xQRbT7pei7strk
+  category: cafe
+  brand_key: sungurbey
+  active: true
+  tracked: true
+  user_ratings_total: 1906
+- slug: chocolabs-bahcelievler-ankara
+  display_name: Chocolabs Bahçelievler Ankara
+  place_id: ChIJjUtcROlP0xQRU9Bu4--Gmfs
+  category: dessert_shop
+  brand_key: chocolabs-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1903
+- slug: victoria-pastaneleri-ovecler
+  display_name: Victoria Pastaneleri Öveçler
+  place_id: ChIJzfTs-XRF0xQRle7c5Th2w3o
+  category: pastry_shop
+  brand_key: victoria-pastaneleri-ovecler
+  active: true
+  tracked: true
+  user_ratings_total: 1898
+- slug: zerzevan
+  display_name: Zerzevan
+  place_id: ChIJpTjYqkVP0xQRY7XZVeNqAYs
+  category: restaurant
+  brand_key: zerzevan
+  active: true
+  tracked: true
+  user_ratings_total: 1881
+- slug: niyazi-kesim-restoran-ankara
+  display_name: Niyazi Kesim Restoran Ankara
+  place_id: ChIJ89rV7nVP0xQRxvkb9Fz0lOI
+  category: restaurant
+  brand_key: niyazi-kesim-restoran
+  active: true
+  tracked: true
+  user_ratings_total: 1877
+- slug: kebo-bahcelievler
+  display_name: Kebo Bahçelievler
+  place_id: ChIJ89_WVzxP0xQRQmmHqxEx-dQ
+  category: fast_food_restaurant
+  brand_key: kebo-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1866
+- slug: cennetkusu-cukurambar
+  display_name: Cennetkuşu Çukurambar
+  place_id: ChIJGzqHyalP0xQRt5aXsBWePtY
+  category: restaurant
+  brand_key: cennetkusu-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 1866
+- slug: kanatci-sari
+  display_name: Kanatçı Sarı
+  place_id: ChIJw_3L9YpP0xQRpdRkJ4bkAdw
+  category: restaurant
+  brand_key: kanatci-sari
+  active: true
+  tracked: true
+  user_ratings_total: 1851
+- slug: hanzade-kunefe
+  display_name: Hanzade Künefe
+  place_id: ChIJ4SBBr1FP0xQRt6IqQuj1yb8
+  category: dessert_shop
+  brand_key: hanzade-kunefe
+  active: true
+  tracked: true
+  user_ratings_total: 1835
+- slug: starbucks
+  display_name: Starbucks
+  place_id: ChIJVcDzzS9P0xQRN6ZYn8oeu3I
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: true
+  user_ratings_total: 1832
+- slug: if-sokak-sogutozu
+  display_name: IF Sokak Söğütözü
+  place_id: ChIJ0Z0uLABJ0xQRDhopEtnvtMY
+  category: pub
+  brand_key: if-sokak
+  active: true
+  tracked: true
+  user_ratings_total: 1805
+- slug: zirhci-kebap
+  display_name: ZIRHÇI KEBAP
+  place_id: ChIJobWAtb5P0xQRrTgdUiIGtmk
+  category: restaurant
+  brand_key: zirhci-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 1803
+- slug: mcdonald-s-bahcelievler-7-cadde
+  display_name: McDonald's Bahçelievler 7. Cadde
+  place_id: ChIJWwn-szxP0xQRQ1uCK--IKmU
+  category: fast_food_restaurant
+  brand_key: mcdonald-s-bahcelievler-7-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 1794
+- slug: van-kahvalti-lounge-ankara
+  display_name: Van Kahvaltı Lounge Ankara
+  place_id: ChIJcUz2eMlF0xQRbzPZqBOxJ0c
+  category: breakfast_restaurant
+  brand_key: van-kahvalti-lounge
+  active: true
+  tracked: true
+  user_ratings_total: 1782
+- slug: yildiz-aspava-100-yil-resmi
+  display_name: YILDIZ ASPAVA 100.yıl (RESMİ)
+  place_id: ChIJv3Jb8QdG0xQRcBsBMHNtyIw
+  category: restaurant
+  brand_key: yildiz-aspava-100-yil-resmi
+  active: true
+  tracked: true
+  user_ratings_total: 1767
+- slug: sutlu-d-d-ankara-bahceli
+  display_name: Sütlü D&D Ankara Bahçeli
+  place_id: ChIJF45vw_pP0xQRZTCpzQjsK9o
+  category: dessert_restaurant
+  brand_key: sutlu-d-d-ankara-bahceli
+  active: true
+  tracked: true
+  user_ratings_total: 1765
+- slug: liva-pastanesi-chijxyor
+  display_name: Liva Pastanesi
+  place_id: ChIJXyOrIeNF0xQRyL7bPr1sUtA
+  category: pastry_shop
+  brand_key: liva-pastanesi
+  active: true
+  tracked: true
+  user_ratings_total: 1754
+- slug: sutlu-kavurma-ankara
+  display_name: Sütlü Kavurma Ankara
+  place_id: ChIJOel-Md1P0xQR_CkBGh1gT-I
+  category: restaurant
+  brand_key: sutlu-kavurma
+  active: true
+  tracked: true
+  user_ratings_total: 1746
+- slug: 8-dil-pizza-eski-3-cadde
+  display_name: 8 Dil Pizza (Eski 3. Cadde)
+  place_id: ChIJezG_I09H0xQRjvgUdrIp9uM
+  category: pizza_restaurant
+  brand_key: 8-dil-pizza-eski-3-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 1742
+- slug: 7-24-kasikhan-corba-ankara-nin-marka-corbacisi
+  display_name: 7/24 Kaşıkhan Çorba (Ankara'nın Marka Çorbacısı)
+  place_id: ChIJsf2l_whP0xQRnuDg_a9r6H8
+  category: soup_restaurant
+  brand_key: 7-24-kasikhan-corba-ankara-nin-marka-corbacisi
+  active: true
+  tracked: true
+  user_ratings_total: 1723
+- slug: kokorecci-haci
+  display_name: Kokoreççi Hacı
+  place_id: ChIJ5XzfJb1P0xQRUtuGiaOL68o
+  category: turkish_restaurant
+  brand_key: kokorecci-haci
+  active: true
+  tracked: true
+  user_ratings_total: 1702
+- slug: burger-king-7-cadde
+  display_name: Burger King - 7. Cadde
+  place_id: ChIJLYydT95O0xQRzse5J_JAUB4
+  category: fast_food_restaurant
+  brand_key: burger-king-7-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 1687
+- slug: timboo-cafe-kentpark
+  display_name: Timboo Cafe Kentpark
+  place_id: ChIJp74gdidG0xQRGCiLQqRtJtI
+  category: restaurant
+  brand_key: timboo-cafe-kentpark
+  active: true
+  tracked: true
+  user_ratings_total: 1684
+- slug: kanatci-beyi
+  display_name: Kanatçı Beyi
+  place_id: ChIJYRrNhd5P0xQR00g000VDrLA
+  category: restaurant
+  brand_key: kanatci-beyi
+  active: true
+  tracked: true
+  user_ratings_total: 1673
+- slug: balkon-cafe-restaurant
+  display_name: Balkon Cafe & Restaurant
+  place_id: ChIJUzI0pU1P0xQRI6UygD_HyWE
+  category: restaurant
+  brand_key: balkon-cafe-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 1622
+- slug: bybull-steakhouse
+  display_name: Bybull Steakhouse
+  place_id: ChIJCQ-ihJNP0xQR5LIrwzETpAc
+  category: restaurant
+  brand_key: bybull-steakhouse
+  active: true
+  tracked: true
+  user_ratings_total: 1618
+- slug: simsek-aspava-bahcelievler
+  display_name: ŞİMŞEK ASPAVA BAHÇELİEVLER
+  place_id: ChIJlX7cbzJP0xQRmdg3-Ni2ZRQ
+  category: restaurant
+  brand_key: simsek-aspava-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1613
+- slug: hippo-french-tacos-bahcelievler
+  display_name: Hippo French Tacos Bahçelievler
+  place_id: ChIJMXYIhmNP0xQRS4Sdnyowyd4
+  category: fast_food_restaurant
+  brand_key: hippo-french-tacos-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1594
+- slug: meshur-kebapci-cahit-usta
+  display_name: Meşhur Kebapçı Cahit Usta
+  place_id: ChIJC_m0-lZP0xQRKp7U5UcGlb0
+  category: turkish_restaurant
+  brand_key: meshur-kebapci-cahit-usta
+  active: true
+  tracked: true
+  user_ratings_total: 1592
+- slug: okuz
+  display_name: Öküz
+  place_id: ChIJRwkQ6CQ20xQRVSPk5EKSNNA
+  category: night_club
+  brand_key: okuz
+  active: true
+  tracked: true
+  user_ratings_total: 1583
+- slug: starbucks-chij6a8_
+  display_name: Starbucks
+  place_id: ChIJ6a8_aExP0xQRZVnoLQurVv8
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: true
+  user_ratings_total: 1579
+- slug: il-pollo-del-capo-bahcelievler
+  display_name: il pollo DEL CAPO Bahçelievler
+  place_id: ChIJdyt0PQNP0xQReGqUj8ER6KI
+  category: hamburger_restaurant
+  brand_key: il-pollo-del-capo-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1577
+- slug: gaziantepli-durdu-usta-katmer-kunefe
+  display_name: Gaziantepli Durdu Usta Katmer Künefe
+  place_id: ChIJqxzvLzdP0xQR6iK3umrg46U
+  category: dessert_restaurant
+  brand_key: gaziantepli-durdu-usta-katmer-kunefe
+  active: true
+  tracked: true
+  user_ratings_total: 1573
+- slug: afitap-meyhane-sogutozu
+  display_name: Afitap Meyhane Söğütözü
+  place_id: ChIJnVtXKR1P0xQRPX8iPfe481E
+  category: restaurant
+  brand_key: afitap-meyhane
+  active: true
+  tracked: true
+  user_ratings_total: 1564
+- slug: burger-king-sogutozu
+  display_name: Burger King - Söğütözü
+  place_id: ChIJdd0GyqVI0xQRDTxxf0LBnbU
+  category: fast_food_restaurant
+  brand_key: burger-king
+  active: true
+  tracked: true
+  user_ratings_total: 1535
+- slug: hmbrgr-armada
+  display_name: HMBRGR Armada
+  place_id: ChIJRwDAr0xP0xQRL24auGiYiuc
+  category: hamburger_restaurant
+  brand_key: hmbrgr
+  active: true
+  tracked: true
+  user_ratings_total: 1524
+- slug: konakbay-ciborek-manti-balgat
+  display_name: Konakbay Çibörek Mantı BALGAT
+  place_id: ChIJ06LJngpP0xQRtycb5PPZTWs
+  category: dumpling_restaurant
+  brand_key: konakbay-ciborek-manti-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 1523
+- slug: firuze-kahve
+  display_name: Firuze Kahve
+  place_id: ChIJc8RLkFpH0xQRbc4qW5wNXTE
+  category: breakfast_restaurant
+  brand_key: firuze-kahve
+  active: true
+  tracked: true
+  user_ratings_total: 1518
+- slug: coffee-lab-besevler
+  display_name: Coffee LAB Beşevler
+  place_id: ChIJwwjzScNP0xQRrCMqz6TjQ2g
+  category: coffee_shop
+  brand_key: coffee-lab-besevler
+  active: true
+  tracked: true
+  user_ratings_total: 1512
+- slug: efsane-kebapci-selcuk-usta
+  display_name: EFSANE KEBAPÇI Selçuk Usta
+  place_id: ChIJQ_Hfw1VP0xQR5Mc-QSMEtu8
+  category: kebab_shop
+  brand_key: efsane-kebapci-selcuk-usta
+  active: true
+  tracked: true
+  user_ratings_total: 1502
+- slug: meshur-aspava-ovecler
+  display_name: MEŞHUR ASPAVA ÖVEÇLER
+  place_id: ChIJVWJnbPVF0xQRZY65Tl80nbE
+  category: restaurant
+  brand_key: meshur-aspava-ovecler
+  active: true
+  tracked: true
+  user_ratings_total: 1474
+- slug: ankara-hamsi
+  display_name: Ankara Hamsi
+  place_id: ChIJoeZsGSlP0xQRdWyd9yeLiKg
+  category: seafood_restaurant
+  brand_key: ankara-hamsi
+  active: true
+  tracked: true
+  user_ratings_total: 1471
+- slug: sun-brothers-pizza-bahcelievler
+  display_name: Sun Brothers Pizza Bahçelievler
+  place_id: ChIJmdA31IxP0xQRiKzjlfFdhU4
+  category: pizza_restaurant
+  brand_key: sun-brothers-pizza-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1470
+- slug: rifki-et-balik-mangal
+  display_name: Rıfkı Et-Balık Mangal
+  place_id: ChIJORq_a1hP0xQRkcEVbnXWMSI
+  category: restaurant
+  brand_key: rifki-et-balik-mangal
+  active: true
+  tracked: true
+  user_ratings_total: 1463
+- slug: yuba-cafe-bistro
+  display_name: Yuba Cafe & Bistro
+  place_id: ChIJYff2WmhF0xQRT7mRcOoNhE0
+  category: cafe
+  brand_key: yuba-cafe-bistro
+  active: true
+  tracked: true
+  user_ratings_total: 1447
+- slug: coffee-1919-cukurambar
+  display_name: Coffee 1919 Çukurambar
+  place_id: ChIJv29PwapI0xQR2o6agjmimkg
+  category: coffee_shop
+  brand_key: coffee-1919-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 1437
+- slug: metin-usta-cag-kebap-ankara
+  display_name: Metin Usta Cağ Kebap Ankara
+  place_id: ChIJZ3-jHyZP0xQRSmjTLITa9ig
+  category: kebab_shop
+  brand_key: metin-usta-cag-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 1434
+- slug: boston-drink-dessert
+  display_name: Boston Drink & Dessert
+  place_id: ChIJaXI9MCJP0xQRYtUOdARUQso
+  category: chocolate_shop
+  brand_key: boston-drink-dessert
+  active: true
+  tracked: true
+  user_ratings_total: 1427
+- slug: erdem-1071-et-lokantasi
+  display_name: Erdem 1071 Et Lokantası
+  place_id: ChIJL6_tV45P0xQRw7GDOLlSRHs
+  category: restaurant
+  brand_key: erdem-1071-et-lokantasi
+  active: true
+  tracked: true
+  user_ratings_total: 1423
+- slug: vasfi-usta-antep-sofrasi
+  display_name: Vasfi Usta Antep Sofrası
+  place_id: ChIJ46cWCE9P0xQRtXizPrwHiOI
+  category: restaurant
+  brand_key: vasfi-usta-antep-sofrasi
+  active: true
+  tracked: true
+  user_ratings_total: 1417
+- slug: dondurmaci-serdar-usta
+  display_name: Dondurmacı Serdar Usta
+  place_id: ChIJaafPONpP0xQRB6C8zUePKrY
+  category: ice_cream_shop
+  brand_key: dondurmaci-serdar-usta
+  active: true
+  tracked: true
+  user_ratings_total: 1411
+- slug: simple-chocolate-breakfast-bahcelievler
+  display_name: Simple Chocolate & Breakfast Bahçelievler
+  place_id: ChIJp_2_AqZP0xQRQRo-dJDTCpw
+  category: chocolate_shop
+  brand_key: simple-chocolate-breakfast-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1404
+- slug: gaziantepli-kebapci-erkan-ustanin-yeri
+  display_name: Gaziantepli Kebapçı Erkan Ustanın Yeri
+  place_id: ChIJ21_1rJZP0xQRga9A4OPugj8
+  category: kebab_shop
+  brand_key: gaziantepli-kebapci-erkan-ustanin-yeri
+  active: true
+  tracked: true
+  user_ratings_total: 1400
+- slug: big-baker
+  display_name: Big Baker
+  place_id: ChIJyW5rRN9O0xQRb2aXJgopWBE
+  category: fast_food_restaurant
+  brand_key: big-baker
+  active: true
+  tracked: true
+  user_ratings_total: 1399
+- slug: mujgan
+  display_name: Müjgân
+  place_id: ChIJpUaGLwVG0xQRxKt9drLF22Y
+  category: pub
+  brand_key: mujgan
+  active: true
+  tracked: true
+  user_ratings_total: 1398
+- slug: zigana-pide
+  display_name: Zigana Pide
+  place_id: ChIJFXcOMTBP0xQROxJi9GeJ5DQ
+  category: middle_eastern_restaurant
+  brand_key: zigana-pide
+  active: true
+  tracked: true
+  user_ratings_total: 1386
+- slug: ferfene-steakhouse
+  display_name: FERFENE STEAKHOUSE
+  place_id: ChIJfbbtsU1P0xQRIG0AvXvw96I
+  category: steak_house
+  brand_key: ferfene-steakhouse
+  active: true
+  tracked: true
+  user_ratings_total: 1383
+- slug: labera
+  display_name: LaBERA
+  place_id: ChIJR9vq-0hP0xQR9WmfZ1rFCcc
+  category: cafe
+  brand_key: labera
+  active: true
+  tracked: true
+  user_ratings_total: 1373
+- slug: selcuklu-nargile
+  display_name: Selçuklu Nargile
+  place_id: ChIJY_w0G_pF0xQREH4Voo2pzTI
+  category: cafe
+  brand_key: selcuklu-nargile
+  active: true
+  tracked: true
+  user_ratings_total: 1373
+- slug: tabu-cafe
+  display_name: Tabu Cafe
+  place_id: ChIJq3RnwDxP0xQRyuH_sivo7CI
+  category: cafeteria
+  brand_key: tabu-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 1365
+- slug: 8-dil-pizza-eski-6-cadde
+  display_name: 8 Dil Pizza (Eski 6.Cadde)
+  place_id: ChIJ-ywl29dP0xQRVpsv6bZUM_Q
+  category: pizza_restaurant
+  brand_key: 8-dil-pizza-eski-6-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 1362
+- slug: mcdonald-s-cetin-emec
+  display_name: McDonald's Çetin Emeç
+  place_id: ChIJRYv8d1hP0xQR7_W8PC9s2so
+  category: fast_food_restaurant
+  brand_key: mcdonald-s-cetin-emec
+  active: true
+  tracked: true
+  user_ratings_total: 1362
+- slug: antepli-cevat-usta
+  display_name: Antepli Cevat Usta
+  place_id: ChIJG_zHjQtP0xQRoG-h738Md84
+  category: restaurant
+  brand_key: antepli-cevat-usta
+  active: true
+  tracked: true
+  user_ratings_total: 1349
+- slug: starbucks-chijwyul
+  display_name: Starbucks
+  place_id: ChIJwyULN99O0xQRbuGc6FVCza0
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: true
+  user_ratings_total: 1347
+- slug: durum500
+  display_name: DÜRÜM500
+  place_id: ChIJqb-4BmNP0xQRAlzmkfDbL1s
+  category: fast_food_restaurant
+  brand_key: durum500
+  active: true
+  tracked: true
+  user_ratings_total: 1343
+- slug: erzurum-oltu-dadaslar-tortum-cag-et-evi
+  display_name: Erzurum Oltu Dadaşlar Tortum Cağ Et Evi
+  place_id: ChIJbYkd1vVF0xQRCccrkAfJ35Y
+  category: restaurant
+  brand_key: erzurum-oltu-dadaslar-tortum-cag-et-evi
+  active: true
+  tracked: true
+  user_ratings_total: 1342
+- slug: ozlemce-doner-cukurambar
+  display_name: Özlemce Döner Çukurambar
+  place_id: ChIJGar9cEVF0xQRs_BbmgjLGIc
+  category: restaurant
+  brand_key: ozlemce-doner-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 1340
+- slug: ulucay-tantuni-balgat-subesi
+  display_name: Uluçay Tantuni Balgat Şubesi
+  place_id: ChIJc6Bw6T1P0xQR_r5bmtGwlsw
+  category: restaurant
+  brand_key: ulucay-tantuni-balgat-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 1336
+- slug: hasan-usta-kebap-ankara
+  display_name: Hasan Usta Kebap Ankara
+  place_id: ChIJpxks_7dP0xQRRA4u0PlQnB0
+  category: restaurant
+  brand_key: hasan-usta-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 1318
+- slug: konyali-haci-usta-balgat
+  display_name: Konyalı Hacı Usta BALGAT
+  place_id: ChIJF12FOeVF0xQRCqeZoLIeoA4
+  category: restaurant
+  brand_key: konyali-haci-usta-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 1314
+- slug: loophole-booze-bite-fun
+  display_name: Loophole Booze Bite & Fun
+  place_id: ChIJuSNbxt9O0xQRTkpUPxXkrGk
+  category: gastropub
+  brand_key: loophole-booze-bite-fun
+  active: true
+  tracked: true
+  user_ratings_total: 1312
+- slug: bosco-caffe-e-tiramisu-chijs2dh
+  display_name: Bosco caffè e tiramisù
+  place_id: ChIJS2DhGxlP0xQRzPi-BtiN5gI
+  category: coffee_shop
+  brand_key: bosco-caffe-e-tiramisu
+  active: true
+  tracked: true
+  user_ratings_total: 1279
+- slug: kajun-bahcelievler
+  display_name: Kajun Bahçelievler
+  place_id: ChIJBWdyPOpP0xQRSRWGkM8ePv8
+  category: chicken_restaurant
+  brand_key: kajun-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1275
+- slug: arabica-coffee-house
+  display_name: Arabica Coffee House
+  place_id: ChIJ326sZx9F0xQR7Gux7hC2fdE
+  category: coffee_shop
+  brand_key: arabica-coffee-house
+  active: true
+  tracked: true
+  user_ratings_total: 1260
+- slug: burger-king-besevler-degol
+  display_name: Burger King - Beşevler Degol
+  place_id: ChIJgyzvopJP0xQRNzKms0YLVpM
+  category: fast_food_restaurant
+  brand_key: burger-king-besevler-degol
+  active: true
+  tracked: true
+  user_ratings_total: 1260
+- slug: meshur-sanayi-koftecisi
+  display_name: MEŞHUR SANAYİ KÖFTECİSİ
+  place_id: ChIJveVl-mdP0xQR3emvyiQ5fhI
+  category: restaurant
+  brand_key: meshur-sanayi-koftecisi
+  active: true
+  tracked: true
+  user_ratings_total: 1250
+- slug: 1071-manti-cukurambar
+  display_name: 1071 Mantı Çukurambar
+  place_id: ChIJsaCS0tRP0xQRJN9WEejekp0
+  category: restaurant
+  brand_key: 1071-manti-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 1248
+- slug: santiye
+  display_name: Şantiye
+  place_id: ChIJgZxmxSBP0xQRbCqNXtoFlhQ
+  category: restaurant
+  brand_key: santiye
+  active: true
+  tracked: true
+  user_ratings_total: 1216
+- slug: klarnet-sahne
+  display_name: Klarnet Sahne
+  place_id: ChIJfbRn761I0xQRHwcinf6LcLI
+  category: restaurant
+  brand_key: klarnet-sahne
+  active: true
+  tracked: true
+  user_ratings_total: 1215
+- slug: far-east-wok
+  display_name: Far East Wok
+  place_id: ChIJpRp89DtP0xQRTXXnXC01MFo
+  category: restaurant
+  brand_key: far-east-wok
+  active: true
+  tracked: true
+  user_ratings_total: 1206
+- slug: kahve-dunyasi-armada-avm
+  display_name: Kahve Dünyası - Armada AVM
+  place_id: ChIJNTYzmkxP0xQRttbHZ2lysYQ
+  category: coffee_shop
+  brand_key: kahve-dunyasi-armada-avm
+  active: true
+  tracked: true
+  user_ratings_total: 1205
+- slug: cadinin-evi-7-cadde
+  display_name: Cadı’nın Evi 7.Cadde
+  place_id: ChIJTQUUDXBP0xQR1MmPeRPHGNo
+  category: chocolate_shop
+  brand_key: cadinin-evi-7-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 1201
+- slug: kebapci-halil-usta-ankara-subesi-kebap-baklava
+  display_name: Kebapçı Halil Usta Ankara Şubesi | Kebap - Baklava
+  place_id: ChIJhZ08WUNF0xQRJ_vrYV05o3U
+  category: restaurant
+  brand_key: kebapci-halil-usta-ankara-subesi-kebap-baklava
+  active: true
+  tracked: true
+  user_ratings_total: 1193
+- slug: ridvan1998-emek
+  display_name: RIDVAN1998 EMEK
+  place_id: ChIJz5fImjlP0xQR6Zj9arx2CIM
+  category: turkish_restaurant
+  brand_key: ridvan1998-emek
+  active: true
+  tracked: true
+  user_ratings_total: 1190
+- slug: devrez-cukurambar
+  display_name: Devrez Çukurambar
+  place_id: ChIJE0tcNa1I0xQR6GXAoFlK7gA
+  category: restaurant
+  brand_key: devrez-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 1188
+- slug: mutlu-cakir-sokak-lezzetleri
+  display_name: Mutlu ÇAKIR Sokak Lezzetleri
+  place_id: ChIJhbxaMmFP0xQRS4UePj_DvTE
+  category: restaurant
+  brand_key: mutlu-cakir-sokak-lezzetleri
+  active: true
+  tracked: true
+  user_ratings_total: 1178
+- slug: pilavci-beyi
+  display_name: Pilavcı Beyi
+  place_id: ChIJOypT_61P0xQRNYp-Pl9lPI8
+  category: restaurant
+  brand_key: pilavci-beyi
+  active: true
+  tracked: true
+  user_ratings_total: 1177
+- slug: sar-kebap
+  display_name: Sar Kebap
+  place_id: ChIJ53_RxCxP0xQRGpEftCB6izY
+  category: kebab_shop
+  brand_key: sar-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 1153
+- slug: misbasak-ovecler
+  display_name: Misbaşak - Öveçler
+  place_id: ChIJfX8J4vRF0xQRUx4HE6RPKGg
+  category: pastry_shop
+  brand_key: misbasak-ovecler
+  active: true
+  tracked: true
+  user_ratings_total: 1152
+- slug: chop-n-blend-bahcelievler
+  display_name: Chop N Blend Bahçelievler
+  place_id: ChIJjRwOHupP0xQR3plNzWKOmWk
+  category: salad_shop
+  brand_key: chop-n-blend-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 1152
+- slug: big-chefs-via-flat-armada-subesi
+  display_name: Big Chefs - Via Flat Armada Şubesi
+  place_id: ChIJPwQeGq5P0xQRp3yII3balUc
+  category: restaurant
+  brand_key: big-chefs-via-flat-armada-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 1135
+- slug: unfesta-firin
+  display_name: Unfesta Fırın
+  place_id: ChIJc4fsogNP0xQRf_tt3OVxLec
+  category: bakery
+  brand_key: unfesta-firin
+  active: true
+  tracked: true
+  user_ratings_total: 1135
+- slug: cookshop-kentpark-avm
+  display_name: COOKSHOP. Kentpark AVM
+  place_id: ChIJIwZDCutJ0xQR3kdBz7NwLdY
+  category: restaurant
+  brand_key: cookshop-kentpark-avm
+  active: true
+  tracked: true
+  user_ratings_total: 1134
+- slug: doney-usta-63
+  display_name: DONEY USTA 63
+  place_id: ChIJE4wavlBP0xQRj2caPWGJKQo
+  category: restaurant
+  brand_key: doney-usta-63
+  active: true
+  tracked: true
+  user_ratings_total: 1114
+- slug: zerdali
+  display_name: Zerdali
+  place_id: ChIJ89OxPixP0xQRmpyH5OqVFOY
+  category: pastry_shop
+  brand_key: zerdali
+  active: true
+  tracked: true
+  user_ratings_total: 1110
+- slug: big-chefs-next-level-avm-subesi
+  display_name: Big Chefs - Next Level AVM Şubesi
+  place_id: ChIJOfBUBExP0xQRiZUOPld-bxk
+  category: restaurant
+  brand_key: big-chefs-next-level-avm-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 1108
+- slug: zeliha-kozde-bosnak-mutfagi-ve-borek
+  display_name: Zeliha Közde Boşnak Mutfağı ve Börek
+  place_id: ChIJ1f4azcU50xQRYz5QtTQlnCs
+  category: bakery
+  brand_key: zeliha-kozde-bosnak-mutfagi-ve-borek
+  active: true
+  tracked: true
+  user_ratings_total: 1101
+- slug: adanali-volkan-bolkes-doner
+  display_name: Adanalı Volkan Bolkes Döner
+  place_id: ChIJwdt4XtNP0xQRQ4esqCO6Rxo
+  category: turkish_restaurant
+  brand_key: adanali-volkan-bolkes-doner
+  active: true
+  tracked: true
+  user_ratings_total: 1100
+- slug: adanali-ismail-usta-emek
+  display_name: Adanalı İsmail Usta Emek
+  place_id: ChIJ8V3BewJP0xQR6pBebcRQfOY
+  category: turkish_restaurant
+  brand_key: adanali-ismail-usta-emek
+  active: true
+  tracked: true
+  user_ratings_total: 1098
+- slug: starbucks-chijxyor
+  display_name: Starbucks
+  place_id: ChIJXyOrIeNF0xQRYJse_Qjf7HE
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: true
+  user_ratings_total: 1097
+- slug: fafello
+  display_name: FAFELLO
+  place_id: ChIJL9EXQJRP0xQRmjMvggba6_c
+  category: restaurant
+  brand_key: fafello
+  active: true
+  tracked: true
+  user_ratings_total: 1096
+- slug: mocaco-coffee
+  display_name: Mocaco Coffee
+  place_id: ChIJt-4iPsxR0xQRjivnKaJv86c
+  category: coffee_shop
+  brand_key: mocaco-coffee
+  active: true
+  tracked: true
+  user_ratings_total: 1091
+- slug: diyarbakir-cigeri-21
+  display_name: Diyarbakır Ciğeri 21
+  place_id: ChIJE8uv6DFP0xQR2ggC_Cb0Lis
+  category: restaurant
+  brand_key: diyarbakir-cigeri-21
+  active: true
+  tracked: true
+  user_ratings_total: 1085
+- slug: cannes-kruvasan-chocolate
+  display_name: CANNES Kruvasan & Chocolate
+  place_id: ChIJ7XdhX01P0xQRchNnP9DHcZo
+  category: dessert_shop
+  brand_key: cannes-kruvasan-chocolate
+  active: true
+  tracked: true
+  user_ratings_total: 1079
+- slug: bulent-borekcilik-cukurambar
+  display_name: Bülent Börekçilik Çukurambar
+  place_id: ChIJ3TImAt5P0xQRk4JNM84eFy4
+  category: food_court
+  brand_key: bulent-borekcilik-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 1074
+- slug: 52-ciger-kebap
+  display_name: 52 Ciğer Kebap
+  place_id: ChIJ0eai0DZP0xQRZvT43dg8o6U
+  category: kebab_shop
+  brand_key: 52-ciger-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 1069
+- slug: timboo-cafe-next-level
+  display_name: Timboo Cafe Next Level
+  place_id: ChIJU3Z4cExP0xQRfVx4Fc47oh0
+  category: restaurant
+  brand_key: timboo-cafe-next-level
+  active: true
+  tracked: true
+  user_ratings_total: 1068
+- slug: wonders-event-wedding
+  display_name: WONDERS Event & Wedding
+  place_id: ChIJzcuLMShP0xQR0qhE2o3cj9U
+  category: event_venue
+  brand_key: wonders-event-wedding
+  active: true
+  tracked: true
+  user_ratings_total: 1067
+- slug: vefali-kofteci-ankara-cukurambar
+  display_name: Vefalı Köfteci Ankara Çukurambar
+  place_id: ChIJaXw504pJ0xQRLZ6t9RqvSPU
+  category: restaurant
+  brand_key: vefali-kofteci-ankara-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 1059
+- slug: konyali-ahmet-usta-cankaya
+  display_name: Konyalı Ahmet Usta - Çankaya
+  place_id: ChIJ8YAr1Y1P0xQR_30M0Dh19pI
+  category: kebab_shop
+  brand_key: konyali-ahmet-usta-cankaya
+  active: true
+  tracked: true
+  user_ratings_total: 1050
+- slug: sim
+  display_name: Sim
+  place_id: ChIJO8JWSSNP0xQRj2jBwSOCYOs
+  category: ice_cream_shop
+  brand_key: sim
+  active: true
+  tracked: true
+  user_ratings_total: 1048
+- slug: odtu-kafeterya-mudurlugu
+  display_name: ODTÜ Kafeterya Müdürlüğü
+  place_id: ChIJrUtt3z1G0xQR8Q5ODuoz2iI
+  category: food_court
+  brand_key: odtu-kafeterya-mudurlugu
+  active: true
+  tracked: true
+  user_ratings_total: 1028
+- slug: waffle-levent
+  display_name: Waffle Levent
+  place_id: ChIJL74iqjxP0xQRm2r-N1iJKFE
+  category: dessert_shop
+  brand_key: waffle-levent
+  active: true
+  tracked: true
+  user_ratings_total: 1015
+- slug: simple-chocolate-breakfast-via-flat
+  display_name: Simple Chocolate & Breakfast Via Flat
+  place_id: ChIJA89R0XBP0xQRJWK1wNqV_oE
+  category: chocolate_shop
+  brand_key: simple-chocolate-breakfast-via-flat
+  active: true
+  tracked: true
+  user_ratings_total: 1003
+- slug: degirmentepe-cag-kebap-pide-kofte
+  display_name: Değirmentepe Cağ Kebap, Pide & Köfte
+  place_id: ChIJd9wrYbFI0xQRsPPKPvt_yAM
+  category: kebab_shop
+  brand_key: degirmentepe-cag-kebap-pide-kofte
+  active: true
+  tracked: true
+  user_ratings_total: 994
+- slug: espressolab-ankara-armada-avm
+  display_name: Espressolab Ankara Armada Avm
+  place_id: ChIJs1G0sExP0xQRH4YA8cj6dls
+  category: coffee_shop
+  brand_key: espressolab-ankara-armada-avm
+  active: true
+  tracked: true
+  user_ratings_total: 993
+- slug: kahve-akademisi
+  display_name: Kahve Akademisi
+  place_id: ChIJlVBXuthO0xQRkzLomocyMNo
+  category: coffee_shop
+  brand_key: kahve-akademisi
+  active: true
+  tracked: true
+  user_ratings_total: 992
+- slug: sim-aspava-emek
+  display_name: Sim Aspava | Emek
+  place_id: ChIJ2TYyFaNP0xQRbn9hDbbO1ag
+  category: restaurant
+  brand_key: sim-aspava-emek
+  active: true
+  tracked: true
+  user_ratings_total: 983
+- slug: tavuk-dunyasi-ankara-7-cadde
+  display_name: Tavuk Dünyası Ankara 7. Cadde
+  place_id: ChIJJQ7YMTJP0xQRAxKg8MQm1PM
+  category: chicken_restaurant
+  brand_key: tavuk-dunyasi-ankara-7-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 983
+- slug: halil-gulcimen-kebaphan
+  display_name: HALİL GÜLÇİMEN - KEBAPHAN
+  place_id: ChIJPSUjH1FP0xQR_gxhV778TX8
+  category: restaurant
+  brand_key: halil-gulcimen-kebaphan
+  active: true
+  tracked: true
+  user_ratings_total: 982
+- slug: mogo-korean-food
+  display_name: Mogo Korean Food
+  place_id: ChIJ-S5XU7lH0xQR43-35K5SkH4
+  category: korean_restaurant
+  brand_key: mogo-korean-food
+  active: true
+  tracked: true
+  user_ratings_total: 981
+- slug: meshur-bursa-hacibey-kebapcisi
+  display_name: Meşhur Bursa Hacıbey Kebapçısı
+  place_id: ChIJkwR4ykdP0xQREthrGgkthLs
+  category: kebab_shop
+  brand_key: meshur-bursa-hacibey-kebapcisi
+  active: true
+  tracked: true
+  user_ratings_total: 973
+- slug: versando-bahcelievler
+  display_name: VERSANDO Bahçelievler
+  place_id: ChIJ_2lS6zdP0xQRZcilt4Wvnc0
+  category: chocolate_shop
+  brand_key: versando-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 972
+- slug: starbucks-chijou3b
+  display_name: Starbucks
+  place_id: ChIJoU3BWxtP0xQR7pkjOhNSQNA
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: true
+  user_ratings_total: 968
+- slug: ehlikeyf-plus-nargile-cafe-cukurambar
+  display_name: Ehlikeyf Plus Nargile Cafe Çukurambar
+  place_id: ChIJIcQ0XFNP0xQR8f_3vXRZDTE
+  category: cafe
+  brand_key: ehlikeyf-plus-nargile-cafe-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 967
+- slug: gozde-ademoglu
+  display_name: Gözde Ademoğlu
+  place_id: ChIJnwn0b21O0xQREpHY5_mLyQs
+  category: cafe
+  brand_key: gozde-ademoglu
+  active: true
+  tracked: true
+  user_ratings_total: 960
+- slug: coffee-lab-balgat
+  display_name: Coffee Lab Balgat
+  place_id: ChIJgasQ1PtF0xQRRq_-zGOffZo
+  category: coffee_shop
+  brand_key: coffee-lab-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 958
+- slug: ror-cafe-roastery
+  display_name: ROR Cafe & Roastery
+  place_id: ChIJAfq-ViNP0xQRwPRe-o9esKo
+  category: cafe
+  brand_key: ror-cafe-roastery
+  active: true
+  tracked: true
+  user_ratings_total: 954
+- slug: justo-sushi-noodle
+  display_name: Justo Sushi&Noodle
+  place_id: ChIJb1anEspP0xQRnCQLoRjJf4k
+  category: restaurant
+  brand_key: justo-sushi-noodle
+  active: true
+  tracked: true
+  user_ratings_total: 953
+- slug: ahal-teke-binicilik-tesisleri
+  display_name: Ahal Teke Binicilik Tesisleri
+  place_id: ChIJnZL122JP0xQRtYvTttyj5nk
+  category: sports_activity_location
+  brand_key: ahal-teke-binicilik-tesisleri
+  active: true
+  tracked: true
+  user_ratings_total: 953
+- slug: burger-king-balgat
+  display_name: Burger King - Balgat
+  place_id: ChIJz_c6uEVP0xQRkNC8ATIbVrk
+  category: fast_food_restaurant
+  brand_key: burger-king-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 939
+- slug: adana-lezzet-atesi
+  display_name: Adana Lezzet Ateşi
+  place_id: ChIJt1xPX-JF0xQRzYP3ik5rBhQ
+  category: restaurant
+  brand_key: adana-lezzet-atesi
+  active: true
+  tracked: true
+  user_ratings_total: 937
+- slug: gunaydin-kebap-steakhouse-armada-avm
+  display_name: Günaydın Kebap & Steakhouse Armada Avm
+  place_id: ChIJlfAqokxP0xQRZcGK8_o9RBI
+  category: steak_house
+  brand_key: gunaydin-kebap-steakhouse-armada-avm
+  active: true
+  tracked: true
+  user_ratings_total: 920
+- slug: ankara-bahcelievler-coffy
+  display_name: Ankara Bahçelievler Coffy
+  place_id: ChIJLzgY1z9P0xQRimfopuIZGRE
+  category: coffee_shop
+  brand_key: ankara-bahcelievler-coffy
+  active: true
+  tracked: true
+  user_ratings_total: 919
+- slug: anit-lezzet
+  display_name: Anıt Lezzet
+  place_id: ChIJZdCjChtP0xQRNlppCKzEzo4
+  category: restaurant
+  brand_key: anit-lezzet
+  active: true
+  tracked: true
+  user_ratings_total: 919
+- slug: sushico
+  display_name: SushiCo
+  place_id: ChIJzVzyYV840xQRslZ399368eY
+  category: restaurant
+  brand_key: sushico
+  active: true
+  tracked: true
+  user_ratings_total: 913
+- slug: husrev-lokantasi
+  display_name: Hüsrev Lokantası
+  place_id: ChIJu99DDkVP0xQRIVW9pY2H7lQ
+  category: turkish_restaurant
+  brand_key: husrev-lokantasi
+  active: true
+  tracked: true
+  user_ratings_total: 910
+- slug: good-beef-besevler
+  display_name: GOOD BEEF BEŞEVLER
+  place_id: ChIJ7XVMAYRP0xQRXZMDZ7Wmg-8
+  category: hamburger_restaurant
+  brand_key: good-beef-besevler
+  active: true
+  tracked: true
+  user_ratings_total: 908
+- slug: midyeci-yasin-bahcelievler-ankara
+  display_name: Midyeci Yasin Bahçelievler Ankara
+  place_id: ChIJLcHktpxP0xQRrVf4ak0v6QI
+  category: restaurant
+  brand_key: midyeci-yasin-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 908
+- slug: hmbrgr-cepa
+  display_name: HMBRGR Cepa
+  place_id: ChIJ0_lNc8NJ0xQR8KMNJWAl4l0
+  category: fast_food_restaurant
+  brand_key: hmbrgr-cepa
+  active: true
+  tracked: true
+  user_ratings_total: 907
+- slug: bahcelievler-lezzet-aspava
+  display_name: bahçelievler Lezzet Aspava
+  place_id: ChIJFbC2ZFJP0xQRxOWPOjWPAdg
+  category: restaurant
+  brand_key: bahcelievler-lezzet-aspava
+  active: true
+  tracked: true
+  user_ratings_total: 898
+- slug: pizzaci-sedat
+  display_name: Pizzacı Sedat
+  place_id: ChIJk_d6Tz1P0xQR_tsu-FjIvjk
+  category: restaurant
+  brand_key: pizzaci-sedat
+  active: true
+  tracked: true
+  user_ratings_total: 895
+- slug: kasap-izgara
+  display_name: Kasap Izgara
+  place_id: ChIJHwljkFxP0xQRbqhGagxdlww
+  category: restaurant
+  brand_key: kasap-izgara
+  active: true
+  tracked: true
+  user_ratings_total: 890
+- slug: 100-burger-kentpark
+  display_name: 100 Burger-Kentpark
+  place_id: ChIJJRgmWMhH0xQR66GaCUH4jgY
+  category: hamburger_restaurant
+  brand_key: 100-burger-kentpark
+  active: true
+  tracked: true
+  user_ratings_total: 890
+- slug: locale-ankara-cukurambar
+  display_name: Locale Ankara Çukurambar
+  place_id: ChIJUdw-MJRP0xQRwft6Gim1qeE
+  category: restaurant
+  brand_key: locale-ankara-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 886
+- slug: korelee-street
+  display_name: Korelee Street
+  place_id: ChIJU8X_2uNP0xQRcvDB_ranNi4
+  category: korean_restaurant
+  brand_key: korelee-street
+  active: true
+  tracked: true
+  user_ratings_total: 884
+- slug: koce-kavurma
+  display_name: Köçe Kavurma
+  place_id: ChIJL0fLItlP0xQRFwwU33z0OP8
+  category: restaurant
+  brand_key: koce-kavurma
+  active: true
+  tracked: true
+  user_ratings_total: 883
+- slug: cake-art-homemade
+  display_name: Cake Art Homemade
+  place_id: ChIJE3_gDa5P0xQRPNv-WhhMDec
+  category: pastry_shop
+  brand_key: cake-art-homemade
+  active: true
+  tracked: true
+  user_ratings_total: 878
+- slug: finestra-emek
+  display_name: Finestra Emek
+  place_id: ChIJKa04wmdP0xQRBReaGq3KSBs
+  category: cafe
+  brand_key: finestra-emek
+  active: true
+  tracked: true
+  user_ratings_total: 863
+- slug: kaffehause-bahcelievler
+  display_name: Kaffehause Bahçelievler
+  place_id: ChIJXV8Dqi5P0xQRKVeTExCIYRc
+  category: cafe
+  brand_key: kaffehause-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 859
+- slug: carl-s-jr
+  display_name: Carl's Jr.
+  place_id: ChIJAS2Y1dFJ0xQRJfPwIusuXjo
+  category: fast_food_restaurant
+  brand_key: carl-s-jr
+  active: true
+  tracked: true
+  user_ratings_total: 857
+- slug: et-i-ala-etlere-fon-ceken-adam
+  display_name: ET-İ ÂLÂ ETLERE FÖN ÇEKEN ADAM
+  place_id: ChIJRfie7o1B0xQR5kbDOJQ02TY
+  category: restaurant
+  brand_key: et-i-ala-etlere-fon-ceken-adam
+  active: true
+  tracked: true
+  user_ratings_total: 853
+- slug: cikolata-evim-bahcelievler
+  display_name: Çikolata Evim Bahçelievler
+  place_id: ChIJAbNvU6pP0xQRknlaFiNWUJw
+  category: chocolate_shop
+  brand_key: cikolata-evim-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 844
+- slug: yayla-cag-kebap-pide-lahmacun-i-ankara
+  display_name: YAYLA CAĞ KEBAP - Pide - Lahmacun I ANKARA
+  place_id: ChIJi999kvVF0xQRGr8r703vk8Q
+  category: kebab_shop
+  brand_key: yayla-cag-kebap-pide-lahmacun-i
+  active: true
+  tracked: true
+  user_ratings_total: 831
+- slug: carnavale-pastanesi
+  display_name: CARNAVALE PASTANESİ
+  place_id: ChIJE39ECWFP0xQRfWxNI0fsONg
+  category: pastry_shop
+  brand_key: carnavale-pastanesi
+  active: true
+  tracked: true
+  user_ratings_total: 825
+- slug: geyik-cafe-bahcelievler
+  display_name: Geyik Cafe Bahçelievler
+  place_id: ChIJwT0gHT1P0xQRWNoBXThjaMs
+  category: cafe
+  brand_key: geyik-cafe-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 825
+- slug: gumus-pasta-cafe-bistro-cukurambaar-subesi
+  display_name: Gümüş Pasta Cafe Bistro - Çukurambaar Şubesi
+  place_id: ChIJE1UVbE1P0xQRhG4AnShbLC0
+  category: restaurant
+  brand_key: gumus-pasta-cafe-bistro-cukurambaar-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 816
+- slug: tavuk-dunyasi-kentpark-avm
+  display_name: Tavuk Dünyası Kentpark Avm
+  place_id: ChIJKZwIM11H0xQRMUXjrU03-1c
+  category: chicken_restaurant
+  brand_key: tavuk-dunyasi-kentpark-avm
+  active: true
+  tracked: true
+  user_ratings_total: 812
+- slug: midpoint-armada
+  display_name: Midpoint Armada
+  place_id: ChIJ28iDoUxP0xQRmEf1d5-TZCc
+  category: restaurant
+  brand_key: midpoint
+  active: true
+  tracked: true
+  user_ratings_total: 808
+- slug: latifes-besevler
+  display_name: Latife’s Beşevler
+  place_id: ChIJKT_BUfhP0xQRsonWo02pz5s
+  category: chocolate_shop
+  brand_key: latifes-besevler
+  active: true
+  tracked: true
+  user_ratings_total: 806
+- slug: no4-restaurant
+  display_name: No4 Restaurant
+  place_id: ChIJlXdguLRI0xQRSd8wtFnmTr4
+  category: bar
+  brand_key: no4-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 805
+- slug: helvaci-ali-7-cadde
+  display_name: Helvacı Ali 7. Cadde
+  place_id: ChIJcX8P4khP0xQRN2efN4C69C0
+  category: dessert_shop
+  brand_key: helvaci-ali-7-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 803
+- slug: federal
+  display_name: Federal
+  place_id: ChIJh6eY1rRI0xQRsRM60JDTqgQ
+  category: restaurant
+  brand_key: federal
+  active: true
+  tracked: true
+  user_ratings_total: 803
+- slug: kemun-falafel-humus
+  display_name: Kemun Falafel&Humus
+  place_id: ChIJL876AeFP0xQRwt2VsSjPS0Q
+  category: mediterranean_restaurant
+  brand_key: kemun-falafel-humus
+  active: true
+  tracked: true
+  user_ratings_total: 786
+- slug: oncu-doner
+  display_name: Öncü Döner
+  place_id: ChIJr1RAT99O0xQRzCWjHu4cuKY
+  category: turkish_restaurant
+  brand_key: oncu-doner
+  active: true
+  tracked: true
+  user_ratings_total: 785
+- slug: big-chefs-kentpark-avm-subesi
+  display_name: Big Chefs - Kentpark AVM Şubesi
+  place_id: ChIJ42WokItJ0xQR3vHKjCf7KFc
+  category: cafe
+  brand_key: big-chefs-kentpark-avm-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 783
+- slug: faust-coffee-antique-shop
+  display_name: Faust Coffee & Antique Shop
+  place_id: ChIJUVOsIjtP0xQR925WeHz8CTA
+  category: coffee_shop
+  brand_key: faust-coffee-antique-shop
+  active: true
+  tracked: true
+  user_ratings_total: 776
+- slug: bizim-oltu-cag-kebabi
+  display_name: Bizim Oltu Cağ Kebabı
+  place_id: ChIJU0CJafpF0xQRIzxDwCpE3Aw
+  category: kebab_shop
+  brand_key: bizim-oltu-cag-kebabi
+  active: true
+  tracked: true
+  user_ratings_total: 767
+- slug: papillon-cafe-restaurant
+  display_name: Papillon Cafe & Restaurant
+  place_id: ChIJpY5AqjxP0xQReWnQWFxpDlQ
+  category: cafe
+  brand_key: papillon-cafe-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 766
+- slug: kofteci-suleyman-ustanin-yeri
+  display_name: Köfteci Süleyman Ustanın Yeri
+  place_id: ChIJcb3iXBtP0xQRaupebgBZh9A
+  category: restaurant
+  brand_key: kofteci-suleyman-ustanin-yeri
+  active: true
+  tracked: true
+  user_ratings_total: 763
+- slug: ekol-pastanesi
+  display_name: Ekol Pastanesi
+  place_id: ChIJZSi1p2FP0xQRCOVEZ6y3Yhk
+  category: pastry_shop
+  brand_key: ekol-pastanesi
+  active: true
+  tracked: true
+  user_ratings_total: 761
+- slug: kanta-coffee-shop
+  display_name: KANTA Coffee Shop
+  place_id: ChIJdwuvY5VP0xQRPmAw2pEKZ8s
+  category: coffee_shop
+  brand_key: kanta-coffee-shop
+  active: true
+  tracked: true
+  user_ratings_total: 761
+- slug: kurabiyem-cepa-avm
+  display_name: Kurabiyem Cepa AVM
+  place_id: ChIJSWqRnp1I0xQRfnlWdhQoC3s
+  category: bagel_shop
+  brand_key: kurabiyem-cepa-avm
+  active: true
+  tracked: true
+  user_ratings_total: 760
+- slug: hudaverdi-cukurambar
+  display_name: Hüdaverdi Çukurambar
+  place_id: ChIJ25S5fapI0xQREEq-QCAQ-V0
+  category: pastry_shop
+  brand_key: hudaverdi-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 754
+- slug: ozlem-doner
+  display_name: Özlem Döner
+  place_id: ChIJpye3OvtF0xQR3E3TgvNS4P8
+  category: turkish_restaurant
+  brand_key: ozlem-doner
+  active: true
+  tracked: true
+  user_ratings_total: 743
+- slug: turkiye-buyuk-millet-meclisi-sosyal-ala-tesisleri
+  display_name: Türkiye Büyük Millet Meclisi Sosyal (Ala) Tesisleri
+  place_id: ChIJ1SI8VhpP0xQRga9iNTZOUfs
+  category: government_office
+  brand_key: turkiye-buyuk-millet-meclisi-sosyal-ala-tesisleri
+  active: true
+  tracked: true
+  user_ratings_total: 738
+- slug: hd-iskender
+  display_name: HD İskender
+  place_id: ChIJ0dEcIeNF0xQRs8-TJlNawU8
+  category: restaurant
+  brand_key: hd-iskender
+  active: true
+  tracked: true
+  user_ratings_total: 734
+- slug: giybet-yeni-nesil-eglence
+  display_name: Gıybet "Yeni Nesil Eğlence"
+  place_id: ChIJN4BaNq1J0xQRkAnlcC2Xx44
+  category: restaurant
+  brand_key: giybet-yeni-nesil-eglence
+  active: true
+  tracked: true
+  user_ratings_total: 733
+- slug: coffee-lab-bahceli-6
+  display_name: Coffee LAB Bahçeli 6
+  place_id: ChIJuZdFOZ1P0xQR7syaz1CuO6Q
+  category: coffee_shop
+  brand_key: coffee-lab-bahceli-6
+  active: true
+  tracked: true
+  user_ratings_total: 733
+- slug: kolajen-corba
+  display_name: Kolajen Çorba
+  place_id: ChIJB1rTUSdP0xQRu-wDaDHNtVo
+  category: restaurant
+  brand_key: kolajen-corba
+  active: true
+  tracked: true
+  user_ratings_total: 729
+- slug: odtuden
+  display_name: ODTÜDEN
+  place_id: ChIJV8QRgRZG0xQRfmh0NC_t2DM
+  category: book_store
+  brand_key: odtuden
+  active: true
+  tracked: true
+  user_ratings_total: 722
+- slug: mint-garden-lounge
+  display_name: MINT Garden Lounge
+  place_id: ChIJPWYiffxJ0xQRlV4HmnilkiQ
+  category: cafe
+  brand_key: mint-garden-lounge
+  active: true
+  tracked: true
+  user_ratings_total: 714
+- slug: hasan-usta-mersin-tantuni
+  display_name: Hasan Usta Mersin Tantuni
+  place_id: ChIJVVVVVZVa0xQREn6o4h9tbaE
+  category: turkish_restaurant
+  brand_key: hasan-usta-mersin-tantuni
+  active: true
+  tracked: true
+  user_ratings_total: 713
+- slug: bahceli-falan
+  display_name: Bahçeli Falan
+  place_id: ChIJGVB7f3pP0xQR_3Iza4bDG0o
+  category: restaurant
+  brand_key: bahceli-falan
+  active: true
+  tracked: true
+  user_ratings_total: 712
+- slug: nezih-nargile
+  display_name: NEZİH NARGİLE
+  place_id: ChIJ8RkJk0VP0xQRP3bclSN1e88
+  category: cafe
+  brand_key: nezih-nargile
+  active: true
+  tracked: true
+  user_ratings_total: 707
+- slug: sekerci-habib
+  display_name: Şekerci Habib
+  place_id: ChIJBbJSPtdP0xQR833AHWMMl70
+  category: dessert_restaurant
+  brand_key: sekerci-habib
+  active: true
+  tracked: true
+  user_ratings_total: 689
+- slug: afitap-muhur-ocakbasi
+  display_name: Afitap Mühür Ocakbaşı
+  place_id: ChIJT_1z_jNJ0xQRneiQEiWaoJ0
+  category: restaurant
+  brand_key: afitap-muhur-ocakbasi
+  active: true
+  tracked: true
+  user_ratings_total: 686
+- slug: combo-lunch-cafe-bistro
+  display_name: Combo Lunch Cafe Bistro
+  place_id: ChIJ-ZjtbvVF0xQRKK8ehv4S1mk
+  category: restaurant
+  brand_key: combo-lunch-cafe-bistro
+  active: true
+  tracked: true
+  user_ratings_total: 682
+- slug: misbasak-cukurambar
+  display_name: Misbaşak Çukurambar
+  place_id: ChIJ2aKw6MJP0xQReJpsbJPSVoQ
+  category: pastry_shop
+  brand_key: misbasak-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 681
+- slug: italian-di-pizza-bahcelievler
+  display_name: italian Di'Pizza - Bahçelievler
+  place_id: ChIJU8gwZSRP0xQRTfb3KALg4Sc
+  category: pizza_restaurant
+  brand_key: italian-di-pizza-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 681
+- slug: tugba-kuruyemis-bahcelievler-sube
+  display_name: Tuğba Kuruyemiş / Bahçelievler Şube
+  place_id: ChIJRVBRuDxP0xQRS4IPSeVXnmg
+  category: food_store
+  brand_key: tugba-kuruyemis-bahcelievler-sube
+  active: true
+  tracked: true
+  user_ratings_total: 674
+- slug: prod-coffee-roastery
+  display_name: Prod Coffee & Roastery
+  place_id: ChIJi2J0Qh9P0xQR8gQ3ADAvOZU
+  category: coffee_shop
+  brand_key: prod-coffee-roastery
+  active: true
+  tracked: true
+  user_ratings_total: 670
+- slug: fumar-lounge
+  display_name: Fumar Lounge
+  place_id: ChIJyVDz_RpP0xQRJ2wbWetBY5E
+  category: hookah_bar
+  brand_key: fumar-lounge
+  active: true
+  tracked: true
+  user_ratings_total: 666
+- slug: markaf-cafe
+  display_name: Markaf Cafe
+  place_id: ChIJkR11601P0xQRBpscJPME_Wo
+  category: dog_cafe
+  brand_key: markaf-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 665
+- slug: tezgah-burger
+  display_name: Tezgah Burger
+  place_id: ChIJk9pSFQBP0xQRS0JQoL8akEo
+  category: hamburger_restaurant
+  brand_key: tezgah-burger
+  active: true
+  tracked: true
+  user_ratings_total: 648
+- slug: ney-le-mey-le-ankara
+  display_name: Ney'le Mey'le Ankara
+  place_id: ChIJdcW5srRI0xQRy0sCQxRfr8g
+  category: restaurant
+  brand_key: ney-le-mey-le
+  active: true
+  tracked: true
+  user_ratings_total: 641
+- slug: coffee-lab-cansera
+  display_name: Coffee LAB Çansera
+  place_id: ChIJ8f4YyxNR0xQROi6Lp80qZ4Q
+  category: coffee_shop
+  brand_key: coffee-lab-cansera
+  active: true
+  tracked: true
+  user_ratings_total: 640
+- slug: anittepe-simit-cafe-bistro
+  display_name: Anıttepe Simit Cafe & Bistro
+  place_id: ChIJh-4AnRtP0xQRtOArRQ1NvDc
+  category: bagel_shop
+  brand_key: anittepe-simit-cafe-bistro
+  active: true
+  tracked: true
+  user_ratings_total: 639
+- slug: venue-chijkec6
+  display_name: .
+  place_id: ChIJKeC6JylP0xQR0odrGpkyUX8
+  category: cafe
+  brand_key: unknown-brand
+  active: true
+  tracked: true
+  user_ratings_total: 633
+- slug: manti-yiyelim
+  display_name: Mantı Yiyelim
+  place_id: ChIJn-5OqB5P0xQRsjdQhlaZ9bQ
+  category: dumpling_restaurant
+  brand_key: manti-yiyelim
+  active: true
+  tracked: true
+  user_ratings_total: 630
+- slug: fried-meister
+  display_name: Fried Meister
+  place_id: ChIJa-6OYr9P0xQRcWA16CpFzG0
+  category: fast_food_restaurant
+  brand_key: fried-meister
+  active: true
+  tracked: true
+  user_ratings_total: 629
+- slug: canbolat-cagri-usta
+  display_name: Canbolat Çağrı Usta
+  place_id: ChIJx438rHRP0xQRv9pvBtLFYVA
+  category: restaurant
+  brand_key: canbolat-cagri-usta
+  active: true
+  tracked: true
+  user_ratings_total: 627
+- slug: d-dose
+  display_name: D-DOSE
+  place_id: ChIJXz-MZetP0xQRn_zfOiaIn6I
+  category: coffee_shop
+  brand_key: d-dose
+  active: true
+  tracked: true
+  user_ratings_total: 617
+- slug: ozlem-pide-kebap
+  display_name: Özlem Pide Kebap
+  place_id: ChIJI0cx7CdP0xQRhIYPHoUy9Lw
+  category: turkish_restaurant
+  brand_key: ozlem-pide-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 614
+- slug: nezih-meyhane
+  display_name: Nezih Meyhane
+  place_id: ChIJMTBpOTBP0xQRdAvF0ojONik
+  category: bar
+  brand_key: nezih-meyhane
+  active: true
+  tracked: true
+  user_ratings_total: 612
+- slug: hacibaba-eskisehiryolu-sogutozu-baklavaci-hacibaba-a-s
+  display_name: Hacıbaba Eskişehiryolu Söğütözü - Baklavacı Hacıbaba A.Ş.
+  place_id: ChIJq7iQAdNH0xQRN8SDt7BrJT8
+  category: dessert_restaurant
+  brand_key: hacibaba-eskisehiryolu-sogutozu-baklavaci-hacibaba-a-s
+  active: true
+  tracked: true
+  user_ratings_total: 610
+- slug: suflabs
+  display_name: Suflabs
+  place_id: ChIJT60Hfg1P0xQR7dx8O3VMhys
+  category: dessert_shop
+  brand_key: suflabs
+  active: true
+  tracked: true
+  user_ratings_total: 607
+- slug: mado-armada-avm
+  display_name: Mado Armada Avm
+  place_id: ChIJq7iQAdNH0xQRGgRLGHwHg84
+  category: ice_cream_shop
+  brand_key: mado-armada-avm
+  active: true
+  tracked: true
+  user_ratings_total: 606
+- slug: ravi
+  display_name: Ravi
+  place_id: ChIJkxOYUHJP0xQRMSTPB6Bk0hE
+  category: restaurant
+  brand_key: ravi
+  active: true
+  tracked: true
+  user_ratings_total: 605
+- slug: hof-lounge
+  display_name: Hof Lounge
+  place_id: ChIJ7XZUn7JP0xQR3ATN6dq_RYc
+  category: cafe
+  brand_key: hof-lounge
+  active: true
+  tracked: true
+  user_ratings_total: 604
+- slug: tarihi-inegol-koftecisi-nevzat-usta
+  display_name: Tarihi İnegöl Köftecisi Nevzat Usta
+  place_id: ChIJdVbeYiNP0xQRkuDuwZtH2Ik
+  category: restaurant
+  brand_key: tarihi-inegol-koftecisi-nevzat-usta
+  active: true
+  tracked: true
+  user_ratings_total: 600
+- slug: mis-pide-izgara-yeni
+  display_name: Mis Pide & Izgara YENİ
+  place_id: ChIJEVEborlF0xQRH3NMSJKfsjU
+  category: restaurant
+  brand_key: mis-pide-izgara-yeni
+  active: true
+  tracked: true
+  user_ratings_total: 594
+- slug: alico-balik-evi-emek
+  display_name: ALİÇO BALIK EVİ EMEK
+  place_id: ChIJOZvDgjdP0xQR6431zWCjZY0
+  category: restaurant
+  brand_key: alico-balik-evi-emek
+  active: true
+  tracked: true
+  user_ratings_total: 592
+- slug: mona-the-coffee-expert
+  display_name: Mona the Coffee Expert
+  place_id: ChIJbYOpKBNP0xQRzYBaG0FlBhU
+  category: coffee_shop
+  brand_key: mona-the-coffee-expert
+  active: true
+  tracked: true
+  user_ratings_total: 592
+- slug: glow-chocolate-drink-bahcelievler
+  display_name: Glow Chocolate & Drink Bahçelievler
+  place_id: ChIJXavG_nVP0xQRnd6kk0wKk7s
+  category: chocolate_shop
+  brand_key: glow-chocolate-drink-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 589
+- slug: mado-kentpark-avm
+  display_name: MADO Kentpark Avm
+  place_id: ChIJmbch8J1I0xQRlHKSI_SBsBM
+  category: restaurant
+  brand_key: mado-kentpark-avm
+  active: true
+  tracked: true
+  user_ratings_total: 586
+- slug: filiz-kumpir
+  display_name: Filiz Kumpir
+  place_id: ChIJC-S8G09P0xQRgIY7H_ZVbas
+  category: fast_food_restaurant
+  brand_key: filiz-kumpir
+  active: true
+  tracked: true
+  user_ratings_total: 584
+- slug: bal-manti
+  display_name: Bal Mantı
+  place_id: ChIJV4kL3Cg20xQR1ar21xv_bkg
+  category: dumpling_restaurant
+  brand_key: bal-manti
+  active: true
+  tracked: true
+  user_ratings_total: 584
+- slug: drupe-coffee-stuff
+  display_name: Drupe Coffee & Stuff
+  place_id: ChIJT5nEZtlP0xQRO7T-8i07L9Y
+  category: coffee_shop
+  brand_key: drupe-coffee-stuff
+  active: true
+  tracked: true
+  user_ratings_total: 581
+- slug: domino-s-pizza-bahcelievler
+  display_name: Domino's Pizza Bahçelievler
+  place_id: ChIJi45zqSBP0xQR89Isa89NKiY
+  category: pizza_restaurant
+  brand_key: domino-s-pizza-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 581
+- slug: pizza-la-burger
+  display_name: Pizza La Burger
+  place_id: ChIJPXfwLEZF0xQRTRVe0q2DCbU
+  category: pizza_restaurant
+  brand_key: pizza-la-burger
+  active: true
+  tracked: true
+  user_ratings_total: 580
+- slug: kokorecci-berat
+  display_name: Kokoreççi Berat
+  place_id: ChIJx68t_iVP0xQR0q49Hb4QlYs
+  category: fast_food_restaurant
+  brand_key: kokorecci-berat
+  active: true
+  tracked: true
+  user_ratings_total: 578
+- slug: kokorec-piro
+  display_name: Kokoreç Piro
+  place_id: ChIJZw4Zu19P0xQR4XRor0ytwrQ
+  category: restaurant
+  brand_key: kokorec-piro
+  active: true
+  tracked: true
+  user_ratings_total: 576
+- slug: gabo-plant-based
+  display_name: Gabo Plant Based
+  place_id: ChIJWdDM0UJP0xQRq8HstcHazGs
+  category: restaurant
+  brand_key: gabo-plant-based
+  active: true
+  tracked: true
+  user_ratings_total: 573
+- slug: arabica-coffee-house-100-yil
+  display_name: Arabica Coffee House 100. YIL
+  place_id: ChIJOxcSBdhH0xQRQlLJllTEdMQ
+  category: cafe
+  brand_key: arabica-coffee-house-100-yil
+  active: true
+  tracked: true
+  user_ratings_total: 571
+- slug: nazende-meyhane-cankaya
+  display_name: NAZENDE MEYHANE ÇANKAYA
+  place_id: ChIJJy1M1daq1BQR00xcjxt0i7k
+  category: bar
+  brand_key: nazende-meyhane-cankaya
+  active: true
+  tracked: true
+  user_ratings_total: 570
+- slug: chocomar-bahcelievler-coffee
+  display_name: Chocomar Bahçelievler(Coffee)
+  place_id: ChIJD3qdmdBP0xQRf3G1rwm8HzA
+  category: coffee_shop
+  brand_key: chocomar-bahcelievler-coffee
+  active: true
+  tracked: true
+  user_ratings_total: 565
+- slug: ayabakan-balik-lokantasi-100-yil
+  display_name: Ayabakan Balık Lokantası 100 Yıl
+  place_id: ChIJV-fGc_lH0xQRfuzvpHWd3lQ
+  category: restaurant
+  brand_key: ayabakan-balik-lokantasi-100-yil
+  active: true
+  tracked: true
+  user_ratings_total: 563
+- slug: sizin-oltu-cag-kebap
+  display_name: Sizin Oltu Cağ Kebap
+  place_id: ChIJmXptR-VF0xQRPvTdMayZ2Eg
+  category: kebab_shop
+  brand_key: sizin-oltu-cag-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 563
+- slug: rec-cafe-bahcelievler
+  display_name: REC CAFE BAHÇELİEVLER
+  place_id: ChIJ69L4gElF0xQRYzVc9MEseTU
+  category: cafe
+  brand_key: rec-cafe-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 560
+- slug: nfast-sokak-isi-boldi
+  display_name: NFast Sokak İşi (Boldi)
+  place_id: ChIJR6rkhMpP0xQRF_JRyFAY73I
+  category: restaurant
+  brand_key: nfast-sokak-isi-boldi
+  active: true
+  tracked: true
+  user_ratings_total: 558
+- slug: rakkas-fasil-meyhane-7-kapi
+  display_name: RAKKAS FASIL & MEYHANE (7 KAPI)
+  place_id: ChIJay6suDxP0xQRtk8s9k3TXro
+  category: restaurant
+  brand_key: rakkas-fasil-meyhane-7-kapi
+  active: true
+  tracked: true
+  user_ratings_total: 558
+- slug: kayseri-mutfagi-kentpark-avm
+  display_name: Kayseri Mutfağı Kentpark AVM
+  place_id: ChIJodUXYp1I0xQRLhxKonbpE9Y
+  category: turkish_restaurant
+  brand_key: kayseri-mutfagi-kentpark-avm
+  active: true
+  tracked: true
+  user_ratings_total: 558
+- slug: serince-cig-kofte-100-yil-isci-bloklari
+  display_name: SERİNCE ÇİĞ KÖFTE 100.YIL İŞÇİ BLOKLARI
+  place_id: ChIJ4887I-ZH0xQRL6I_f1mn0qc
+  category: turkish_restaurant
+  brand_key: serince-cig-kofte-100-yil-isci-bloklari
+  active: true
+  tracked: true
+  user_ratings_total: 556
+- slug: ozkan-tantuni-balgat-subesi
+  display_name: Özkan Tantuni Balgat Şubesi
+  place_id: ChIJv6mYgPlP0xQRMF0ByBB5LzQ
+  category: restaurant
+  brand_key: ozkan-tantuni-balgat-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 554
+- slug: rakunn-cafe
+  display_name: Rakunn Cafe
+  place_id: ChIJs_6n5XRP0xQRdtj18wKOyOw
+  category: cafe
+  brand_key: rakunn-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 553
+- slug: 63-edessa-kebap-ciger-bestepe
+  display_name: 63 Edessa Kebap ciğer/Beştepe
+  place_id: ChIJn39Uqi5P0xQRkYj5fAg7GfI
+  category: kebab_shop
+  brand_key: 63-edessa-kebap-ciger-bestepe
+  active: true
+  tracked: true
+  user_ratings_total: 544
+- slug: cito-waffle-balgat
+  display_name: Cito Waffle Balgat
+  place_id: ChIJ_zRibmpP0xQR6ORO31GefDo
+  category: buffet_restaurant
+  brand_key: cito-waffle-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 542
+- slug: happy-moon-s-cepa-avm
+  display_name: HAPPY MOON' S CEPA AVM
+  place_id: ChIJr-2Kx9d10hQRahgMoB_HWRI
+  category: restaurant
+  brand_key: happy-moon-s-cepa-avm
+  active: true
+  tracked: true
+  user_ratings_total: 540
+- slug: dede-cinili-kebap-ve-lahmacun
+  display_name: Dede Çinili Kebap ve Lahmacun
+  place_id: ChIJjdw9XFJP0xQROyU9NQLPfB0
+  category: restaurant
+  brand_key: dede-cinili-kebap-ve-lahmacun
+  active: true
+  tracked: true
+  user_ratings_total: 536
+- slug: akali-cepa
+  display_name: Akali Cepa
+  place_id: ChIJZb3xk9ZJ0xQRHHIHkiVZuco
+  category: hamburger_restaurant
+  brand_key: akali-cepa
+  active: true
+  tracked: true
+  user_ratings_total: 534
+- slug: gua-coffee-company-emek
+  display_name: Gua Coffee Company Emek
+  place_id: ChIJo6gTEhtP0xQRfiDlsx_6fWM
+  category: coffee_shop
+  brand_key: gua-coffee-company-emek
+  active: true
+  tracked: true
+  user_ratings_total: 534
+- slug: tavuk-dunyasi-taurus-avm
+  display_name: Tavuk Dünyası Taurus Avm
+  place_id: ChIJNzE0WuxF0xQRzf3Zwh6B5ok
+  category: chicken_restaurant
+  brand_key: tavuk-dunyasi-taurus-avm
+  active: true
+  tracked: true
+  user_ratings_total: 533
+- slug: gatto-mio-tiramisu
+  display_name: Gatto Mio Tiramisu
+  place_id: ChIJIQgXwMVP0xQRgruoUTSXESs
+  category: dessert_shop
+  brand_key: gatto-mio-tiramisu
+  active: true
+  tracked: true
+  user_ratings_total: 528
+- slug: todo-croissant-coffee-cukurambar
+  display_name: TODO Croissant & Coffee Çukurambar
+  place_id: ChIJU7OdIhRP0xQRp2tV0Bl0tSQ
+  category: coffee_shop
+  brand_key: todo-croissant-coffee-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 520
+- slug: zeynel-cilli-odtu
+  display_name: zeynel çilli odtü
+  place_id: ChIJd70yTjpG0xQRBv-6q3IJBhQ
+  category: restaurant
+  brand_key: zeynel-cilli-odtu
+  active: true
+  tracked: true
+  user_ratings_total: 517
+- slug: mamas-burger-bahcelievler
+  display_name: Mama’s Burger Bahçelievler
+  place_id: ChIJWVXzH5RP0xQR9qCJyBAsA10
+  category: hamburger_restaurant
+  brand_key: mamas-burger-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 515
+- slug: doner-agaci-ankara
+  display_name: Döner Ağacı Ankara
+  place_id: ChIJR0mfagtF0xQRQqb8QPmuYI4
+  category: restaurant
+  brand_key: doner-agaci
+  active: true
+  tracked: true
+  user_ratings_total: 513
+- slug: colombia-coffee-yuzuncu-yil
+  display_name: Colombia Coffee Yüzüncü Yıl
+  place_id: ChIJvQo1yO5H0xQRSA4xUGvKoD4
+  category: coffee_shop
+  brand_key: colombia-coffee-yuzuncu-yil
+  active: true
+  tracked: true
+  user_ratings_total: 513
+- slug: pheru-coffee-and-tea-shop
+  display_name: Pheru Coffee and Tea Shop
+  place_id: ChIJ8_YifzdP0xQRlqYPfnpJ7zs
+  category: coffee_shop
+  brand_key: pheru-coffee-and-tea-shop
+  active: true
+  tracked: true
+  user_ratings_total: 512
+- slug: anadolu-simit-sarayi-cukurambar
+  display_name: Anadolu Simit Sarayı Çukurambar
+  place_id: ChIJm0QKFoFP0xQRw-SxizesW5k
+  category: bagel_shop
+  brand_key: anadolu-simit-sarayi-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 511
+- slug: farm-burger
+  display_name: Farm Burger
+  place_id: ChIJVVh3InhF0xQRSop_mI64xVk
+  category: hamburger_restaurant
+  brand_key: farm-burger
+  active: true
+  tracked: true
+  user_ratings_total: 508
+- slug: anadolu-manti
+  display_name: Anadolu Mantı
+  place_id: ChIJS5MWWc9P0xQRFd_dtoxT9RM
+  category: dumpling_restaurant
+  brand_key: anadolu-manti
+  active: true
+  tracked: true
+  user_ratings_total: 507
+- slug: cleopatra-atolye-cafe-coffee-shop
+  display_name: Cleopatra atölye cafe&coffee shop
+  place_id: ChIJMYoGITdP0xQReUgrUytib_U
+  category: coffee_shop
+  brand_key: cleopatra-atolye-cafe-coffee-shop
+  active: true
+  tracked: true
+  user_ratings_total: 505
+- slug: gadasini-aldigim-manti-yaglama-gozleme
+  display_name: GADASINI ALDIĞIM MANTI & YAĞLAMA &GÖZLEME
+  place_id: ChIJtx4XklJP0xQR1YkzfnKGo7A
+  category: dumpling_restaurant
+  brand_key: gadasini-aldigim-manti-yaglama-gozleme
+  active: true
+  tracked: true
+  user_ratings_total: 498
+- slug: oz-karadeniz-balik-pisirme-evi
+  display_name: Öz Karadeniz Balık Pişirme Evi
+  place_id: ChIJa0xi0nBF0xQR2B9vwG3GLXg
+  category: restaurant
+  brand_key: oz-karadeniz-balik-pisirme-evi
+  active: true
+  tracked: true
+  user_ratings_total: 497
+- slug: kaburgaci-hakan-usta-cukurambar
+  display_name: KABURGACI HAKAN USTA ÇUKURAMBAR
+  place_id: ChIJpTp_6I1P0xQRFtJszNZp4hk
+  category: restaurant
+  brand_key: kaburgaci-hakan-usta-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 497
+- slug: arquet-burger-fries
+  display_name: Arquet Burger & Fries
+  place_id: ChIJB8hVYr9P0xQRpZc8CbYXOeM
+  category: hamburger_restaurant
+  brand_key: arquet-burger-fries
+  active: true
+  tracked: true
+  user_ratings_total: 495
+- slug: kanatci-emek
+  display_name: Kanatçı Emek
+  place_id: ChIJk1Q6BTtP0xQRq8rCGQZF46A
+  category: restaurant
+  brand_key: kanatci-emek
+  active: true
+  tracked: true
+  user_ratings_total: 491
+- slug: antep-sis-kebap
+  display_name: Antep Şiş Kebap
+  place_id: ChIJ7Rn9vbNP0xQRS-9L0UTlb00
+  category: kebab_shop
+  brand_key: antep-sis-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 490
+- slug: gulluoglu-balgat
+  display_name: Güllüoğlu Balgat
+  place_id: ChIJx8yrnL5J0xQRfZ5PoJ4VP3k
+  category: dessert_restaurant
+  brand_key: gulluoglu-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 490
+- slug: zatibey-firin
+  display_name: ZATİBEY FIRIN
+  place_id: ChIJUzkStadP0xQRgA_xahKU5AM
+  category: bakery
+  brand_key: zatibey-firin
+  active: true
+  tracked: true
+  user_ratings_total: 488
+- slug: thaicurry-restaurant
+  display_name: thaicurry restaurant
+  place_id: ChIJaZSHPYlJ0xQRKvTtJWblI6I
+  category: thai_restaurant
+  brand_key: thaicurry-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 488
+- slug: tint-cafe-bistro
+  display_name: Tint Cafe & Bistro
+  place_id: ChIJabU6yf1F0xQRYzeAU80sayQ
+  category: cafe
+  brand_key: tint-cafe-bistro
+  active: true
+  tracked: true
+  user_ratings_total: 488
+- slug: cajun-corner-odtu
+  display_name: Cajun Corner ODTÜ
+  place_id: ChIJt0PmUgtH0xQRjtDuDlMVk5o
+  category: restaurant
+  brand_key: cajun-corner-odtu
+  active: true
+  tracked: true
+  user_ratings_total: 480
+- slug: los-coffee-cake
+  display_name: LOŞ Coffee & Cake
+  place_id: ChIJI5nYbd9O0xQRj5Lc5Q9AbJE
+  category: cafe
+  brand_key: los-coffee-cake
+  active: true
+  tracked: true
+  user_ratings_total: 479
+- slug: burger-king-taurus-avm
+  display_name: Burger King - Taurus Avm
+  place_id: ChIJme__GONF0xQRHiGJW0gPiHc
+  category: fast_food_restaurant
+  brand_key: burger-king-taurus-avm
+  active: true
+  tracked: true
+  user_ratings_total: 479
+- slug: kezzban-cafe-patisserie
+  display_name: Kezzban Cafe & Patisserie
+  place_id: ChIJYXTF8TtP0xQR3sugBx6yhiI
+  category: cafe
+  brand_key: kezzban-cafe-patisserie
+  active: true
+  tracked: true
+  user_ratings_total: 478
+- slug: unal-firin-unlu-mamuller
+  display_name: ÜNAL FIRIN UNLU MAMÜLLER
+  place_id: ChIJj1akeAVG0xQRs0nzoj0bp3Y
+  category: bakery
+  brand_key: unal-firin-unlu-mamuller
+  active: true
+  tracked: true
+  user_ratings_total: 471
+- slug: durumcu-baba
+  display_name: Dürümcü Baba
+  place_id: ChIJzQYX_bhR0xQRpQ0JV7vcjJg
+  category: turkish_restaurant
+  brand_key: durumcu-baba
+  active: true
+  tracked: true
+  user_ratings_total: 468
+- slug: koy-kahvesi
+  display_name: Köy Kahvesi
+  place_id: ChIJ8_-fqEhP0xQRPtznV1-O60Y
+  category: cafe
+  brand_key: koy-kahvesi
+  active: true
+  tracked: true
+  user_ratings_total: 466
+- slug: pastini-taze-makarna
+  display_name: Pastini Taze Makarna
+  place_id: ChIJR6kCivpP0xQRM6uOBiLz4Ig
+  category: restaurant
+  brand_key: pastini-taze-makarna
+  active: true
+  tracked: true
+  user_ratings_total: 459
+- slug: misbasak-100-yil
+  display_name: Misbaşak 100. Yıl
+  place_id: ChIJKX9IfQ9H0xQR-cpnP9u4Gl4
+  category: bakery
+  brand_key: misbasak-100-yil
+  active: true
+  tracked: true
+  user_ratings_total: 456
+- slug: caffe-di-toee-besa-kule
+  display_name: Caffé Di Toeé Besa Kule
+  place_id: ChIJa8o9seVJ0xQRAf-pWJXRaVI
+  category: cafe
+  brand_key: caffe-di-toee-besa-kule
+  active: true
+  tracked: true
+  user_ratings_total: 453
+- slug: hazal-ev-yemekleri
+  display_name: Hazal Ev Yemekleri
+  place_id: ChIJbaVv-TlP0xQRcCvv7ekOo7c
+  category: restaurant
+  brand_key: hazal-ev-yemekleri
+  active: true
+  tracked: true
+  user_ratings_total: 453
+- slug: hatayli-rifat-usta
+  display_name: Hataylı Rıfat Usta
+  place_id: ChIJU6PIEPVF0xQRhJ6aV3e8Y7s
+  category: restaurant
+  brand_key: hatayli-rifat-usta
+  active: true
+  tracked: true
+  user_ratings_total: 452
+- slug: kofteci-ramiz-taurus-avm
+  display_name: Köfteci Ramiz ( TAURUS AVM )
+  place_id: ChIJCSdfaY9F0xQRG82BU0h5Vh0
+  category: restaurant
+  brand_key: kofteci-ramiz-taurus-avm
+  active: true
+  tracked: true
+  user_ratings_total: 448
+- slug: gazi-m-cafe-restaurant
+  display_name: Gazi'm Cafe & restaurant
+  place_id: ChIJM1VW0UBP0xQR-2A_mIkN8JA
+  category: cafe
+  brand_key: gazi-m-cafe-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 448
+- slug: cafe-8
+  display_name: Cafe 8
+  place_id: ChIJifWCDDFP0xQRUgzW8Na2sdg
+  category: cafe
+  brand_key: cafe-8
+  active: true
+  tracked: true
+  user_ratings_total: 445
+- slug: cag-kebabi-muhendisi
+  display_name: CAĞ KEBABI MÜHENDİSİ
+  place_id: ChIJrb9S9g9F0xQRb10tobWDPIs
+  category: kebab_shop
+  brand_key: cag-kebabi-muhendisi
+  active: true
+  tracked: true
+  user_ratings_total: 443
+- slug: boble-bubble-tea
+  display_name: Boble Bubble Tea
+  place_id: ChIJHeZHEOVH0xQR6QzfQ1hAAJU
+  category: cafe
+  brand_key: boble-bubble-tea
+  active: true
+  tracked: true
+  user_ratings_total: 440
+- slug: domino-s-pizza-yuzuncu-yil
+  display_name: Domino's Pizza Yuzuncu Yıl
+  place_id: ChIJe46wgAZG0xQRa2WARPVa41s
+  category: pizza_restaurant
+  brand_key: domino-s-pizza-yuzuncu-yil
+  active: true
+  tracked: true
+  user_ratings_total: 436
+- slug: pilav-ustu-ask
+  display_name: Pilav üstü aşk
+  place_id: ChIJEaXWm7lP0xQRDjV0rwNHqaA
+  category: restaurant
+  brand_key: pilav-ustu-ask
+  active: true
+  tracked: true
+  user_ratings_total: 435
+- slug: dede-cinili-firin
+  display_name: DEDE ÇİNİLİ FIRIN
+  place_id: ChIJ3VsE8G5P0xQRFBxBv3__0nk
+  category: restaurant
+  brand_key: dede-cinili-firin
+  active: true
+  tracked: true
+  user_ratings_total: 434
+- slug: china-wind-balgat
+  display_name: China Wind Balgat
+  place_id: ChIJ6zy5GjZF0xQR_kzWJlqqZPE
+  category: chinese_restaurant
+  brand_key: china-wind-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 434
+- slug: kaymaklava-balgat-sube
+  display_name: Kaymaklava Balgat Şube
+  place_id: ChIJFYoBAD1P0xQRpv62sk_byuw
+  category: dessert_shop
+  brand_key: kaymaklava-balgat-sube
+  active: true
+  tracked: true
+  user_ratings_total: 433
+- slug: fabregas-cafe-restaurant
+  display_name: Fabregas Cafe&Restaurant
+  place_id: ChIJjUkjIkpP0xQRukNZhC4o5uQ
+  category: restaurant
+  brand_key: fabregas-cafe-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 429
+- slug: hd-iskender-chijx34l
+  display_name: HD İskender
+  place_id: ChIJX34liydG0xQROje9lZEa4Co
+  category: restaurant
+  brand_key: hd-iskender
+  active: true
+  tracked: true
+  user_ratings_total: 428
+- slug: subway
+  display_name: Subway
+  place_id: ChIJLVTCyTxP0xQRxiTFXBpt8Og
+  category: sandwich_shop
+  brand_key: subway
+  active: true
+  tracked: true
+  user_ratings_total: 424
+- slug: mikel-coffee-company
+  display_name: Mikel Coffee Company
+  place_id: ChIJZQyUPfpP0xQRr6mBPTmGSBM
+  category: coffee_shop
+  brand_key: mikel-coffee-company
+  active: true
+  tracked: true
+  user_ratings_total: 424
+- slug: springfield-100-yil
+  display_name: Springfield 100.Yıl
+  place_id: ChIJU4XG06RH0xQRHdipAQhWFLE
+  category: fast_food_restaurant
+  brand_key: springfield-100-yil
+  active: true
+  tracked: true
+  user_ratings_total: 423
+- slug: sehri-polatli-corbacisi-cukurambar
+  display_name: Şehri Polatlı Çorbacısı Çukurambar
+  place_id: ChIJz6CmVJlP0xQRAasqVMmfMPc
+  category: turkish_restaurant
+  brand_key: sehri-polatli-corbacisi-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 420
+- slug: sunco-cukurambar
+  display_name: Sunco Çukurambar
+  place_id: ChIJecqdNeBJ0xQR6-s9sZdA1Xw
+  category: cafe
+  brand_key: sunco-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 419
+- slug: coffee-1919-bestepe
+  display_name: Coffee 1919 Beştepe
+  place_id: ChIJ7a0IQ9BP0xQROns7cTQ-M74
+  category: coffee_shop
+  brand_key: coffee-1919-bestepe
+  active: true
+  tracked: true
+  user_ratings_total: 417
+- slug: fries-and-more-smash-burgers-hot-dogs-churros
+  display_name: Fries and More - Smash Burgers, Hot Dogs, Churros
+  place_id: ChIJ4X2G-w9P0xQRYG4HI2zHB60
+  category: hamburger_restaurant
+  brand_key: fries-and-more-smash-burgers-hot-dogs-churros
+  active: true
+  tracked: true
+  user_ratings_total: 415
+- slug: 8-40-coffee-eatery
+  display_name: 8.40 Coffee & Eatery
+  place_id: ChIJw8_LoEdH0xQR7QdPEuHSGgQ
+  category: cafe
+  brand_key: 8-40-coffee-eatery
+  active: true
+  tracked: true
+  user_ratings_total: 415
+- slug: gaziantep-pide-kebap-salonu
+  display_name: Gaziantep Pide & Kebap Salonu
+  place_id: ChIJqcKBdA5G0xQRPM9LvSg6Mt8
+  category: kebab_shop
+  brand_key: gaziantep-pide-kebap-salonu
+  active: true
+  tracked: true
+  user_ratings_total: 414
+- slug: ekrem-coskun-doner-balgat
+  display_name: Ekrem Çoskun Döner Balgat
+  place_id: ChIJmU3JgTVP0xQR19B_wQ3RIA0
+  category: turkish_restaurant
+  brand_key: ekrem-coskun-doner-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 413
+- slug: cafe-mekan
+  display_name: Cafe Mekan
+  place_id: ChIJPYFTbjFP0xQRRzWh_yyC6uo
+  category: cafe
+  brand_key: cafe-mekan
+  active: true
+  tracked: true
+  user_ratings_total: 408
+- slug: lemonde-via-flat
+  display_name: Lemonde Via Flat
+  place_id: ChIJXWdu9udP0xQR5HSne1SPAhA
+  category: coffee_shop
+  brand_key: lemonde-via-flat
+  active: true
+  tracked: true
+  user_ratings_total: 408
+- slug: total-altin-petrol
+  display_name: TOTAL Altın Petrol
+  place_id: ChIJqQ24AvlF0xQRHDrM32MY_oU
+  category: gas_station
+  brand_key: total-altin-petrol
+  active: true
+  tracked: true
+  user_ratings_total: 408
+- slug: 06-aspava-cepa-avm
+  display_name: 06 ASPAVA CEPA AVM
+  place_id: ChIJIyBlPEFJ0xQR_oQmNZPyofg
+  category: fine_dining_restaurant
+  brand_key: 06-aspava-cepa-avm
+  active: true
+  tracked: true
+  user_ratings_total: 406
+- slug: ci-kebap-by-osman
+  display_name: Çı Kebap By osman
+  place_id: ChIJacYcwS9P0xQRGVRmO12KSwo
+  category: kebab_shop
+  brand_key: ci-kebap-by-osman
+  active: true
+  tracked: true
+  user_ratings_total: 406
+- slug: tuna-simit-cafe
+  display_name: Tuna Simit & Cafe
+  place_id: ChIJUc749VBP0xQRxHjckwaaVo8
+  category: cafe
+  brand_key: tuna-simit-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 405
+- slug: b-large-pub-bistro
+  display_name: B'Large Pub & Bistro
+  place_id: ChIJUxfa6yBP0xQRwdlOEjkGFUo
+  category: pub
+  brand_key: b-large-pub-bistro
+  active: true
+  tracked: true
+  user_ratings_total: 405
+- slug: mackbear-coffee-balgat
+  display_name: Mackbear Coffee Balgat
+  place_id: ChIJ7xDjz31P0xQRPXfeboOFl4c
+  category: coffee_shop
+  brand_key: mackbear-coffee-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 402
+- slug: arabica-coffee-house-chijdfkc
+  display_name: Arabica Coffee House
+  place_id: ChIJDfKc1vxP0xQRMoVzXp2PxpQ
+  category: coffee_shop
+  brand_key: arabica-coffee-house
+  active: true
+  tracked: true
+  user_ratings_total: 402
+- slug: susam-simit
+  display_name: Susam Simit
+  place_id: ChIJiy2gexZG0xQRgWdKoa348iA
+  category: bagel_shop
+  brand_key: susam-simit
+  active: true
+  tracked: true
+  user_ratings_total: 401
+- slug: cedene-lokantasi-catering
+  display_name: Çedene Lokantası & Catering
+  place_id: ChIJU0ltrEhP0xQRq14DXU9RvhY
+  category: restaurant
+  brand_key: cedene-lokantasi-catering
+  active: true
+  tracked: true
+  user_ratings_total: 400
+- slug: coffee-roof
+  display_name: Coffee Roof
+  place_id: ChIJY6f2BrZP0xQRG48yJeRinvs
+  category: coffee_shop
+  brand_key: coffee-roof
+  active: true
+  tracked: true
+  user_ratings_total: 397
+- slug: mikado-ramen
+  display_name: Mikado Ramen
+  place_id: ChIJZYoXr3JF0xQRaonSpqZ7Vsc
+  category: restaurant
+  brand_key: mikado-ramen
+  active: true
+  tracked: true
+  user_ratings_total: 397
+- slug: work-up-emek
+  display_name: Work Up Emek
+  place_id: ChIJn8PeYSpP0xQR2IBr0ir4hK0
+  category: coworking_space
+  brand_key: work-up-emek
+  active: true
+  tracked: true
+  user_ratings_total: 396
+- slug: starbucks-chijt1lf
+  display_name: Starbucks
+  place_id: ChIJt1LFMeNF0xQRg0b0jJ5WGUU
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: true
+  user_ratings_total: 396
+- slug: domino-s-pizza-balgat
+  display_name: Domino's Pizza Balgat
+  place_id: ChIJ0e3ft_tF0xQRfFBP-QkkKr4
+  category: pizza_restaurant
+  brand_key: domino-s-pizza-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 395
+- slug: artemis-coffee-art-studio
+  display_name: Artemis Coffee & Art Studio
+  place_id: ChIJa1AZ6oRP0xQRXacPbReesd4
+  category: cafe
+  brand_key: artemis-coffee-art-studio
+  active: true
+  tracked: true
+  user_ratings_total: 393
+- slug: starbucks-chij-9gx
+  display_name: Starbucks
+  place_id: ChIJ-9gXoTBG0xQRUBdMEHKbz1s
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: true
+  user_ratings_total: 391
+- slug: ayakustu-kahve
+  display_name: Ayaküstü Kahve
+  place_id: ChIJ9RRoJEZP0xQRBR3pVbhE_0Q
+  category: cafe
+  brand_key: ayakustu-kahve
+  active: true
+  tracked: true
+  user_ratings_total: 385
+- slug: omer-kaptan-balik-restaurant-iskenderun-balikcilik
+  display_name: Ömer Kaptan Balık Restaurant - iskenderun Balıkçılık
+  place_id: ChIJC3AILxZP0xQRM5hK7eH8slo
+  category: restaurant
+  brand_key: omer-kaptan-balik-restaurant-iskenderun-balikcilik
+  active: true
+  tracked: true
+  user_ratings_total: 385
+- slug: cakraz-pilic
+  display_name: Çakraz Piliç
+  place_id: ChIJSbD_gXJP0xQR9974u4as7RA
+  category: restaurant
+  brand_key: cakraz-pilic
+  active: true
+  tracked: true
+  user_ratings_total: 382
+- slug: starbucks-coffee
+  display_name: Starbucks Coffee
+  place_id: ChIJbQgYlp1I0xQRU9psRis_gPw
+  category: coffee_shop
+  brand_key: starbucks-coffee
+  active: true
+  tracked: true
+  user_ratings_total: 375
+- slug: erzincan-mandira-cukurambar-subesi
+  display_name: Erzincan Mandıra (Çukurambar Şubesi)
+  place_id: ChIJgRkeRVNP0xQRAMkEzd77-8k
+  category: deli
+  brand_key: erzincan-mandira-cukurambar-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 370
+- slug: el-paso-taurus
+  display_name: El Paso Taurus
+  place_id: ChIJOck60OJF0xQRyp-xShAg5xY
+  category: restaurant
+  brand_key: el-paso-taurus
+  active: true
+  tracked: true
+  user_ratings_total: 368
+- slug: il-pollo-del-capo-yuzuncuyil
+  display_name: il pollo DEL CAPO Yüzüncüyıl
+  place_id: ChIJp_QXyk5H0xQRER9K1t-Nd_s
+  category: hamburger_restaurant
+  brand_key: il-pollo-del-capo-yuzuncuyil
+  active: true
+  tracked: true
+  user_ratings_total: 368
+- slug: lagetom-coffee-roasters-bahcelievler
+  display_name: Lagetom Coffee Roasters Bahçelievler
+  place_id: ChIJtX3Xi2ZP0xQREoiHXjCWJL4
+  category: coffee_shop
+  brand_key: lagetom-coffee-roasters-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 367
+- slug: coffee-de-madrid-7-cadde
+  display_name: Coffee de Madrid 7. Cadde
+  place_id: ChIJw-nUDx5P0xQRpjo89vE9pJc
+  category: coffee_shop
+  brand_key: coffee-de-madrid-7-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 367
+- slug: angora-pastanesi
+  display_name: Angora Pastanesi
+  place_id: ChIJu-RJ5TtP0xQR1iopfZ22urQ
+  category: bakery
+  brand_key: angora-pastanesi
+  active: true
+  tracked: true
+  user_ratings_total: 365
+- slug: hoopoe-coffee
+  display_name: Hoopoe Coffee
+  place_id: ChIJE52-onpP0xQRkjSGUR2yN8M
+  category: coffee_shop
+  brand_key: hoopoe-coffee
+  active: true
+  tracked: true
+  user_ratings_total: 364
+- slug: fettah-usta-kebap
+  display_name: Fettah usta kebap
+  place_id: ChIJL7p0MwJF0xQR1McI2nouDU0
+  category: restaurant
+  brand_key: fettah-usta-kebap
+  active: true
+  tracked: true
+  user_ratings_total: 364
+- slug: grano-coffee-sandwiches
+  display_name: Grano Coffee & Sandwiches
+  place_id: ChIJN2RUVjZP0xQR-xiEdPeEZRM
+  category: coffee_shop
+  brand_key: grano-coffee-sandwiches
+  active: true
+  tracked: true
+  user_ratings_total: 364
+- slug: tbmm-egitim-ve-sosyal-tesisleri-ala-restoran
+  display_name: Tbmm Eğitim ve Sosyal Tesisleri(Ala Restoran)
+  place_id: ChIJd-0OqPVP0xQRc2zFuvusX-s
+  category: family_restaurant
+  brand_key: tbmm-egitim-ve-sosyal-tesisleri-ala-restoran
+  active: true
+  tracked: true
+  user_ratings_total: 362
+- slug: durumle
+  display_name: Dürümle
+  place_id: ChIJBdrRzE9P0xQR65lPWFzOm_M
+  category: fast_food_restaurant
+  brand_key: durumle
+  active: true
+  tracked: true
+  user_ratings_total: 360
+- slug: muju-house-cocktail-and-kitchen
+  display_name: Müjü House Cocktail and Kitchen
+  place_id: ChIJIQ0l_hpP0xQRT8XwhWs41N0
+  category: pub
+  brand_key: muju-house-cocktail-and-kitchen
+  active: true
+  tracked: true
+  user_ratings_total: 357
+- slug: hippo-french-tacos-100-yil
+  display_name: Hippo French Tacos 100. Yıl
+  place_id: ChIJo_18HzZH0xQR97amSXwdbLE
+  category: fast_food_restaurant
+  brand_key: hippo-french-tacos-100-yil
+  active: true
+  tracked: true
+  user_ratings_total: 353
+- slug: mischa-cafe-restaurant
+  display_name: Mıscha cafe Restaurant
+  place_id: ChIJ3-4iSNpP0xQRw4qwNapT3v4
+  category: fine_dining_restaurant
+  brand_key: mischa-cafe-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 351
+- slug: kavas-ustanin-yeri
+  display_name: Kavas Usta’nın Yeri
+  place_id: ChIJlZPSgwRG0xQRmJ9doS-TgoA
+  category: restaurant
+  brand_key: kavas-ustanin-yeri
+  active: true
+  tracked: true
+  user_ratings_total: 351
+- slug: hosta-doner-emek
+  display_name: Hosta Döner Emek
+  place_id: ChIJGQHFUTBP0xQRLGPSTpk-2aI
+  category: restaurant
+  brand_key: hosta-doner-emek
+  active: true
+  tracked: true
+  user_ratings_total: 348
+- slug: harbiye-antakya-durum-restaurant
+  display_name: Harbiye Antakya Dürüm Restaurant
+  place_id: ChIJNc15neJF0xQRKn68gi7fqGc
+  category: turkish_restaurant
+  brand_key: harbiye-antakya-durum-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 346
+- slug: espresso-check
+  display_name: Espresso Check
+  place_id: ChIJ8TFjT6lP0xQRHaTPKdvoh9g
+  category: coffee_shop
+  brand_key: espresso-check
+  active: true
+  tracked: true
+  user_ratings_total: 344
+- slug: rubi-dondurma-kahve
+  display_name: Rubi Dondurma & Kahve
+  place_id: ChIJARyqCFBP0xQRRkIzhsim7oM
+  category: ice_cream_shop
+  brand_key: rubi-dondurma-kahve
+  active: true
+  tracked: true
+  user_ratings_total: 342
+- slug: fil-tatli-evi
+  display_name: Fil Tatlı Evi
+  place_id: ChIJyZ457UE70xQRh49haV8bo2c
+  category: dessert_shop
+  brand_key: fil-tatli-evi
+  active: true
+  tracked: true
+  user_ratings_total: 340
+- slug: bahcelievler-otantik-kumpir
+  display_name: Bahçelievler Otantik Kumpir
+  place_id: ChIJ6YOyojtP0xQRwhY0zEY1KQU
+  category: restaurant
+  brand_key: bahcelievler-otantik-kumpir
+  active: true
+  tracked: true
+  user_ratings_total: 339
+- slug: coffee-de-madrid-bahcelievler
+  display_name: Coffee de Madrid Bahçelievler
+  place_id: ChIJFYgB6hlP0xQRWE-2bY9zQfY
+  category: coffee_shop
+  brand_key: coffee-de-madrid-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 339
+- slug: sr-doner-bahcelievler
+  display_name: SR DÖNER Bahçelievler
+  place_id: ChIJB_lJIOVP0xQRMXzMR5Mz-gg
+  category: fast_food_restaurant
+  brand_key: sr-doner-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 336
+- slug: shenli-qa-coffee-lounge
+  display_name: Shenli'qa Coffee Lounge
+  place_id: ChIJwT9w_ShP0xQRdYIY46ixxiQ
+  category: cafe
+  brand_key: shenli-qa-coffee-lounge
+  active: true
+  tracked: true
+  user_ratings_total: 335
+- slug: the-stock-bahcelievler
+  display_name: the stock Bahçelievler
+  place_id: ChIJ0YViokZP0xQRaonO96g45hI
+  category: cafe
+  brand_key: the-stock-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 334
+- slug: bahcelievler-cajun-corner
+  display_name: Bahçelievler Cajun Corner
+  place_id: ChIJoxRdaRhP0xQRPwnfToxAmhA
+  category: fast_food_restaurant
+  brand_key: bahcelievler-cajun-corner
+  active: true
+  tracked: true
+  user_ratings_total: 334
+- slug: coffee-de-madrid-besevler
+  display_name: Coffee de Madrid Beşevler
+  place_id: ChIJGxqD2FxP0xQRIAhFhiKNQxk
+  category: coffee_shop
+  brand_key: coffee-de-madrid-besevler
+  active: true
+  tracked: true
+  user_ratings_total: 329
+- slug: sushi-kai-ankara
+  display_name: Sushi Kai Ankara
+  place_id: ChIJO6QPgaxP0xQRb3smar24ncA
+  category: sushi_restaurant
+  brand_key: sushi-kai
+  active: true
+  tracked: true
+  user_ratings_total: 328
+- slug: maydonoz-doner-3-cadde
+  display_name: Maydonoz Döner 3. Cadde
+  place_id: ChIJZ4A3rlFP0xQRbdmM99KkQ7g
+  category: restaurant
+  brand_key: maydonoz-doner-3-cadde
+  active: true
+  tracked: true
+  user_ratings_total: 326
+- slug: cafe-lizbon
+  display_name: Cafe Lizbon
+  place_id: ChIJNftu_dhO0xQRzHVcuXCPCx0
+  category: cafe
+  brand_key: cafe-lizbon
+  active: true
+  tracked: true
+  user_ratings_total: 325
+- slug: merkez-antakya-durum
+  display_name: MERKEZ ANTAKYA DÜRÜM
+  place_id: ChIJcROB-x1P0xQRwVR40Ef6SnI
+  category: restaurant
+  brand_key: merkez-antakya-durum
+  active: true
+  tracked: true
+  user_ratings_total: 323
+- slug: work-up-cukurambar
+  display_name: Work Up Çukurambar
+  place_id: ChIJXzKmJ-xH0xQRY9rXUKEafzk
+  category: coworking_space
+  brand_key: work-up-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 322
+- slug: ivoor-coffee-tea
+  display_name: ivoor coffee & tea
+  place_id: ChIJcY_UUQFH0xQRa0F4jiRkzj8
+  category: coffee_shop
+  brand_key: ivoor-coffee-tea
+  active: true
+  tracked: true
+  user_ratings_total: 322
+- slug: b-eat-taurus-rock-pub
+  display_name: B'eat Taurus Rock & Pub
+  place_id: ChIJwxSDwyZF0xQRyH7q1O0y_D4
+  category: restaurant
+  brand_key: b-eat-taurus-rock-pub
+  active: true
+  tracked: true
+  user_ratings_total: 322
+- slug: coffy-besevler
+  display_name: Coffy Beşevler
+  place_id: ChIJiUax0olP0xQRc_G6m6dYSRM
+  category: coffee_shop
+  brand_key: coffy-besevler
+  active: true
+  tracked: true
+  user_ratings_total: 319
+- slug: yda-center-gulluoglu-baklava
+  display_name: Yda Center - Güllüoğlu Baklava
+  place_id: ChIJvREKQtM50xQR-bV_yTqy6-U
+  category: dessert_restaurant
+  brand_key: yda-center-gulluoglu-baklava
+  active: true
+  tracked: true
+  user_ratings_total: 319
+- slug: filikos-restoran
+  display_name: Filikos Restoran
+  place_id: ChIJ04Xhcp1I0xQRyRoUOFgperY
+  category: restaurant
+  brand_key: filikos-restoran
+  active: true
+  tracked: true
+  user_ratings_total: 318
+- slug: tetra-n-caffeine-shop
+  display_name: Tetra N Caffeine Shop
+  place_id: ChIJ17AGNIBH0xQRY_1IoZF3U-Q
+  category: coffee_shop
+  brand_key: tetra-n-caffeine-shop
+  active: true
+  tracked: true
+  user_ratings_total: 318
+- slug: hoya-coffee-kitchen
+  display_name: Hoya Coffee & Kitchen
+  place_id: ChIJL541wqJJ0xQRpsS5fm4WXWI
+  category: cafe
+  brand_key: hoya-coffee-kitchen
+  active: true
+  tracked: true
+  user_ratings_total: 317
+- slug: coffee-1919-mustafa-kemal-mahallesi
+  display_name: Coffee 1919 Mustafa Kemal Mahallesi
+  place_id: ChIJ9XkvIwtJ0xQR7a3BIUL_8XM
+  category: coffee_shop
+  brand_key: coffee-1919-mustafa-kemal-mahallesi
+  active: true
+  tracked: true
+  user_ratings_total: 316
+- slug: sanli-burma-tatlicisi-balgat
+  display_name: Şanlı Burma Tatlıcısı Balgat
+  place_id: ChIJeWeBqt9O0xQR2j9XPBX95mo
+  category: dessert_restaurant
+  brand_key: sanli-burma-tatlicisi-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 315
+- slug: sehir-donercisi-balgat
+  display_name: Şehir Dönercisi - Balgat
+  place_id: ChIJ-zvXLGVP0xQRajuNj0rCKPM
+  category: turkish_restaurant
+  brand_key: sehir-donercisi-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 314
+- slug: little-caesars-bahcelievler-subesi
+  display_name: Little Caesars Bahçelievler Şubesi
+  place_id: ChIJ9dYeQiFP0xQRLk2d70g8oKk
+  category: pizza_restaurant
+  brand_key: little-caesars-bahcelievler-subesi
+  active: true
+  tracked: true
+  user_ratings_total: 314
+- slug: italian-cut-pizza-kitchen
+  display_name: Italian Cut - Pizza & Kitchen
+  place_id: ChIJrwwPvRJH0xQRk0DlIt_GJPI
+  category: pizza_restaurant
+  brand_key: italian-cut-pizza-kitchen
+  active: true
+  tracked: true
+  user_ratings_total: 314
+- slug: aynen-street-food
+  display_name: Aynen Street Food
+  place_id: ChIJ69h5bVVP0xQRSs2DePvWplo
+  category: hamburger_restaurant
+  brand_key: aynen-street-food
+  active: true
+  tracked: true
+  user_ratings_total: 313
+- slug: mardin-sofrasi-serif-ustanin-yeri-balgat
+  display_name: MARDİN SOFRASI ŞERİF USTANIN YERİ BALGAT
+  place_id: ChIJE8mRexRP0xQRZE6flQs5te0
+  category: restaurant
+  brand_key: mardin-sofrasi-serif-ustanin-yeri-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 313
+- slug: sunco-bahcelievler
+  display_name: Sunco Bahçelievler
+  place_id: ChIJZaXRFNhP0xQRQt2wvmso_x4
+  category: cafe
+  brand_key: sunco-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 313
+- slug: caco-chocolate
+  display_name: Çaco Chocolate
+  place_id: ChIJcRJaxZ5P0xQRiFDetBYJYvg
+  category: dessert_shop
+  brand_key: caco-chocolate
+  active: true
+  tracked: true
+  user_ratings_total: 313
+- slug: mezzaluna
+  display_name: Mezzaluna
+  place_id: ChIJ4XZ4B5RP0xQRP0xiZnGNuZU
+  category: italian_restaurant
+  brand_key: mezzaluna
+  active: true
+  tracked: true
+  user_ratings_total: 312
+- slug: loya-cikolata-nisan-cikolatasi-bebek-cikolatasi-waffle-exclusive-chocolate
+  display_name: Loya Çikolata,Nişan çikolatası,Bebek çikolatası, Waffle, Exclusive
+    Chocolate
+  place_id: ChIJfdepmVlP0xQR2NgwCeXT67U
+  category: chocolate_shop
+  brand_key: loya-cikolata-nisan-cikolatasi-bebek-cikolatasi-waffle-exclusive-chocolate
+  active: true
+  tracked: true
+  user_ratings_total: 312
+- slug: sis-house
+  display_name: Şiş House
+  place_id: ChIJM4cTYydG0xQRgGxo_q4-_oE
+  category: kebab_shop
+  brand_key: sis-house
+  active: true
+  tracked: true
+  user_ratings_total: 310
+- slug: divan-pastanesi-kockule
+  display_name: Divan Pastanesi Koçkule
+  place_id: ChIJc5C5z7NI0xQR6Fw3M0OzUfM
+  category: bakery
+  brand_key: divan-pastanesi-kockule
+  active: true
+  tracked: true
+  user_ratings_total: 308
+- slug: vinozza-pizza-sandwich
+  display_name: Vinozza Pizza & Sandwich
+  place_id: ChIJwTCz8HdJ0xQRSucpMgEAuSI
+  category: pizza_restaurant
+  brand_key: vinozza-pizza-sandwich
+  active: true
+  tracked: true
+  user_ratings_total: 308
+- slug: koi-coffee-taiyaki
+  display_name: Koi Coffee & Taiyaki
+  place_id: ChIJawT2IlVP0xQRzyf5WqJMZWs
+  category: cafe
+  brand_key: koi-coffee-taiyaki
+  active: true
+  tracked: true
+  user_ratings_total: 307
+- slug: arabica-coffee-house-suitofis-balgat-calismayi-sevenlerin-kahve-dukkani
+  display_name: Arabica Coffee House SuitOfis-Balgat "Çalışmayı Sevenlerin Kahve Dükkanı"
+  place_id: ChIJ4awssmdP0xQR0IrgtGG_fj8
+  category: coffee_shop
+  brand_key: arabica-coffee-house-suitofis-balgat-calismayi-sevenlerin-kahve-dukkani
+  active: true
+  tracked: true
+  user_ratings_total: 306
+- slug: vizavi-cafe-restaurant
+  display_name: VİZAVİ CAFE & RESTAURANT
+  place_id: ChIJOYXkjVlP0xQRs-teK58BSNo
+  category: middle_eastern_restaurant
+  brand_key: vizavi-cafe-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 305
+- slug: anadolu-simit-sarayi
+  display_name: Anadolu Simit Sarayı
+  place_id: ChIJe-E48yFP0xQRC3hVpXIq1Oc
+  category: cafe
+  brand_key: anadolu-simit-sarayi
+  active: true
+  tracked: true
+  user_ratings_total: 305
+- slug: iskele-et-balik-ve-restaurant
+  display_name: İskele Et Balık ve Restaurant
+  place_id: ChIJK8Z3plhP0xQR4SDbI7yOTuE
+  category: seafood_restaurant
+  brand_key: iskele-et-balik-ve-restaurant
+  active: true
+  tracked: true
+  user_ratings_total: 304
+- slug: cansu-piknik
+  display_name: Cansu Piknik
+  place_id: ChIJj51OtfVF0xQRcqv2AdatSGw
+  category: fast_food_restaurant
+  brand_key: cansu-piknik
+  active: true
+  tracked: true
+  user_ratings_total: 303
+- slug: royal-sweet-hotel
+  display_name: Royal Sweet Hotel
+  place_id: ChIJo4wh1kxP0xQR3iKf0g6GcJk
+  category: hotel
+  brand_key: royal-sweet-hotel
+  active: true
+  tracked: true
+  user_ratings_total: 302
+- slug: arabica-coffee-house-chij919a
+  display_name: Arabica Coffee House
+  place_id: ChIJ919aJXBF0xQR2DDDh1fEKT4
+  category: coffee_shop
+  brand_key: arabica-coffee-house
+  active: true
+  tracked: true
+  user_ratings_total: 300
+- slug: alfred-s-croissant-coffee
+  display_name: Alfred's Croissant&Coffee
+  place_id: ChIJnwFme0tP0xQRqatq02d6PDQ
+  category: cafe
+  brand_key: alfred-s-croissant-coffee
+  active: true
+  tracked: true
+  user_ratings_total: 299
+- slug: sutlac-cim-hamsikoy
+  display_name: Sütlaç'cım - Hamsiköy
+  place_id: ChIJ5_z_fUtP0xQRV6TOcYbGVh0
+  category: dessert_restaurant
+  brand_key: sutlac-cim-hamsikoy
+  active: true
+  tracked: true
+  user_ratings_total: 297
+- slug: komagene-etsiz-cig-kofte-100-yil
+  display_name: Komagene Etsiz Çiğ Köfte - 100.Yıl
+  place_id: ChIJZ_kUlgRG0xQRQBTxRTig-5k
+  category: restaurant
+  brand_key: komagene-etsiz-cig-kofte-100-yil
+  active: true
+  tracked: true
+  user_ratings_total: 297
+- slug: konya-evi
+  display_name: Konya Evi
+  place_id: ChIJq6qqqgFG0xQR5ZhRtWJ5eMk
+  category: turkish_restaurant
+  brand_key: konya-evi
+  active: true
+  tracked: true
+  user_ratings_total: 296
+- slug: egeli-gusto
+  display_name: Egeli Gusto
+  place_id: ChIJdfDR7GpH0xQRwMb1XFmwqYA
+  category: restaurant
+  brand_key: egeli-gusto
+  active: true
+  tracked: true
+  user_ratings_total: 293
+- slug: mackbear-coffee-co-ankara-69-sokak
+  display_name: Mackbear Coffee Co. (Ankara / 69. Sokak)
+  place_id: ChIJ8yNs221P0xQRO2Jzr9AnoEY
+  category: cafe
+  brand_key: mackbear-coffee-co-ankara-69-sokak
+  active: true
+  tracked: true
+  user_ratings_total: 292
+- slug: mesk-u-muhabbet-muhabbet-meyhanesi
+  display_name: MEŞK Ü MUHABBET (Muhabbet meyhanesi)
+  place_id: ChIJkX2kAqVP0xQRFBn8-9qNzZo
+  category: bar
+  brand_key: mesk-u-muhabbet-muhabbet-meyhanesi
+  active: true
+  tracked: true
+  user_ratings_total: 292
+- slug: kral-aspava
+  display_name: Kral Aspava
+  place_id: ChIJ21ptWqRP0xQRuPU8zapQK_c
+  category: family_restaurant
+  brand_key: kral-aspava
+  active: true
+  tracked: true
+  user_ratings_total: 291
+- slug: loba-coffee-bakery-ankara-cukurambar
+  display_name: Loba Coffee & Bakery Ankara Çukurambar
+  place_id: ChIJ2zJtS6dH0xQRoD8aI8XM0Kw
+  category: coffee_shop
+  brand_key: loba-coffee-bakery-ankara-cukurambar
+  active: true
+  tracked: true
+  user_ratings_total: 290
+- slug: sosis-kafasi
+  display_name: Sosis Kafası
+  place_id: ChIJ5fDIgXNP0xQRybuZoDLebHM
+  category: hot_dog_restaurant
+  brand_key: sosis-kafasi
+  active: true
+  tracked: true
+  user_ratings_total: 288
+- slug: pidem
+  display_name: Pidem
+  place_id: ChIJodUXYp1I0xQR8oBdbv3ViSo
+  category: restaurant
+  brand_key: pidem
+  active: true
+  tracked: true
+  user_ratings_total: 288
+- slug: konte-coffee-house
+  display_name: Konte Coffee House
+  place_id: ChIJXwE4jlJP0xQRQdgQl3dc31g
+  category: coffee_shop
+  brand_key: konte-coffee-house
+  active: true
+  tracked: true
+  user_ratings_total: 286
+- slug: abi-63-beyzade-lahmacun
+  display_name: Abi 63 Beyzade Lahmacun
+  place_id: ChIJ1xGSrbRP0xQR2m03I4UVdhs
+  category: middle_eastern_restaurant
+  brand_key: abi-63-beyzade-lahmacun
+  active: true
+  tracked: true
+  user_ratings_total: 280
+- slug: balgat-nargile
+  display_name: Balgat Nargile
+  place_id: ChIJ7dWoA_pF0xQRp9SVlsKZJNo
+  category: hookah_bar
+  brand_key: balgat-nargile
+  active: true
+  tracked: true
+  user_ratings_total: 280
+- slug: azure-ankara
+  display_name: Azure Ankara
+  place_id: ChIJdTdeSCdP0xQR1ugxH5vTk5A
+  category: restaurant
+  brand_key: azure
+  active: true
+  tracked: true
+  user_ratings_total: 279
+- slug: sukru-bey-koftecisi
+  display_name: Şükrü Bey Köftecisi
+  place_id: ChIJTR_q7GRP0xQRtu2k-2ULr44
+  category: family_restaurant
+  brand_key: sukru-bey-koftecisi
+  active: true
+  tracked: true
+  user_ratings_total: 277
+- slug: walker-s-bahcelievler
+  display_name: Walker's Bahçelievler
+  place_id: ChIJC7Eh4wVP0xQRq_ZMVR5x8qI
+  category: coffee_shop
+  brand_key: walker-s-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 276
+- slug: gua-coffee-company-bahcelievler
+  display_name: GUA Coffee Company Bahçelievler
+  place_id: ChIJMVZ_G_pP0xQRqt-NwQjTaZ0
+  category: cafe
+  brand_key: gua-coffee-company-bahcelievler
+  active: true
+  tracked: true
+  user_ratings_total: 275
+- slug: red-eye-coffee-shop
+  display_name: Red Eye Coffee Shop
+  place_id: ChIJ3XekMz1P0xQRbEysR9o33lE
+  category: coffee_shop
+  brand_key: red-eye-coffee-shop
+  active: true
+  tracked: true
+  user_ratings_total: 273
+- slug: garaj-53
+  display_name: Garaj 53
+  place_id: ChIJ83IZRMNP0xQRTiABBESibWo
+  category: cafe
+  brand_key: garaj-53
+  active: true
+  tracked: true
+  user_ratings_total: 273
+- slug: coffee-1919-taurus-avm
+  display_name: Coffee 1919 Taurus Avm
+  place_id: ChIJXyOrIeNF0xQRcAmwEWxcaDU
+  category: coffee_shop
+  brand_key: coffee-1919-taurus-avm
+  active: true
+  tracked: true
+  user_ratings_total: 271
+- slug: agah-cafe-gozleme-unlu-mamuller-yoresel-urunler
+  display_name: Agah Cafe & Gözleme Unlu Mamüller Yöresel Ürünler
+  place_id: ChIJY6qag6JP0xQRBBwTsJiWxuA
+  category: breakfast_restaurant
+  brand_key: agah-cafe-gozleme-unlu-mamuller-yoresel-urunler
+  active: true
+  tracked: true
+  user_ratings_total: 270
+- slug: coffeemania-next
+  display_name: Coffeemania Next
+  place_id: ChIJh9xmV99O0xQR9qoRwIBP9CQ
+  category: cafe
+  brand_key: coffeemania-next
+  active: true
+  tracked: true
+  user_ratings_total: 267
+- slug: ata-firin-cafe-patisserie
+  display_name: Ata Fırın Cafe Patisserie
+  place_id: ChIJy6lJ0mJP0xQRq_Yqb9X0k0I
+  category: bakery
+  brand_key: ata-firin-cafe-patisserie
+  active: true
+  tracked: true
+  user_ratings_total: 267
+- slug: coffee101-yuzuncuyil
+  display_name: Coffee101 Yüzüncüyıl
+  place_id: ChIJwZo9HldH0xQRJOc_fUA_sWc
+  category: cafe
+  brand_key: coffee101-yuzuncuyil
+  active: true
+  tracked: true
+  user_ratings_total: 266
+- slug: pizzalazza-balgat
+  display_name: PizzaLazza - Balgat
+  place_id: ChIJPSekGhxP0xQRi-aYx-AnZd8
+  category: fast_food_restaurant
+  brand_key: pizzalazza-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 265
+- slug: gupse-firin-cafe
+  display_name: Gupse Fırın & Cafe
+  place_id: ChIJW3JMaS9P0xQRTjcg0kmX-ws
+  category: cafe
+  brand_key: gupse-firin-cafe
+  active: true
+  tracked: true
+  user_ratings_total: 265
+- slug: coffee-up
+  display_name: Coffee UP
+  place_id: ChIJp7hQHfJP0xQRY0Ai8hPcgzI
+  category: coffee_shop
+  brand_key: coffee-up
+  active: true
+  tracked: true
+  user_ratings_total: 265
+- slug: gunboyu-doner-lahmacun-pide
+  display_name: Günboyu Döner&Lahmacun&Pide
+  place_id: ChIJ6dQ4LYxP0xQRELpNWxFOapc
+  category: restaurant
+  brand_key: gunboyu-doner-lahmacun-pide
+  active: true
+  tracked: true
+  user_ratings_total: 264
+- slug: anadolu-simit-sarayi-balgat
+  display_name: Anadolu Simit Sarayı Balgat
+  place_id: ChIJ7_rRJCdP0xQRzlotFv77oZk
+  category: cafe
+  brand_key: anadolu-simit-sarayi-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 261
+- slug: sahin-pide-ve-kebap-salonu
+  display_name: Şahin Pide ve Kebap Salonu
+  place_id: ChIJH6ampTBP0xQRWWJsR50HIwY
+  category: restaurant
+  brand_key: sahin-pide-ve-kebap-salonu
+  active: true
+  tracked: true
+  user_ratings_total: 261
+- slug: yoresel-turk-mutfagi
+  display_name: Yöresel Türk Mutfağı
+  place_id: ChIJS0zWHwFG0xQRp4Q8wyyTy2E
+  category: restaurant
+  brand_key: yoresel-turk-mutfagi
+  active: true
+  tracked: true
+  user_ratings_total: 261
+- slug: cheflerin-gunlugu-esnaf-lokantasi
+  display_name: Cheflerin Günlüğü ESNAF LOKANTASI
+  place_id: ChIJ42Z61s5F0xQRXAra-ToEODQ
+  category: restaurant
+  brand_key: cheflerin-gunlugu-esnaf-lokantasi
+  active: true
+  tracked: true
+  user_ratings_total: 260
+- slug: workinton-next-level
+  display_name: Workinton Next Level
+  place_id: ChIJLXzxZExP0xQRxQNtQ-QOPpU
+  category: unknown
+  brand_key: workinton-next-level
+  active: true
+  tracked: true
+  user_ratings_total: 260
+- slug: ihtiyar-balikci-et-mangal
+  display_name: ihtiyar Balıkçı Et & Mangal
+  place_id: ChIJD9dtY_RF0xQRK__hG8bdB3w
+  category: restaurant
+  brand_key: ihtiyar-balikci-et-mangal
+  active: true
+  tracked: true
+  user_ratings_total: 258
+- slug: osmanli-tulumbacisi
+  display_name: Osmanlı Tulumbacısı
+  place_id: ChIJnXJ3yVFP0xQRo6g-95tQYcI
+  category: dessert_restaurant
+  brand_key: osmanli-tulumbacisi
+  active: true
+  tracked: true
+  user_ratings_total: 258
+- slug: coffee-de-madrid-emek
+  display_name: Coffee de Madrid Emek
+  place_id: ChIJ6__iL49P0xQRhSUzl2svH80
+  category: coffee_shop
+  brand_key: coffee-de-madrid-emek
+  active: true
+  tracked: true
+  user_ratings_total: 256
+- slug: maydonoz-doner-100-yil
+  display_name: Maydonoz Döner 100. Yıl
+  place_id: ChIJzWeCEbZH0xQRUMXwDKIRlaE
+  category: restaurant
+  brand_key: maydonoz-doner-100-yil
+  active: true
+  tracked: true
+  user_ratings_total: 255
+- slug: cacao-reserve
+  display_name: Cacao Reserve
+  place_id: ChIJEwxo0k1P0xQRqrgfqiheyKE
+  category: chocolate_shop
+  brand_key: cacao-reserve
+  active: true
+  tracked: true
+  user_ratings_total: 254
+- slug: popeyes-taurus-avm
+  display_name: Popeyes - Taurus Avm
+  place_id: ChIJKe_DKONF0xQRGow062cqFGk
+  category: chicken_restaurant
+  brand_key: popeyes-taurus-avm
+  active: true
+  tracked: true
+  user_ratings_total: 252
+- slug: oskar-coffee-kitchen-balgat
+  display_name: OSKAR COFFEE & KITCHEN BALGAT
+  place_id: ChIJvz_PqR1P0xQRLn19Ky7hNkA
+  category: pastry_shop
+  brand_key: oskar-coffee-kitchen-balgat
+  active: true
+  tracked: true
+  user_ratings_total: 252
+- slug: balta-burger-ankara-emek
+  display_name: Balta Burger Ankara Emek
+  place_id: ChIJH-2CFQBP0xQRNV9dEdIjouc
+  category: hamburger_restaurant
+  brand_key: balta-burger-ankara-emek
+  active: true
+  tracked: false
+  user_ratings_total: 251
+- slug: mado-cukurambar
+  display_name: MADO Çukurambar
+  place_id: ChIJVSoMNwBP0xQR0pQnS2Pic_o
+  category: restaurant
+  brand_key: mado-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 251
+- slug: kvassir
+  display_name: Kvassir
+  place_id: ChIJByVsj8dP0xQRMooe90hUHo0
+  category: coffee_shop
+  brand_key: kvassir
+  active: true
+  tracked: false
+  user_ratings_total: 248
+- slug: coffee-rost
+  display_name: Coffee Rost
+  place_id: ChIJp6oegMVP0xQRlVwa8VNgP-I
+  category: coffee_shop
+  brand_key: coffee-rost
+  active: true
+  tracked: false
+  user_ratings_total: 248
+- slug: hatay-meze-evi
+  display_name: Hatay meze evi
+  place_id: ChIJ68vUVB1P0xQRQnlvi5W8LbI
+  category: restaurant
+  brand_key: hatay-meze-evi
+  active: true
+  tracked: false
+  user_ratings_total: 244
+- slug: komagene-etsiz-cig-kofte
+  display_name: Komagene Etsiz Çiğ Köfte
+  place_id: ChIJaYtPro9F0xQRovwcRVG2vgM
+  category: restaurant
+  brand_key: komagene-etsiz-cig-kofte
+  active: true
+  tracked: false
+  user_ratings_total: 243
+- slug: mg-kitap-kahve
+  display_name: MG Kitap & Kahve
+  place_id: ChIJu1xtJ05P0xQRgKX8ycLtDIE
+  category: cafe
+  brand_key: mg-kitap-kahve
+  active: true
+  tracked: false
+  user_ratings_total: 243
+- slug: nunchi-coffee
+  display_name: nunchi coffee
+  place_id: ChIJJ-3_qzBJ0xQRrb8ftnxvaDw
+  category: cafe
+  brand_key: nunchi-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 242
+- slug: elit-kebap-pide
+  display_name: ELİT KEBAP PİDE
+  place_id: ChIJS8JezApG0xQRCUcZ4LcKfQU
+  category: family_restaurant
+  brand_key: elit-kebap-pide
+  active: true
+  tracked: false
+  user_ratings_total: 242
+- slug: marpucs-nargile-oyun-cafe
+  display_name: Marpuç’s Nargile Oyun Cafe
+  place_id: ChIJX02tuMBP0xQR9Nam5rqRB10
+  category: cafe
+  brand_key: marpucs-nargile-oyun-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 242
+- slug: eklerci-murat-ovecler
+  display_name: Eklerci Murat (öveçler)
+  place_id: ChIJnZZuEPVF0xQR0qYfUdTDK_8
+  category: pastry_shop
+  brand_key: eklerci-murat-ovecler
+  active: true
+  tracked: false
+  user_ratings_total: 241
+- slug: ulusoy-unlu-mamulleri
+  display_name: Ulusoy Unlu Mamülleri
+  place_id: ChIJE_EsPU9P0xQRT5VbaOlMuR4
+  category: bakery
+  brand_key: ulusoy-unlu-mamulleri
+  active: true
+  tracked: false
+  user_ratings_total: 240
+- slug: muno-dondurma
+  display_name: MUNO DONDURMA
+  place_id: ChIJcdG2JSBP0xQRAVcPSibq5D0
+  category: ice_cream_shop
+  brand_key: muno-dondurma
+  active: true
+  tracked: false
+  user_ratings_total: 239
+- slug: burger-king-cepa-avm
+  display_name: Burger King - Cepa Avm
+  place_id: ChIJ5bPwu51I0xQRPXLSgcT5NGc
+  category: fast_food_restaurant
+  brand_key: burger-king-cepa-avm
+  active: true
+  tracked: false
+  user_ratings_total: 238
+- slug: cicek-penceresi-atolye-kafe
+  display_name: Çiçek Penceresi Atölye Kafe
+  place_id: ChIJiaV7wK1P0xQRfV5Sw4PT6vQ
+  category: cafe
+  brand_key: cicek-penceresi-atolye-kafe
+  active: true
+  tracked: false
+  user_ratings_total: 237
+- slug: durumle-chijowpy
+  display_name: Dürümle
+  place_id: ChIJoWpy92tP0xQRfq4_bAcjHPg
+  category: fast_food_restaurant
+  brand_key: durumle
+  active: true
+  tracked: false
+  user_ratings_total: 237
+- slug: momo-coffee-house
+  display_name: MOMO Coffee House
+  place_id: ChIJUxCbc4hH0xQRjlCVOGx8-R0
+  category: cafe
+  brand_key: momo-coffee-house
+  active: true
+  tracked: false
+  user_ratings_total: 236
+- slug: cesme-alacati-ankara
+  display_name: Çeşme Alaçatı Ankara
+  place_id: ChIJgXok0X1F0xQR1-LVBBMz6fk
+  category: restaurant
+  brand_key: cesme-alacati
+  active: true
+  tracked: false
+  user_ratings_total: 233
+- slug: look-burger
+  display_name: Look Burger
+  place_id: ChIJ06eSW6RP0xQRt7AsNr5KCW8
+  category: hamburger_restaurant
+  brand_key: look-burger
+  active: true
+  tracked: false
+  user_ratings_total: 231
+- slug: simitci-dunyasi
+  display_name: Simitçi Dünyası
+  place_id: ChIJVcuiI_xF0xQRPsckwY4ViQc
+  category: cafe
+  brand_key: simitci-dunyasi
+  active: true
+  tracked: false
+  user_ratings_total: 231
+- slug: tostcu-ziver-bahcelievler
+  display_name: Tostçu Ziver Bahçelievler
+  place_id: ChIJubAYn_9P0xQR40x_K-9jwAA
+  category: restaurant
+  brand_key: tostcu-ziver-bahcelievler
+  active: true
+  tracked: false
+  user_ratings_total: 231
+- slug: sleepless-lounge
+  display_name: Sleepless Lounge
+  place_id: ChIJA5KJ6eJP0xQR7eQb5_iguRY
+  category: restaurant
+  brand_key: sleepless-lounge
+  active: true
+  tracked: false
+  user_ratings_total: 230
+- slug: ankara-binicilik-ihtisas-kulubu-binicilik-restaurant
+  display_name: ANKARA BİNİCİLİK İHTİSAS KULÜBÜ BİNİCİLİK RESTAURANT
+  place_id: ChIJF489QixP0xQRUAyHC5I2CsI
+  category: restaurant
+  brand_key: ankara-binicilik-ihtisas-kulubu-binicilik-restaurant
+  active: true
+  tracked: false
+  user_ratings_total: 230
+- slug: tempo-cafe-sandwich
+  display_name: Tempo Cafe & Sandwich
+  place_id: ChIJVVVVVZVa0xQRJsKFjcvtfyk
+  category: cafe
+  brand_key: tempo-cafe-sandwich
+  active: true
+  tracked: false
+  user_ratings_total: 230
+- slug: adrenal-cafe-bar
+  display_name: Adrenal Cafe Bar
+  place_id: ChIJG_uLwyZP0xQRVFJOPZGwuoI
+  category: bar
+  brand_key: adrenal-cafe-bar
+  active: true
+  tracked: false
+  user_ratings_total: 229
+- slug: apikoglu
+  display_name: Apikoğlu
+  place_id: ChIJz8_WruBO0xQRLJB0eExFitM
+  category: restaurant
+  brand_key: apikoglu
+  active: true
+  tracked: false
+  user_ratings_total: 229
+- slug: kahve-dunyasi-algotur-cepa-avm
+  display_name: Kahve Dünyası Algötür - Cepa AVM
+  place_id: ChIJe9X8XgBJ0xQRSd814dO_Vow
+  category: cafe
+  brand_key: kahve-dunyasi-algotur-cepa-avm
+  active: true
+  tracked: false
+  user_ratings_total: 227
+- slug: ara-kafe
+  display_name: Ara Kafe
+  place_id: ChIJF-P4vBZP0xQRyYmKeZwBa2o
+  category: coffee_shop
+  brand_key: ara-kafe
+  active: true
+  tracked: false
+  user_ratings_total: 226
+- slug: lavien-coffee-chocolate
+  display_name: Lavien Coffee & Chocolate
+  place_id: ChIJEx_eZMlF0xQRWi52veKCSak
+  category: cafe
+  brand_key: lavien-coffee-chocolate
+  active: true
+  tracked: false
+  user_ratings_total: 224
+- slug: sayrem
+  display_name: Sayrem
+  place_id: ChIJdTv0Y51I0xQRQOUGxGTEmS8
+  category: food_court
+  brand_key: sayrem
+  active: true
+  tracked: false
+  user_ratings_total: 222
+- slug: bolulu-hasan-usta
+  display_name: Bolulu Hasan Usta
+  place_id: ChIJ4eftUd9O0xQRdPpzDUnRQeI
+  category: dessert_restaurant
+  brand_key: bolulu-hasan-usta
+  active: true
+  tracked: false
+  user_ratings_total: 221
+- slug: cafe-jan-jan
+  display_name: Cafe Jan Jan
+  place_id: ChIJA7loPz1P0xQR32LINwB3vso
+  category: cafe
+  brand_key: cafe-jan-jan
+  active: true
+  tracked: false
+  user_ratings_total: 221
+- slug: chefs-lounge
+  display_name: Chefs Lounge
+  place_id: ChIJj0XJKodF0xQRcBAdnHqu0n8
+  category: restaurant
+  brand_key: chefs-lounge
+  active: true
+  tracked: false
+  user_ratings_total: 221
+- slug: cajun-corner-bahcelievler
+  display_name: Cajun Corner Bahçelievler
+  place_id: ChIJGR9aVgBP0xQRYatWLN7Png8
+  category: fast_food_restaurant
+  brand_key: cajun-corner-bahcelievler
+  active: true
+  tracked: false
+  user_ratings_total: 220
+- slug: blo-doner
+  display_name: BLO DÖNER
+  place_id: ChIJyZyuBlFP0xQR7Y3l_kaJ5Co
+  category: turkish_restaurant
+  brand_key: blo-doner
+  active: true
+  tracked: false
+  user_ratings_total: 220
+- slug: cig-kofteci-malatyali-cetin-usta
+  display_name: Çiğ Köfteci Malatyalı Çetin Usta
+  place_id: ChIJfb_NwidP0xQRTFWXy3x5VJo
+  category: turkish_restaurant
+  brand_key: cig-kofteci-malatyali-cetin-usta
+  active: true
+  tracked: false
+  user_ratings_total: 218
+- slug: universiteler-mh
+  display_name: Üniversiteler mh
+  place_id: ChIJTaI5bhRG0xQRSrzKK011YNE
+  category: cafe
+  brand_key: universiteler-mh
+  active: true
+  tracked: false
+  user_ratings_total: 215
+- slug: bereket-doner-cukurambar
+  display_name: Bereket Döner Çukurambar
+  place_id: ChIJyXNQlBpH0xQRX1Ic6LaWS50
+  category: restaurant
+  brand_key: bereket-doner-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 215
+- slug: fix-meyhane-rakini-al-gel
+  display_name: Fix Meyhane Rakını Al Gel
+  place_id: ChIJ6Ymqz31F0xQRMwDQSNj8STE
+  category: restaurant
+  brand_key: fix-meyhane-rakini-al-gel
+  active: true
+  tracked: false
+  user_ratings_total: 214
+- slug: kehribar-nargile-cafe
+  display_name: Kehribar Nargile Cafe
+  place_id: ChIJC5Jgz1ZP0xQRwGtQ15SL_jk
+  category: cafe
+  brand_key: kehribar-nargile-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 214
+- slug: popeyes-kentpark-avm
+  display_name: Popeyes - Kentpark Avm
+  place_id: ChIJXYvtkSdG0xQRL9tw9GEYw10
+  category: chicken_restaurant
+  brand_key: popeyes-kentpark-avm
+  active: true
+  tracked: false
+  user_ratings_total: 214
+- slug: sushamm
+  display_name: Sushamm
+  place_id: ChIJnawSEfpF0xQR_GbHpjGnyOU
+  category: cafe
+  brand_key: sushamm
+  active: true
+  tracked: false
+  user_ratings_total: 214
+- slug: clain-coffee
+  display_name: Clain Coffee
+  place_id: ChIJi9SJ_JhP0xQRdHZiTbOY3Zg
+  category: coffee_shop
+  brand_key: clain-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 213
+- slug: yeni-firin-et-lokantasi
+  display_name: Yeni Fırın Et Lokantası
+  place_id: ChIJr9IbMABP0xQRol-jeqYpr-Y
+  category: family_restaurant
+  brand_key: yeni-firin-et-lokantasi
+  active: true
+  tracked: false
+  user_ratings_total: 212
+- slug: alpak-ekmek
+  display_name: Alpak Ekmek
+  place_id: ChIJJ8q3vzNP0xQRnpbYG2PyRhg
+  category: bakery
+  brand_key: alpak-ekmek
+  active: true
+  tracked: false
+  user_ratings_total: 211
+- slug: mama-s-burger-cukurambar
+  display_name: Mama's Burger Çukurambar
+  place_id: ChIJw3Je0XBP0xQRli_UBvWJHRk
+  category: fast_food_restaurant
+  brand_key: mama-s-burger-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 211
+- slug: david-people-cubes
+  display_name: David People Cubes
+  place_id: ChIJOWsx9cFJ0xQRDnooK1vn-g8
+  category: coffee_shop
+  brand_key: david-people-cubes
+  active: true
+  tracked: false
+  user_ratings_total: 209
+- slug: wallmoss-bahcelievler
+  display_name: Wallmoss Bahçelievler
+  place_id: ChIJfbtV35tP0xQRWva5rHIZBNA
+  category: cafe
+  brand_key: wallmoss-bahcelievler
+  active: true
+  tracked: false
+  user_ratings_total: 209
+- slug: speco-coffee
+  display_name: Speco Coffee
+  place_id: ChIJ25njQZ5P0xQRAR-a8TNrm7o
+  category: coffee_shop
+  brand_key: speco-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 208
+- slug: cepa-avm-b-h-coffee
+  display_name: Cepa Avm B&H Coffee
+  place_id: ChIJDVmwj51I0xQRL6YyKKuJxu0
+  category: cafe
+  brand_key: cepa-avm-b-h-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 208
+- slug: bulka-cikolata-kahve
+  display_name: Bulka Çikolata Kahve
+  place_id: ChIJLfn58DxP0xQRPrMSKZb600g
+  category: coffee_shop
+  brand_key: bulka-cikolata-kahve
+  active: true
+  tracked: false
+  user_ratings_total: 207
+- slug: emek-kebap-durum
+  display_name: EMEK KEBAP&DÜRÜM
+  place_id: ChIJ8679dJxP0xQR207xaQaq-7U
+  category: restaurant
+  brand_key: emek-kebap-durum
+  active: true
+  tracked: false
+  user_ratings_total: 205
+- slug: halk-ekmek-gokkusagi-halk-pazari
+  display_name: Halk Ekmek Gökkuşağı Halk Pazarı
+  place_id: ChIJkeR2K31P0xQR3wQdPNSk6pE
+  category: bakery
+  brand_key: halk-ekmek-gokkusagi-halk-pazari
+  active: true
+  tracked: false
+  user_ratings_total: 205
+- slug: kale-firin-unlu-mamuller-pastane
+  display_name: Kale fırın unlu mamüller pastane
+  place_id: ChIJs6_ttWFP0xQRPKWu9IIbQ9s
+  category: bakery
+  brand_key: kale-firin-unlu-mamuller-pastane
+  active: true
+  tracked: false
+  user_ratings_total: 204
+- slug: happiness-break-waffle
+  display_name: Happiness Break Waffle
+  place_id: ChIJjeSetUZH0xQRNBgVGRwD0xA
+  category: dessert_shop
+  brand_key: happiness-break-waffle
+  active: true
+  tracked: false
+  user_ratings_total: 200
+- slug: tavuk-dunyasi-next-level-avm
+  display_name: Tavuk Dünyası Next Level Avm
+  place_id: ChIJw-jvUq9P0xQRY1V9gerrrDg
+  category: chicken_restaurant
+  brand_key: tavuk-dunyasi-next-level-avm
+  active: true
+  tracked: false
+  user_ratings_total: 199
+- slug: gloria-jean-s-coffees
+  display_name: Gloria Jean's Coffees
+  place_id: ChIJww0td1BJ0xQRQCOKO2KOcLo
+  category: food_store
+  brand_key: gloria-jean-s-coffees
+  active: true
+  tracked: false
+  user_ratings_total: 198
+- slug: arabica-coffee-house-chijq36s
+  display_name: Arabica Coffee House
+  place_id: ChIJQ36s8LNP0xQRy7Ae2bIlmpU
+  category: coffee_shop
+  brand_key: arabica-coffee-house
+  active: true
+  tracked: false
+  user_ratings_total: 197
+- slug: nun-coffee
+  display_name: nun coffee
+  place_id: ChIJZ00LI5JP0xQRbAyvCyJPkHs
+  category: coffee_shop
+  brand_key: nun-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 197
+- slug: evvel-kahve
+  display_name: Evvel Kahve
+  place_id: ChIJGT6LW1BP0xQRdXAqOKhtu2k
+  category: cafe
+  brand_key: evvel-kahve
+  active: true
+  tracked: false
+  user_ratings_total: 196
+- slug: pidem-chij6v3i
+  display_name: Pidem
+  place_id: ChIJ6V3iIONF0xQRq6yfBZcp4AM
+  category: restaurant
+  brand_key: pidem
+  active: true
+  tracked: false
+  user_ratings_total: 194
+- slug: luuq-coffee-cukurambar
+  display_name: Luuq Coffee Çukurambar
+  place_id: ChIJhdHAVF9J0xQRfEP-hboP9P8
+  category: coffee_shop
+  brand_key: luuq-coffee-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 194
+- slug: big-tree-cafe-lounge
+  display_name: BIG TREE CAFE & LOUNGE
+  place_id: ChIJz32TvNtP0xQRSC20GOW4RQk
+  category: cafeteria
+  brand_key: big-tree-cafe-lounge
+  active: true
+  tracked: false
+  user_ratings_total: 194
+- slug: hideout-coffee-inn
+  display_name: Hideout Coffee Inn
+  place_id: ChIJy56Um0pH0xQRgj-MmQzMbyI
+  category: coffee_shop
+  brand_key: hideout-coffee-inn
+  active: true
+  tracked: false
+  user_ratings_total: 192
+- slug: durumle-chijg_hr
+  display_name: Dürümle
+  place_id: ChIJg_hrYWZF0xQRQN61TP9a9T0
+  category: restaurant
+  brand_key: durumle
+  active: true
+  tracked: false
+  user_ratings_total: 191
+- slug: hug-coffee-company
+  display_name: Hug Coffee Company
+  place_id: ChIJMYmTg2xP0xQR_nza73gIu_U
+  category: coffee_shop
+  brand_key: hug-coffee-company
+  active: true
+  tracked: false
+  user_ratings_total: 189
+- slug: mat-coffe-oyun-salonu
+  display_name: MAT COFFE OYUN SALONU
+  place_id: ChIJu-hfP11P0xQR4e86mm_iy48
+  category: cafeteria
+  brand_key: mat-coffe-oyun-salonu
+  active: true
+  tracked: false
+  user_ratings_total: 189
+- slug: faruk-gullu-baklava-ankara-balgat-subesi
+  display_name: Faruk Güllü Baklava | Ankara - Balgat Şubesi
+  place_id: ChIJu1ifxqpP0xQRxJRDKX6OGtQ
+  category: dessert_restaurant
+  brand_key: faruk-gullu-baklava-ankara-balgat-subesi
+  active: true
+  tracked: false
+  user_ratings_total: 188
+- slug: park-garajj
+  display_name: Park Garajj
+  place_id: ChIJ-1QlwTVP0xQRgnlb8uz5L2M
+  category: cafe
+  brand_key: park-garajj
+  active: true
+  tracked: false
+  user_ratings_total: 187
+- slug: harun-ev-yemekleri-kebap-ve-manti
+  display_name: Harun Ev Yemekleri Kebap ve Mantı
+  place_id: ChIJaRwctfZF0xQRo3UpwLTFdgE
+  category: restaurant
+  brand_key: harun-ev-yemekleri-kebap-ve-manti
+  active: true
+  tracked: false
+  user_ratings_total: 187
+- slug: altun-veziroglu-doner
+  display_name: ALTUN VEZİROĞLU DÖNER
+  place_id: ChIJhdTMR1xF0xQRRB17IAqNQR8
+  category: restaurant
+  brand_key: altun-veziroglu-doner
+  active: true
+  tracked: false
+  user_ratings_total: 187
+- slug: alacati-mutfak
+  display_name: Alaçatı Mutfak
+  place_id: ChIJ0fsMzyZP0xQR6SQTEMjhc08
+  category: restaurant
+  brand_key: alacati-mutfak
+  active: true
+  tracked: false
+  user_ratings_total: 186
+- slug: zarif-meyhane
+  display_name: Zarif Meyhane
+  place_id: ChIJRYBLvTtP0xQR7JI2pcbfKSU
+  category: bar
+  brand_key: zarif-meyhane
+  active: true
+  tracked: false
+  user_ratings_total: 186
+- slug: fika-coffee-house
+  display_name: Fika coffee house
+  place_id: ChIJmWitq1JP0xQRxChPQCITnnU
+  category: cafe
+  brand_key: fika-coffee-house
+  active: true
+  tracked: false
+  user_ratings_total: 186
+- slug: paper-roasting-coffee-chocolate-emek
+  display_name: Paper Roasting Coffee & Chocolate - Emek
+  place_id: ChIJ-X31ox5P0xQR8WS6YB7KeKU
+  category: coffee_shop
+  brand_key: paper-roasting-coffee-chocolate-emek
+  active: true
+  tracked: false
+  user_ratings_total: 184
+- slug: rotpfau
+  display_name: rotpfau
+  place_id: ChIJ7fReC1pH0xQR4bYZltknyX8
+  category: cafe
+  brand_key: rotpfau
+  active: true
+  tracked: false
+  user_ratings_total: 184
+- slug: arzum-pide-ve-kebap
+  display_name: Arzum Pide ve Kebap
+  place_id: ChIJET-fGldP0xQRL5uuKO_7P7A
+  category: middle_eastern_restaurant
+  brand_key: arzum-pide-ve-kebap
+  active: true
+  tracked: false
+  user_ratings_total: 184
+- slug: ankara-nezih-nargile-cafe
+  display_name: Ankara Nezih Nargile Cafe
+  place_id: ChIJFbdWN19F0xQRNmBK4JnQnv4
+  category: hookah_bar
+  brand_key: ankara-nezih-nargile-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 184
+- slug: gulluoglu-baklavaci
+  display_name: Güllüoğlu Baklavacı
+  place_id: ChIJq7wAzFdP0xQRREaZeSCiz3s
+  category: kebab_shop
+  brand_key: gulluoglu-baklavaci
+  active: true
+  tracked: false
+  user_ratings_total: 184
+- slug: kuzine-firin-cafe
+  display_name: Kuzine Fırın & Cafe
+  place_id: ChIJ3bGf1DlP0xQRj9OKswX3zDY
+  category: bakery
+  brand_key: kuzine-firin-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 183
+- slug: kuzina-firin
+  display_name: Kuzina Fırın
+  place_id: ChIJXRk2TedJ0xQRKXXGc1d-n3s
+  category: bakery
+  brand_key: kuzina-firin
+  active: true
+  tracked: false
+  user_ratings_total: 183
+- slug: tpao-lokali
+  display_name: TPAO Lokali
+  place_id: ChIJq1KSRaNI0xQRNNgrCINp6yE
+  category: restaurant
+  brand_key: tpao-lokali
+  active: true
+  tracked: false
+  user_ratings_total: 183
+- slug: tbmm-besevler-sosyal-tesisleri
+  display_name: TBMM Beşevler Sosyal Tesisleri
+  place_id: ChIJH25S-ytP0xQRMM43zJVKOPU
+  category: restaurant
+  brand_key: tbmm-besevler-sosyal-tesisleri
+  active: true
+  tracked: false
+  user_ratings_total: 179
+- slug: dubh-linn-besa-kule
+  display_name: Dubh Linn Besa Kule
+  place_id: ChIJ8YBLngBJ0xQRKCtq6-ylLDE
+  category: irish_pub
+  brand_key: dubh-linn-besa-kule
+  active: true
+  tracked: false
+  user_ratings_total: 178
+- slug: z-burger
+  display_name: Z BURGER
+  place_id: ChIJPcbLW6hP0xQRgUTOsunpTM8
+  category: hamburger_restaurant
+  brand_key: z-burger
+  active: true
+  tracked: false
+  user_ratings_total: 178
+- slug: amade-yaprak-doner
+  display_name: Amade Yaprak Döner
+  place_id: ChIJYy-IpWhP0xQRpbEY50yPjVw
+  category: restaurant
+  brand_key: amade-yaprak-doner
+  active: true
+  tracked: false
+  user_ratings_total: 178
+- slug: mackbear-coffee-co-bestepe
+  display_name: Mackbear Coffee CO. Beştepe
+  place_id: ChIJyzH4ICtJ0xQR5KvtiDSnckg
+  category: cafe
+  brand_key: mackbear-coffee-co-bestepe
+  active: true
+  tracked: false
+  user_ratings_total: 178
+- slug: vakko-l-atelier-cepa
+  display_name: Vakko L'Atelier Cepa
+  place_id: ChIJG_cO0vRJ0xQRNYMCifrnjMs
+  category: pastry_shop
+  brand_key: vakko-l-atelier-cepa
+  active: true
+  tracked: false
+  user_ratings_total: 177
+- slug: arby-s-kentpark-avm
+  display_name: Arby's - Kentpark Avm
+  place_id: ChIJodUXYp1I0xQRmSeGLJWseg4
+  category: fast_food_restaurant
+  brand_key: arby-s-kentpark-avm
+  active: true
+  tracked: false
+  user_ratings_total: 177
+- slug: mc-donald-s
+  display_name: Mc Donald's
+  place_id: ChIJYbioZp1I0xQRlmqR0uPj430
+  category: fast_food_restaurant
+  brand_key: mc-donald-s
+  active: true
+  tracked: false
+  user_ratings_total: 175
+- slug: bulent-borekcilik-ankara-cankaya-dikmen
+  display_name: Bülent Börekçilik Ankara Çankaya Dikmen
+  place_id: ChIJy3nEVbFP0xQR2E564EL4T7I
+  category: bakery
+  brand_key: bulent-borekcilik-ankara-cankaya-dikmen
+  active: true
+  tracked: false
+  user_ratings_total: 175
+- slug: caffe-nero
+  display_name: Caffè Nero
+  place_id: ChIJsfLeuUVJ0xQRwtyCf1F97yo
+  category: coffee_shop
+  brand_key: caffe-nero
+  active: true
+  tracked: false
+  user_ratings_total: 174
+- slug: sven-pub
+  display_name: Sven Pub
+  place_id: ChIJt99sbWRP0xQRxGnLUd2jBTs
+  category: cocktail_bar
+  brand_key: sven-pub
+  active: true
+  tracked: false
+  user_ratings_total: 174
+- slug: panna-coffee-balgat
+  display_name: Panna Coffee Balgat
+  place_id: ChIJc0gYJuhP0xQRUN9f626jT_4
+  category: coffee_shop
+  brand_key: panna-coffee-balgat
+  active: true
+  tracked: false
+  user_ratings_total: 173
+- slug: strada-sandwich-cukurambar-1071
+  display_name: Strada Sandwich Çukurambar 1071
+  place_id: ChIJbaNI1A5P0xQR-Ks6qfvfdCI
+  category: italian_restaurant
+  brand_key: strada-sandwich-cukurambar-1071
+  active: true
+  tracked: false
+  user_ratings_total: 171
+- slug: hoagy-sandwich-coffee
+  display_name: Hoagy Sandwich & Coffee
+  place_id: ChIJ47myFrpP0xQRzGtmUEKccr0
+  category: sandwich_shop
+  brand_key: hoagy-sandwich-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 170
+- slug: komagene-etsiz-cig-kofte-chijcaul
+  display_name: Komagene Etsiz Çiğ Köfte
+  place_id: ChIJcaULBE9P0xQRmsvxhJFYQCw
+  category: restaurant
+  brand_key: komagene-etsiz-cig-kofte
+  active: true
+  tracked: false
+  user_ratings_total: 169
+- slug: part-2-coffee-and-more
+  display_name: part 2 coffee and more
+  place_id: ChIJiQyuyD5P0xQR-rcBkr43Xmw
+  category: coffee_shop
+  brand_key: part-2-coffee-and-more
+  active: true
+  tracked: false
+  user_ratings_total: 169
+- slug: erciyes-borek-pastannecim
+  display_name: Erciyes Börek&pastannecim
+  place_id: ChIJE0wbqVFP0xQRUlRcSSlYWNw
+  category: bakery
+  brand_key: erciyes-borek-pastannecim
+  active: true
+  tracked: false
+  user_ratings_total: 165
+- slug: dayi-kurek-lahmacun-emek
+  display_name: Dayı Kürek Lahmacun (Emek)
+  place_id: ChIJURyj7WpP0xQR2-UQkMm4izM
+  category: middle_eastern_restaurant
+  brand_key: dayi-kurek-lahmacun-emek
+  active: true
+  tracked: false
+  user_ratings_total: 165
+- slug: 1073-restoran
+  display_name: 1073 restoran
+  place_id: ChIJaTolRgBJ0xQRRshXWtrPk9A
+  category: restaurant
+  brand_key: 1073-restoran
+  active: true
+  tracked: false
+  user_ratings_total: 165
+- slug: asfalt-bi-dunya-lezz3t
+  display_name: Asfalt Bi'Dünya Lezz3t
+  place_id: ChIJtXLqEABP0xQR4DP0DitKJjo
+  category: fast_food_restaurant
+  brand_key: asfalt-bi-dunya-lezz3t
+  active: true
+  tracked: false
+  user_ratings_total: 165
+- slug: solvay-1927-coffee
+  display_name: Solvay 1927 Coffee
+  place_id: ChIJBy9-nyFH0xQRvJbYv5kI764
+  category: coffee_shop
+  brand_key: solvay-1927-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 162
+- slug: durumle-chijzx5l
+  display_name: Dürümle
+  place_id: ChIJzX5lrg5F0xQRjdgebK5EHNE
+  category: fast_food_restaurant
+  brand_key: durumle
+  active: true
+  tracked: false
+  user_ratings_total: 162
+- slug: meshur-mardin-marzade-midyecisi
+  display_name: Meşhur Mardin Marzade Midyecisi
+  place_id: ChIJrXS-OlhP0xQRZSMa1iT0xiY
+  category: restaurant
+  brand_key: meshur-mardin-marzade-midyecisi
+  active: true
+  tracked: false
+  user_ratings_total: 161
+- slug: mona-the-coffee-expert-kentpark
+  display_name: Mona the Coffee Expert Kentpark
+  place_id: ChIJiRcgNQ1J0xQRW8lgfpNnjdg
+  category: cafe
+  brand_key: mona-the-coffee-expert-kentpark
+  active: true
+  tracked: false
+  user_ratings_total: 160
+- slug: efsan-manti
+  display_name: Efşan Mantı
+  place_id: ChIJq2Mm7xhP0xQRrwd6Je0MCnI
+  category: dumpling_restaurant
+  brand_key: efsan-manti
+  active: true
+  tracked: false
+  user_ratings_total: 160
+- slug: durumle-chijzzvg
+  display_name: Dürümle
+  place_id: ChIJzzVgPuFJ0xQR_5hMsb21Jaw
+  category: fast_food_restaurant
+  brand_key: durumle
+  active: true
+  tracked: false
+  user_ratings_total: 160
+- slug: bee-burger
+  display_name: BEE BURGER
+  place_id: ChIJ9yPANyZP0xQR9of9LAM7FVI
+  category: hamburger_restaurant
+  brand_key: bee-burger
+  active: true
+  tracked: false
+  user_ratings_total: 159
+- slug: coffee-lab-bahceli-3
+  display_name: Coffee LAB Bahçeli 3
+  place_id: ChIJR4sPQvFP0xQRywSs5f4JU3w
+  category: coffee_shop
+  brand_key: coffee-lab-bahceli-3
+  active: true
+  tracked: false
+  user_ratings_total: 159
+- slug: fanus-komunite-kafe
+  display_name: Fanus Komünite Kafe
+  place_id: ChIJuzsNh_FP0xQR3LJz2Vc41us
+  category: coffee_shop
+  brand_key: fanus-komunite-kafe
+  active: true
+  tracked: false
+  user_ratings_total: 159
+- slug: white-burger-by-serhat-dogramaci-ankara-sogutozu
+  display_name: White Burger By Serhat Doğramacı Ankara Söğütözü
+  place_id: ChIJBSGAkuVP0xQR21Ue6x7lsYs
+  category: hamburger_restaurant
+  brand_key: white-burger-by-serhat-dogramaci
+  active: true
+  tracked: false
+  user_ratings_total: 158
+- slug: the-coffee-law
+  display_name: THE COFFEE LAW
+  place_id: ChIJVQwpALRP0xQRu3POnmxMCGA
+  category: coffee_shop
+  brand_key: the-coffee-law
+  active: true
+  tracked: false
+  user_ratings_total: 158
+- slug: di-hola
+  display_name: Di Hola
+  place_id: ChIJ6XHwPABP0xQRPonJuTYP9EE
+  category: cafe
+  brand_key: di-hola
+  active: true
+  tracked: false
+  user_ratings_total: 157
+- slug: resital-cafe-cookies-more
+  display_name: Resital Cafe Cookies&More
+  place_id: ChIJV67OrwRF0xQRoUcRZkGzQtg
+  category: cafe
+  brand_key: resital-cafe-cookies-more
+  active: true
+  tracked: false
+  user_ratings_total: 156
+- slug: armoni-firin
+  display_name: Armoni Fırın
+  place_id: ChIJ85R4zdVD0xQRxiSAkciYnNs
+  category: bakery
+  brand_key: armoni-firin
+  active: true
+  tracked: false
+  user_ratings_total: 155
+- slug: lavmacun-ankara-7-cadde
+  display_name: Lavmacun Ankara 7. Cadde
+  place_id: ChIJlfPIdHFP0xQRHwEKrHe42MU
+  category: restaurant
+  brand_key: lavmacun-ankara-7-cadde
+  active: true
+  tracked: false
+  user_ratings_total: 155
+- slug: bi-doner
+  display_name: bi'döner
+  place_id: ChIJB50mhTVP0xQRUMD-GzfVYDQ
+  category: fast_food_restaurant
+  brand_key: bi-doner
+  active: true
+  tracked: false
+  user_ratings_total: 154
+- slug: cajun-corner
+  display_name: Cajun Corner
+  place_id: ChIJv-zH7pdJ0xQRDw45QV3TPkg
+  category: fast_food_restaurant
+  brand_key: cajun-corner
+  active: true
+  tracked: false
+  user_ratings_total: 154
+- slug: qukie-s-bake-shop
+  display_name: QUKİE'S BAKE SHOP
+  place_id: ChIJqfNSnVBP0xQRt9mInA7JrUI
+  category: pastry_shop
+  brand_key: qukie-s-bake-shop
+  active: true
+  tracked: false
+  user_ratings_total: 153
+- slug: patika-ev-yemekleri
+  display_name: PATİKA EV YEMEKLERİ
+  place_id: ChIJvzT3tvtF0xQRzhCHxx175i4
+  category: restaurant
+  brand_key: patika-ev-yemekleri
+  active: true
+  tracked: false
+  user_ratings_total: 153
+- slug: yaprak-donercisi-taurus
+  display_name: Yaprak Dönercisi Taurus
+  place_id: ChIJMUv6a0BF0xQR__Ng6jDOuNg
+  category: turkish_restaurant
+  brand_key: yaprak-donercisi-taurus
+  active: true
+  tracked: false
+  user_ratings_total: 151
+- slug: bi-sutlu-bi-tatli-emek
+  display_name: Bi Sütlü Bi Tatlı Emek
+  place_id: ChIJvzAaPPdP0xQRWnWh0f4ye0s
+  category: dessert_shop
+  brand_key: bi-sutlu-bi-tatli-emek
+  active: true
+  tracked: false
+  user_ratings_total: 151
+- slug: ankara-pastasi-glutensiz-lezzetler
+  display_name: Ankara Pastası (Glütensiz Lezzetler)
+  place_id: ChIJwbx8RU9P0xQR1cbXu-8B37o
+  category: pastry_shop
+  brand_key: ankara-pastasi-glutensiz-lezzetler
+  active: true
+  tracked: false
+  user_ratings_total: 150
+- slug: ro-coffee-matcha
+  display_name: Ro coffee&matcha
+  place_id: ChIJFfPSw4tP0xQREXRtfWrOQ6Y
+  category: cafe
+  brand_key: ro-coffee-matcha
+  active: true
+  tracked: false
+  user_ratings_total: 149
+- slug: lacapra-coffee-shop
+  display_name: LaCapra Coffee & Shop
+  place_id: ChIJr8ejTtFP0xQRPPCa46owxuo
+  category: coffee_shop
+  brand_key: lacapra-coffee-shop
+  active: true
+  tracked: false
+  user_ratings_total: 149
+- slug: kocatepe-1919-cukurambar
+  display_name: Kocatepe 1919 Çukurambar
+  place_id: ChIJt9UUVgBP0xQRmgWwVYPe1pk
+  category: coffee_shop
+  brand_key: kocatepe-1919-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 148
+- slug: cha-cha-matcha-coffee
+  display_name: Cha Cha Matcha Coffee
+  place_id: ChIJJyf6PgBP0xQREJ0ti0Ni0L0
+  category: coffee_shop
+  brand_key: cha-cha-matcha-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 147
+- slug: burger-king-kentpark-avm
+  display_name: Burger King - Kentpark Avm
+  place_id: ChIJWQDwb51I0xQR5KMEhv5Vshg
+  category: fast_food_restaurant
+  brand_key: burger-king-kentpark-avm
+  active: true
+  tracked: false
+  user_ratings_total: 147
+- slug: florya-lounge
+  display_name: Florya Lounge
+  place_id: ChIJayxApHZJ0xQRmiEDv5BBxeA
+  category: restaurant
+  brand_key: florya-lounge
+  active: true
+  tracked: false
+  user_ratings_total: 147
+- slug: citir-bufe
+  display_name: Çıtır Büfe
+  place_id: ChIJ7y9lxjVP0xQRo8875E4MqwE
+  category: buffet_restaurant
+  brand_key: citir-bufe
+  active: true
+  tracked: false
+  user_ratings_total: 145
+- slug: ceyrek
+  display_name: Çeyrek
+  place_id: ChIJCWMgdLFP0xQRRKHzyGtOoq8
+  category: fast_food_restaurant
+  brand_key: ceyrek
+  active: true
+  tracked: false
+  user_ratings_total: 144
+- slug: starbucks-chijafec
+  display_name: Starbucks
+  place_id: ChIJafECb1FP0xQR-Uzg9wtzTlo
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: false
+  user_ratings_total: 144
+- slug: cukur-cafe-bistro
+  display_name: Çukur Cafe&bistro
+  place_id: ChIJgaZN0EBP0xQR-vPm634tEbg
+  category: cafe
+  brand_key: cukur-cafe-bistro
+  active: true
+  tracked: false
+  user_ratings_total: 144
+- slug: cati-acik-bufe-sogutozu
+  display_name: Çatı Açık Büfe - Söğütözü
+  place_id: ChIJDY7nZTJJ0xQRsQ-5v4dhE94
+  category: restaurant
+  brand_key: cati-acik-bufe
+  active: true
+  tracked: false
+  user_ratings_total: 143
+- slug: arabica-asti
+  display_name: Arabica Aşti
+  place_id: ChIJJRoeQvxP0xQRIUbvrPEMvK8
+  category: coffee_shop
+  brand_key: arabica-asti
+  active: true
+  tracked: false
+  user_ratings_total: 142
+- slug: tonton-tantuni
+  display_name: TONTON TANTUNİ
+  place_id: ChIJNcGKjTRF0xQRsoReJ_Tj_VY
+  category: fast_food_restaurant
+  brand_key: tonton-tantuni
+  active: true
+  tracked: false
+  user_ratings_total: 141
+- slug: aroma-cafe-100-yil
+  display_name: Aroma cafe 100.yil
+  place_id: ChIJwQJR3V9H0xQRcRvWHqLtvvU
+  category: cafe
+  brand_key: aroma-cafe-100-yil
+  active: true
+  tracked: false
+  user_ratings_total: 141
+- slug: divane-dervis-cafe
+  display_name: Divane Derviş Cafe
+  place_id: ChIJJ8Ge4VZP0xQROi2gOpgeKSI
+  category: cafe
+  brand_key: divane-dervis-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 139
+- slug: popeyes-sogutozu
+  display_name: Popeyes - Söğütözü
+  place_id: ChIJzTxFDPVJ0xQRbp4z4lBQql4
+  category: chicken_restaurant
+  brand_key: popeyes
+  active: true
+  tracked: false
+  user_ratings_total: 139
+- slug: pastannecim-balgat
+  display_name: Pastannecim Balgat
+  place_id: ChIJofShUtlP0xQRFj9b_f0apYc
+  category: pastry_shop
+  brand_key: pastannecim-balgat
+  active: true
+  tracked: false
+  user_ratings_total: 138
+- slug: burger-king-armada-avm
+  display_name: Burger King - Armada Avm
+  place_id: ChIJq7iQAdNH0xQR3FTMZWBRt6w
+  category: fast_food_restaurant
+  brand_key: burger-king-armada-avm
+  active: true
+  tracked: false
+  user_ratings_total: 138
+- slug: colambia-coffee-cukurambar
+  display_name: Colambia Coffee Çukurambar
+  place_id: ChIJNSyIIzBP0xQRNwoqqsw3dPE
+  category: coffee_shop
+  brand_key: colambia-coffee-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 136
+- slug: burger-king-next-level-avm
+  display_name: Burger King - Next Level Avm
+  place_id: ChIJpybIrwpP0xQR9qZKsuHAw-4
+  category: fast_food_restaurant
+  brand_key: burger-king-next-level-avm
+  active: true
+  tracked: false
+  user_ratings_total: 135
+- slug: carsi-lokanta-asti
+  display_name: Çarşı Lokanta AŞTİ
+  place_id: ChIJp0G6i89P0xQRaTEqU3XgqYg
+  category: restaurant
+  brand_key: carsi-lokanta-asti
+  active: true
+  tracked: false
+  user_ratings_total: 134
+- slug: antik-31-antakya-durum
+  display_name: Antik 31 Antakya dürüm
+  place_id: ChIJNe79_IBP0xQRo_rBgcPS7Oo
+  category: turkish_restaurant
+  brand_key: antik-31-antakya-durum
+  active: true
+  tracked: false
+  user_ratings_total: 133
+- slug: sah-antep-pide-lahmacun
+  display_name: Şah Antep Pide Lahmacun
+  place_id: ChIJZVSekSdG0xQRSqcUHE5GLgk
+  category: middle_eastern_restaurant
+  brand_key: sah-antep-pide-lahmacun
+  active: true
+  tracked: false
+  user_ratings_total: 133
+- slug: kopoglu-ev-yemegi-meze
+  display_name: Köpoğlu Ev Yemeği Meze
+  place_id: ChIJawmDYfRF0xQRwNtqTr7U_4o
+  category: restaurant
+  brand_key: kopoglu-ev-yemegi-meze
+  active: true
+  tracked: false
+  user_ratings_total: 133
+- slug: alpim-mantici
+  display_name: Alpim Mantıcı
+  place_id: ChIJtSFgb_FF0xQR67Ye4Jnl2uI
+  category: dumpling_restaurant
+  brand_key: alpim-mantici
+  active: true
+  tracked: false
+  user_ratings_total: 133
+- slug: juvany-pizza
+  display_name: Juvany Pizza
+  place_id: ChIJI_qVA-BP0xQRVHes3PnkHpU
+  category: pizza_restaurant
+  brand_key: juvany-pizza
+  active: true
+  tracked: false
+  user_ratings_total: 132
+- slug: hookinn-lounge
+  display_name: Hookinn Lounge
+  place_id: ChIJM6CmuXNP0xQRjRWRHHV7X3c
+  category: hookah_bar
+  brand_key: hookinn-lounge
+  active: true
+  tracked: false
+  user_ratings_total: 131
+- slug: sandal-meze-balik
+  display_name: Sandal Meze Balık
+  place_id: ChIJgxk1y0tP0xQRlrpxJm-bznk
+  category: restaurant
+  brand_key: sandal-meze-balik
+  active: true
+  tracked: false
+  user_ratings_total: 131
+- slug: sayrem-taurus
+  display_name: Sayrem Taurus
+  place_id: ChIJh9KrPuNF0xQRs5tkyqLU1dg
+  category: turkish_restaurant
+  brand_key: sayrem-taurus
+  active: true
+  tracked: false
+  user_ratings_total: 131
+- slug: burger-king-asti-otogar
+  display_name: Burger King - Aşti Otogar
+  place_id: ChIJs2mhTHBP0xQRwB69yJygo-I
+  category: fast_food_restaurant
+  brand_key: burger-king-asti-otogar
+  active: true
+  tracked: false
+  user_ratings_total: 131
+- slug: kaymaklava-bahcelievler
+  display_name: Kaymaklava Bahçelievler
+  place_id: ChIJ212FhjRP0xQRwbAXwYUMSHY
+  category: dessert_restaurant
+  brand_key: kaymaklava-bahcelievler
+  active: true
+  tracked: false
+  user_ratings_total: 130
+- slug: as-doner
+  display_name: AS Döner
+  place_id: ChIJedsb1eZF0xQRrfiZTkA56sE
+  category: turkish_restaurant
+  brand_key: as-doner
+  active: true
+  tracked: false
+  user_ratings_total: 130
+- slug: taylan-pidekebap-salonu
+  display_name: Taylan PıdeKebap Salonu
+  place_id: ChIJEyPMSlBP0xQRnoItwHzkc_g
+  category: fast_food_restaurant
+  brand_key: taylan-pidekebap-salonu
+  active: true
+  tracked: false
+  user_ratings_total: 129
+- slug: tunus-islak-hamburger-bahcelievler-3-cadde-subesi
+  display_name: Tunus Islak Hamburger Bahçelievler 3. Cadde Şubesi
+  place_id: ChIJF-8ylGlP0xQRavnTMAs4gOE
+  category: hamburger_restaurant
+  brand_key: tunus-islak-hamburger-bahcelievler-3-cadde-subesi
+  active: true
+  tracked: false
+  user_ratings_total: 129
+- slug: gonul-limani
+  display_name: Gönül Limanı
+  place_id: ChIJrS4LtfVF0xQRe-Kff12rlEk
+  category: restaurant
+  brand_key: gonul-limani
+  active: true
+  tracked: false
+  user_ratings_total: 129
+- slug: puask-chocolate
+  display_name: puask chocolate
+  place_id: ChIJHdjnmuNP0xQRGB1g53SXmzI
+  category: chocolate_shop
+  brand_key: puask-chocolate
+  active: true
+  tracked: false
+  user_ratings_total: 128
+- slug: cinaralti-cafe-restaurant
+  display_name: Çınaraltı Cafe & Restaurant
+  place_id: ChIJERd0689P0xQROw8JuTLcrOE
+  category: cafeteria
+  brand_key: cinaralti-cafe-restaurant
+  active: true
+  tracked: false
+  user_ratings_total: 125
+- slug: zeynel-1925
+  display_name: Zeynel 1925
+  place_id: ChIJTQDQcZ1I0xQRRK_w-geZoEQ
+  category: restaurant
+  brand_key: zeynel-1925
+  active: true
+  tracked: false
+  user_ratings_total: 124
+- slug: wallmoss-emek
+  display_name: Wallmoss Emek
+  place_id: ChIJicJgw0VP0xQRPLo_gdE3SCE
+  category: cafe
+  brand_key: wallmoss-emek
+  active: true
+  tracked: false
+  user_ratings_total: 123
+- slug: sampi-pide-balgat
+  display_name: Sampi Pide Balgat
+  place_id: ChIJiTGnGlFF0xQRmXwtUJlBL5M
+  category: restaurant
+  brand_key: sampi-pide-balgat
+  active: true
+  tracked: false
+  user_ratings_total: 122
+- slug: kebap-sefasi
+  display_name: Kebap Sefası
+  place_id: ChIJiZNHtvVF0xQRiNbSOJ9LDMA
+  category: kebab_shop
+  brand_key: kebap-sefasi
+  active: true
+  tracked: false
+  user_ratings_total: 122
+- slug: skal-coffee-dessert
+  display_name: Skal Coffee Dessert
+  place_id: ChIJRZpbCJNP0xQRI8pJsmlBB18
+  category: food_store
+  brand_key: skal-coffee-dessert
+  active: true
+  tracked: false
+  user_ratings_total: 121
+- slug: serdem-cafe
+  display_name: Serdem Cafe
+  place_id: ChIJZ_lOi71P0xQRT414TxhnxFQ
+  category: cafe
+  brand_key: serdem-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 121
+- slug: bulent-borekcilik-ankara-cankaya-balgat
+  display_name: Bülent Börekçilik Ankara Çankaya Balgat
+  place_id: ChIJ-2J_nAhF0xQRi3hyO2DdmlU
+  category: bakery
+  brand_key: bulent-borekcilik-ankara-cankaya-balgat
+  active: true
+  tracked: false
+  user_ratings_total: 120
+- slug: 06-miran-tas-firini
+  display_name: 06 Miran Taş Fırını
+  place_id: ChIJ4XItO31P0xQRbmbKmlfmkwM
+  category: bakery
+  brand_key: 06-miran-tas-firini
+  active: true
+  tracked: false
+  user_ratings_total: 119
+- slug: coffee-gate-next-level-avm
+  display_name: Coffee Gate Next Level AVM
+  place_id: ChIJ_5necEJP0xQRCV-n2qHqQCE
+  category: coffee_shop
+  brand_key: coffee-gate-next-level-avm
+  active: true
+  tracked: false
+  user_ratings_total: 119
+- slug: kfc
+  display_name: KFC
+  place_id: ChIJk97giidG0xQRC-x9rBs5oOk
+  category: chicken_restaurant
+  brand_key: kfc
+  active: true
+  tracked: false
+  user_ratings_total: 119
+- slug: makarnam
+  display_name: Makarnam
+  place_id: ChIJvTphdFBJ0xQRT9mUTQ7aCoI
+  category: restaurant
+  brand_key: makarnam
+  active: true
+  tracked: false
+  user_ratings_total: 119
+- slug: sr-doner-cukurambar
+  display_name: SR DÖNER Çukurambar
+  place_id: ChIJtzsiDwFP0xQR3uQEy27veYw
+  category: fast_food_restaurant
+  brand_key: sr-doner-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 117
+- slug: hound-coffee-eatery-via-flat
+  display_name: Hound Coffee & Eatery Via Flat
+  place_id: ChIJbck3JMZJ0xQRvFYox4VwBmA
+  category: cafe
+  brand_key: hound-coffee-eatery-via-flat
+  active: true
+  tracked: false
+  user_ratings_total: 116
+- slug: arby-s-taurus-avm
+  display_name: Arby's - Taurus Avm
+  place_id: ChIJu5QbIeNF0xQRP3aXBNYFpt0
+  category: fast_food_restaurant
+  brand_key: arby-s-taurus-avm
+  active: true
+  tracked: false
+  user_ratings_total: 116
+- slug: sun-kebap-pide
+  display_name: Sun Kebap & Pide
+  place_id: ChIJjfPaRfFF0xQRimhKH_H89Rg
+  category: restaurant
+  brand_key: sun-kebap-pide
+  active: true
+  tracked: false
+  user_ratings_total: 115
+- slug: komagene-etsiz-cig-kofte-chij7rqo
+  display_name: Komagene Etsiz Çiğ Köfte
+  place_id: ChIJ7RqoOQZP0xQRHyxkgFsnQVw
+  category: restaurant
+  brand_key: komagene-etsiz-cig-kofte
+  active: true
+  tracked: false
+  user_ratings_total: 114
+- slug: odtu-sosyal-bina
+  display_name: ODTÜ Sosyal Bina
+  place_id: ChIJCSLijz1G0xQREJoZ4Xk7tGs
+  category: restaurant
+  brand_key: odtu-sosyal-bina
+  active: true
+  tracked: false
+  user_ratings_total: 114
+- slug: krispy-kreme-doughnuts
+  display_name: Krispy Kreme Doughnuts
+  place_id: ChIJadHsSgBP0xQRkqKC-ivsWys
+  category: bakery
+  brand_key: krispy-kreme-doughnuts
+  active: true
+  tracked: false
+  user_ratings_total: 114
+- slug: sarimsak-tadim-doner
+  display_name: Sarımsak Tadım Döner
+  place_id: ChIJm1CXhC9P0xQRHa2SLUflcOg
+  category: turkish_restaurant
+  brand_key: sarimsak-tadim-doner
+  active: true
+  tracked: false
+  user_ratings_total: 114
+- slug: shirada-ankara
+  display_name: Shirada Ankara
+  place_id: ChIJtTUCRwBF0xQRrRBmMKtrQXs
+  category: cafe
+  brand_key: shirada
+  active: true
+  tracked: false
+  user_ratings_total: 114
+- slug: tarihi-tencere-koftecisi-ankara-bestepe
+  display_name: Tarihi Tencere Köftecisi Ankara Beştepe
+  place_id: ChIJyzZGsWNJ0xQR5q4ZKBE42QA
+  category: restaurant
+  brand_key: tarihi-tencere-koftecisi-ankara-bestepe
+  active: true
+  tracked: false
+  user_ratings_total: 114
+- slug: krispy-kreme
+  display_name: Krispy Kreme
+  place_id: ChIJ-yIjMwBJ0xQRVWM4B8YF1yw
+  category: coffee_shop
+  brand_key: krispy-kreme
+  active: true
+  tracked: false
+  user_ratings_total: 113
+- slug: aydibek
+  display_name: AyDibek
+  place_id: ChIJIblGeLFP0xQRWMEAeLxfIg4
+  category: coffee_shop
+  brand_key: aydibek
+  active: true
+  tracked: false
+  user_ratings_total: 113
+- slug: zumrut-karaca-coffee-roastery
+  display_name: Zümrüt Karaca Coffee Roastery
+  place_id: ChIJJR0Xwy9J0xQR0uE2V0USMF0
+  category: coffee_roastery
+  brand_key: zumrut-karaca-coffee-roastery
+  active: true
+  tracked: false
+  user_ratings_total: 113
+- slug: smokey-bbq-burger
+  display_name: Smokey BBQ&Burger
+  place_id: ChIJz8b6UABJ0xQRrmwxJ7dFnU0
+  category: hamburger_restaurant
+  brand_key: smokey-bbq-burger
+  active: true
+  tracked: false
+  user_ratings_total: 113
+- slug: fistikcioglu
+  display_name: Fistikçioğlu
+  place_id: ChIJGWM2oC9P0xQRQMb0h8-UJ2Y
+  category: dessert_shop
+  brand_key: fistikcioglu
+  active: true
+  tracked: false
+  user_ratings_total: 112
+- slug: torian-atolye-cafe
+  display_name: TORİAN ATÖLYE CAFE
+  place_id: ChIJpyFOtUBP0xQRIhi_tCBIG1g
+  category: cafe
+  brand_key: torian-atolye-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 112
+- slug: bi-sutlu-bi-tatli-ovecler
+  display_name: Bi Sütlü Bi Tatlı Öveçler
+  place_id: ChIJ3dAZuAxF0xQRbRV-KhODtuw
+  category: dessert_shop
+  brand_key: bi-sutlu-bi-tatli-ovecler
+  active: true
+  tracked: false
+  user_ratings_total: 111
+- slug: konatus-cafe
+  display_name: Konatus Cafe
+  place_id: ChIJ5wN1_ONH0xQRft5FGuvkJz0
+  category: coffee_shop
+  brand_key: konatus-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 111
+- slug: emek-sakatat
+  display_name: Emek Sakatat
+  place_id: ChIJ8V_3MXFO0xQRu0C3Wom2YNI
+  category: restaurant
+  brand_key: emek-sakatat
+  active: true
+  tracked: false
+  user_ratings_total: 111
+- slug: oncu-doner-100-yil
+  display_name: Öncü Döner 100.Yıl
+  place_id: ChIJ6bvboU9H0xQRRcTMavKqclI
+  category: turkish_restaurant
+  brand_key: oncu-doner-100-yil
+  active: true
+  tracked: false
+  user_ratings_total: 110
+- slug: donerci-bey
+  display_name: Dönerci Bey
+  place_id: ChIJPakiX91P0xQRUiuXmoiLnss
+  category: turkish_restaurant
+  brand_key: donerci-bey
+  active: true
+  tracked: false
+  user_ratings_total: 109
+- slug: polen-tantuni-kentpark
+  display_name: Polen Tantuni Kentpark
+  place_id: ChIJcdZwm4xH0xQRM7MpfvW6hns
+  category: restaurant
+  brand_key: polen-tantuni-kentpark
+  active: true
+  tracked: false
+  user_ratings_total: 108
+- slug: emek-tantuni
+  display_name: Emek Tantuni
+  place_id: ChIJLf9SHfxP0xQR_9d_eTaLQqs
+  category: restaurant
+  brand_key: emek-tantuni
+  active: true
+  tracked: false
+  user_ratings_total: 107
+- slug: komagene-etsiz-cig-kofte-chijf12t
+  display_name: Komagene Etsiz Çiğ Köfte
+  place_id: ChIJf12TQbpP0xQRj6LfcD_mXiA
+  category: restaurant
+  brand_key: komagene-etsiz-cig-kofte
+  active: true
+  tracked: false
+  user_ratings_total: 106
+- slug: karabulut-ayintap-kunefe-cukurambar
+  display_name: Karabulut Ayıntap Künefe Çukurambar
+  place_id: ChIJIbaKG8pH0xQRUVbzb_h53TQ
+  category: dessert_restaurant
+  brand_key: karabulut-ayintap-kunefe-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 104
+- slug: rasgele-pide-kebap
+  display_name: Rasgele Pide&Kebap
+  place_id: ChIJfbG9nYlP0xQRL1zeyACvjYo
+  category: middle_eastern_restaurant
+  brand_key: rasgele-pide-kebap
+  active: true
+  tracked: false
+  user_ratings_total: 104
+- slug: camlibel-kebap-doner-eski-camalti
+  display_name: ÇAMLIBEL KEBAP DÖNER (Eski Çamaltı)
+  place_id: ChIJhym6Q_JP0xQRUzAgZjvWFMA
+  category: restaurant
+  brand_key: camlibel-kebap-doner-eski-camalti
+  active: true
+  tracked: false
+  user_ratings_total: 104
+- slug: coffee-kangoo-cukurambar
+  display_name: Coffee Kangoo Çukurambar
+  place_id: ChIJ5wgKdVRP0xQRd6x-sKZA3yQ
+  category: coffee_shop
+  brand_key: coffee-kangoo-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 102
+- slug: jw-steak-house
+  display_name: Jw Steak House
+  place_id: ChIJP4KSGa1I0xQRa_0ZsQLdOgA
+  category: steak_house
+  brand_key: jw-steak-house
+  active: true
+  tracked: false
+  user_ratings_total: 100
+- slug: yam-yam-restaurant
+  display_name: Yam Yam Restaurant
+  place_id: ChIJP9DCUEBH0xQRXqAFjfzn0Lw
+  category: cafe
+  brand_key: yam-yam-restaurant
+  active: true
+  tracked: false
+  user_ratings_total: 100
+- slug: last-bite-fast-food-bistro
+  display_name: Last Bite Fast Food & Bistro
+  place_id: ChIJZdgUMbdP0xQRvqT_iFvdhMQ
+  category: fast_food_restaurant
+  brand_key: last-bite-fast-food-bistro
+  active: true
+  tracked: false
+  user_ratings_total: 100
+- slug: belpa-coffee
+  display_name: Belpa Coffee
+  place_id: ChIJ15M5SgBP0xQRYVyJi3U5vqo
+  category: cafe
+  brand_key: belpa-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 98
+- slug: gg-cafe
+  display_name: GG cafe
+  place_id: ChIJ5edR7T1P0xQRRnGRbBGJahQ
+  category: cafe
+  brand_key: gg-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 98
+- slug: antephan-kunefe-baklava-cukurambar
+  display_name: Antephan Künefe & Baklava Çukurambar
+  place_id: ChIJx2m3YLFJ0xQROltNBxepVrg
+  category: dessert_restaurant
+  brand_key: antephan-kunefe-baklava-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 98
+- slug: das-alman-s-doner-bahcelievler
+  display_name: Das Alman's Döner - Bahçelievler
+  place_id: ChIJBciKFXFP0xQREJ-cfo0cuT8
+  category: fast_food_restaurant
+  brand_key: das-alman-s-doner-bahcelievler
+  active: true
+  tracked: false
+  user_ratings_total: 97
+- slug: coffee-big-hill-emek
+  display_name: Coffee Big Hill Emek
+  place_id: ChIJN10Rnd5P0xQRzKc9aLACzNk
+  category: coffee_shop
+  brand_key: coffee-big-hill-emek
+  active: true
+  tracked: false
+  user_ratings_total: 97
+- slug: sikmaholics-congresium
+  display_name: Sıkmaholic’s - Congresium
+  place_id: ChIJe7fvbwBJ0xQRyt2uMIG9gQk
+  category: fast_food_restaurant
+  brand_key: sikmaholics-congresium
+  active: true
+  tracked: false
+  user_ratings_total: 97
+- slug: rouze-prive-concept-store-cafe
+  display_name: Rouze Prive Concept Store & Cafe
+  place_id: ChIJiTluICxP0xQRm2KPXizd9PY
+  category: cafe
+  brand_key: rouze-prive-concept-store-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 97
+- slug: balgat-doner
+  display_name: Balgat Döner
+  place_id: ChIJuTt7t81P0xQRy_tBDc-Ne8M
+  category: restaurant
+  brand_key: balgat-doner
+  active: true
+  tracked: false
+  user_ratings_total: 97
+- slug: atabey-ev-yemekleri
+  display_name: Atabey Ev Yemekleri
+  place_id: ChIJzwzurvtF0xQRuKb1T8D5WTA
+  category: restaurant
+  brand_key: atabey-ev-yemekleri
+  active: true
+  tracked: false
+  user_ratings_total: 97
+- slug: sutlu-d-d-kentpark-avm-ankara
+  display_name: Sütlü D&D Kentpark Avm Ankara
+  place_id: ChIJTxdFFTpJ0xQRcXh50i1AQyM
+  category: dessert_shop
+  brand_key: sutlu-d-d-kentpark-avm
+  active: true
+  tracked: false
+  user_ratings_total: 96
+- slug: uptown-cafe
+  display_name: Uptown Cafe
+  place_id: ChIJDwCwJBZG0xQR63wKW16MFhM
+  category: cafe
+  brand_key: uptown-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 94
+- slug: mcdonald-s
+  display_name: McDonald's
+  place_id: ChIJpytcT8JP0xQRHb4OlidOPhM
+  category: fast_food_restaurant
+  brand_key: mcdonald-s
+  active: true
+  tracked: false
+  user_ratings_total: 94
+- slug: palmiye-pide-kebap
+  display_name: Palmiye Pide & Kebap
+  place_id: ChIJSWfjKAVG0xQRtFTQIQ8bxNo
+  category: restaurant
+  brand_key: palmiye-pide-kebap
+  active: true
+  tracked: false
+  user_ratings_total: 93
+- slug: sanli-kebap
+  display_name: Şanlı kebap
+  place_id: ChIJc5dWr-1F0xQRykLFefLXYak
+  category: kebab_shop
+  brand_key: sanli-kebap
+  active: true
+  tracked: false
+  user_ratings_total: 93
+- slug: tabure-lounge
+  display_name: Tabure Lounge
+  place_id: ChIJc8-_bgRJ0xQRf_KfLglyDZ0
+  category: restaurant
+  brand_key: tabure-lounge
+  active: true
+  tracked: false
+  user_ratings_total: 93
+- slug: coffee-sheeper
+  display_name: Coffee Sheeper
+  place_id: ChIJ29WJb45P0xQR_8E4BpOOLCU
+  category: cafe
+  brand_key: coffee-sheeper
+  active: true
+  tracked: false
+  user_ratings_total: 92
+- slug: pizza-time-isci-bloklari-100-yil
+  display_name: PİZZA TİME İŞÇİ BLOKLARI -100.YIL
+  place_id: ChIJHwd15IpH0xQRDEAHuNjhT-8
+  category: pizza_restaurant
+  brand_key: pizza-time-isci-bloklari-100-yil
+  active: true
+  tracked: false
+  user_ratings_total: 92
+- slug: mezzelye
+  display_name: Mezzelye
+  place_id: ChIJ1WTOGABP0xQRPfyJFApKZwA
+  category: restaurant
+  brand_key: mezzelye
+  active: true
+  tracked: false
+  user_ratings_total: 91
+- slug: aynen-pilav
+  display_name: Aynen Pilav
+  place_id: ChIJlTIALwVG0xQRG09qaxg0xw0
+  category: restaurant
+  brand_key: aynen-pilav
+  active: true
+  tracked: false
+  user_ratings_total: 91
+- slug: popeyes
+  display_name: Popeyes
+  place_id: ChIJvW4IiE9P0xQRfyKObKaxE5E
+  category: fast_food_restaurant
+  brand_key: popeyes
+  active: true
+  tracked: false
+  user_ratings_total: 91
+- slug: blero-s-chicken
+  display_name: Blero's Chicken
+  place_id: ChIJN40OcoBH0xQRgbERIVYA16w
+  category: restaurant
+  brand_key: blero-s-chicken
+  active: true
+  tracked: false
+  user_ratings_total: 90
+- slug: kahvecell
+  display_name: Kahvecell
+  place_id: ChIJOdsd70VP0xQRcbWgKx8svwA
+  category: coffee_shop
+  brand_key: kahvecell
+  active: true
+  tracked: false
+  user_ratings_total: 90
+- slug: ozlem-pide-cafe
+  display_name: Özlem Pide CAFE
+  place_id: ChIJ-5BVfstI0xQRgvmTWZEd5SM
+  category: middle_eastern_restaurant
+  brand_key: ozlem-pide-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 88
+- slug: 06-cafe-restorant
+  display_name: 06 Cafe Restorant
+  place_id: ChIJKTIE67NI0xQRpYyc7rrmU4A
+  category: restaurant
+  brand_key: 06-cafe-restorant
+  active: true
+  tracked: false
+  user_ratings_total: 88
+- slug: moltobene-bellapasta
+  display_name: MoltoBene BellaPasta
+  place_id: ChIJVT2le1pP0xQRm_0u3tT1_0M
+  category: italian_restaurant
+  brand_key: moltobene-bellapasta
+  active: true
+  tracked: false
+  user_ratings_total: 88
+- slug: sultan-simit-sarayi
+  display_name: Sultan Simit Sarayı
+  place_id: ChIJ3awLqUhP0xQRwsOhVYywjfQ
+  category: cafe
+  brand_key: sultan-simit-sarayi
+  active: true
+  tracked: false
+  user_ratings_total: 87
+- slug: cartoon-lab-coffee
+  display_name: Cartoon Lab. Coffee
+  place_id: ChIJpUJk1QVP0xQR0MViKGJ4fZU
+  category: cafe
+  brand_key: cartoon-lab-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 87
+- slug: onno-midye-kokorec
+  display_name: ONNO MİDYE KOKOREÇ
+  place_id: ChIJW7MQRgBH0xQRd1iAK4DxyFs
+  category: family_restaurant
+  brand_key: onno-midye-kokorec
+  active: true
+  tracked: false
+  user_ratings_total: 86
+- slug: starbucks-chijkqsp
+  display_name: Starbucks
+  place_id: ChIJKQSpDTlP0xQRcn4HHv7b7Ps
+  category: cafe
+  brand_key: starbucks
+  active: true
+  tracked: false
+  user_ratings_total: 85
+- slug: dedem-sandwich-ovecler
+  display_name: Dedem Sandwıch ÖVEÇLER
+  place_id: ChIJTw-YEfVF0xQR8U_MeJo0Mgk
+  category: fast_food_restaurant
+  brand_key: dedem-sandwich-ovecler
+  active: true
+  tracked: false
+  user_ratings_total: 85
+- slug: yagcioglu-lokantasi
+  display_name: Yağcıoğlu Lokantası
+  place_id: ChIJ-bJ4mclF0xQRjCqUKxHlVgg
+  category: restaurant
+  brand_key: yagcioglu-lokantasi
+  active: true
+  tracked: false
+  user_ratings_total: 84
+- slug: meshur-adiyaman-cig-koftecisi-omer-aybak
+  display_name: Meşhur Adıyaman Çiğ Köftecisi ÖMER AYBAK
+  place_id: ChIJ1_zq8yZP0xQRkpiCHKScGho
+  category: turkish_restaurant
+  brand_key: meshur-adiyaman-cig-koftecisi-omer-aybak
+  active: true
+  tracked: false
+  user_ratings_total: 84
+- slug: starbucks-chij29w6
+  display_name: Starbucks
+  place_id: ChIJ29w6H8hI0xQRW78ez96fy4Y
+  category: coffee_shop
+  brand_key: starbucks
+  active: true
+  tracked: false
+  user_ratings_total: 84
+- slug: meshur-yilmaz-burmali-kadayif
+  display_name: Meşhur Yılmaz Burmalı Kadayıf
+  place_id: ChIJmQIcq_lF0xQRLGbFP-CWhBs
+  category: restaurant
+  brand_key: meshur-yilmaz-burmali-kadayif
+  active: true
+  tracked: false
+  user_ratings_total: 83
+- slug: skye-vue
+  display_name: Skye Vue
+  place_id: ChIJozkpY61I0xQRL0hLFMDCOxo
+  category: bar
+  brand_key: skye-vue
+  active: true
+  tracked: false
+  user_ratings_total: 83
+- slug: coffee-1919-bahceli-3-cadde
+  display_name: Coffee 1919 Bahçeli 3.Cadde
+  place_id: ChIJy_rT3S9P0xQR70NC3sQ1xkE
+  category: coffee_shop
+  brand_key: coffee-1919-bahceli-3-cadde
+  active: true
+  tracked: false
+  user_ratings_total: 83
+- slug: hood-coffee-bowl-board-games
+  display_name: Hood Coffee&BowL&Board Games
+  place_id: ChIJK_Fo8W1J0xQRXrbUIB1gAo4
+  category: coffee_shop
+  brand_key: hood-coffee-bowl-board-games
+  active: true
+  tracked: false
+  user_ratings_total: 82
+- slug: shelby-sokak-coffee
+  display_name: Shelby Sokak Coffee
+  place_id: ChIJLaYnR5NH0xQRqGnvHRk8bXA
+  category: coffee_shop
+  brand_key: shelby-sokak-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 82
+- slug: chocolabs-taurus-avm
+  display_name: Chocolabs Taurus Avm
+  place_id: ChIJmRonKu9F0xQRJR9mfDK5Kk0
+  category: dessert_shop
+  brand_key: chocolabs-taurus-avm
+  active: true
+  tracked: false
+  user_ratings_total: 82
+- slug: ala-cafe
+  display_name: Ala Cafe
+  place_id: ChIJJx-Lf-VP0xQRZwsjHEWuaPk
+  category: cafe
+  brand_key: ala-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 81
+- slug: ceyma
+  display_name: Ceyma
+  place_id: ChIJZyTS8EVP0xQR6Wmzq71abgc
+  category: cafe
+  brand_key: ceyma
+  active: true
+  tracked: false
+  user_ratings_total: 81
+- slug: angara-sofrasi
+  display_name: Angara Sofrası
+  place_id: ChIJp-IkRjRP0xQRvmtKiYa-e90
+  category: turkish_restaurant
+  brand_key: angara-sofrasi
+  active: true
+  tracked: false
+  user_ratings_total: 81
+- slug: meshur-adiyaman-cig-koftecisi-bayram-usta-emek-mah-biskek-caddesi
+  display_name: Meşhur Adıyaman çiğ köftecisi Bayram usta Emek Mah.Bişkek caddesi
+  place_id: ChIJ76N1mGVP0xQRzUgfQhgs8vQ
+  category: turkish_restaurant
+  brand_key: meshur-adiyaman-cig-koftecisi-bayram-usta-emek-mah-biskek-caddesi
+  active: true
+  tracked: false
+  user_ratings_total: 80
+- slug: haci-ibrahimoglu-baklavacisi
+  display_name: Hacı İbrahimoğlu Baklavacısı
+  place_id: ChIJSf3k93RJ0xQRGvMnYe7K9W0
+  category: dessert_shop
+  brand_key: haci-ibrahimoglu-baklavacisi
+  active: true
+  tracked: false
+  user_ratings_total: 80
+- slug: roast-n-berry-1071
+  display_name: Roast'n Berry 1071
+  place_id: ChIJmVlyVlBP0xQRjEcTR8_02bc
+  category: cafe
+  brand_key: roast-n-berry-1071
+  active: true
+  tracked: false
+  user_ratings_total: 80
+- slug: merkez-kebap
+  display_name: Merkez Kebap
+  place_id: ChIJ27nnGvVF0xQRoFArRzOQRAM
+  category: kebab_shop
+  brand_key: merkez-kebap
+  active: true
+  tracked: false
+  user_ratings_total: 79
+- slug: mcdonald-s-ankara-cepa
+  display_name: McDonald's Ankara Cepa
+  place_id: ChIJK86dfIFH0xQRLjwh0ZFhnqk
+  category: fast_food_restaurant
+  brand_key: mcdonald-s-ankara-cepa
+  active: true
+  tracked: false
+  user_ratings_total: 79
+- slug: fourway
+  display_name: FOURWAY
+  place_id: ChIJTWMFQ5ZF0xQRHCv4AyS3eyA
+  category: hamburger_restaurant
+  brand_key: fourway
+  active: true
+  tracked: false
+  user_ratings_total: 79
+- slug: ala-etliekmek
+  display_name: Ala Etliekmek
+  place_id: ChIJx7Hl789P0xQRIH7wilCsOqs
+  category: restaurant
+  brand_key: ala-etliekmek
+  active: true
+  tracked: false
+  user_ratings_total: 79
+- slug: bestepe-sokak-lezzetleri
+  display_name: Beştepe Sokak Lezzetleri
+  place_id: ChIJ-5sd3FpP0xQRpUasd2OKJiQ
+  category: restaurant
+  brand_key: bestepe-sokak-lezzetleri
+  active: true
+  tracked: false
+  user_ratings_total: 78
+- slug: antakium-doner-balgat
+  display_name: Antakium Döner Balgat
+  place_id: ChIJ11WcQsFF0xQRXpfSFQGO_5s
+  category: fast_food_restaurant
+  brand_key: antakium-doner-balgat
+  active: true
+  tracked: false
+  user_ratings_total: 78
+- slug: veranda-manti-cig-borek
+  display_name: Veranda Mantı & Çiğ Börek
+  place_id: ChIJR1pkKeZP0xQRgQdQBxlJRdM
+  category: restaurant
+  brand_key: veranda-manti-cig-borek
+  active: true
+  tracked: false
+  user_ratings_total: 77
+- slug: sueco-coffee-corner
+  display_name: Sueco Coffee Corner
+  place_id: ChIJxS8aq61F0xQRgGAHE1g4q0E
+  category: coffee_shop
+  brand_key: sueco-coffee-corner
+  active: true
+  tracked: false
+  user_ratings_total: 77
+- slug: oburx-doner
+  display_name: Oburx Döner
+  place_id: ChIJodlVrhxG0xQRk7E1jcEIbrk
+  category: turkish_restaurant
+  brand_key: oburx-doner
+  active: true
+  tracked: false
+  user_ratings_total: 76
+- slug: manja-coffee-eatery-besa-kule
+  display_name: Manja Coffee & Eatery Besa Kule
+  place_id: ChIJcbp6EvZJ0xQRscHjovtO7Ys
+  category: cafe
+  brand_key: manja-coffee-eatery-besa-kule
+  active: true
+  tracked: false
+  user_ratings_total: 73
+- slug: bazlamos-cafe
+  display_name: BAZLAMOS cafe
+  place_id: ChIJNRztTZdP0xQRS9KKVWKS64g
+  category: fast_food_restaurant
+  brand_key: bazlamos-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 72
+- slug: by-emin-kumru-firtinasi
+  display_name: By emin Kumru Fırtınası
+  place_id: ChIJ61BMbTxH0xQRXeYBu1p7u9o
+  category: restaurant
+  brand_key: by-emin-kumru-firtinasi
+  active: true
+  tracked: false
+  user_ratings_total: 70
+- slug: by-cevo-kokorec-germec
+  display_name: BY CEVO KOKOREÇ&GERMEÇ
+  place_id: ChIJAUKWfkdH0xQRyiTa1XiPA28
+  category: food_court
+  brand_key: by-cevo-kokorec-germec
+  active: true
+  tracked: false
+  user_ratings_total: 70
+- slug: plenty-pizza
+  display_name: Plenty Pizza
+  place_id: ChIJaV1smwRG0xQRpbwJhcyIXxo
+  category: pizza_restaurant
+  brand_key: plenty-pizza
+  active: true
+  tracked: false
+  user_ratings_total: 70
+- slug: net-doner
+  display_name: NET DÖNER
+  place_id: ChIJmQYcLAlH0xQRyOfdrsW7HO8
+  category: turkish_restaurant
+  brand_key: net-doner
+  active: true
+  tracked: false
+  user_ratings_total: 70
+- slug: popeyes-asti-otogar
+  display_name: Popeyes - Aşti Otogar
+  place_id: ChIJ91F9IulP0xQRhg7Cl-ws7wY
+  category: chicken_restaurant
+  brand_key: popeyes-asti-otogar
+  active: true
+  tracked: false
+  user_ratings_total: 69
+- slug: unfesta
+  display_name: Unfesta
+  place_id: ChIJD6MqqzFP0xQRwIPdUIQTWAg
+  category: bakery
+  brand_key: unfesta
+  active: true
+  tracked: false
+  user_ratings_total: 69
+- slug: komagene-etsiz-cig-kofte-chijyajj
+  display_name: Komagene Etsiz Çiğ Köfte
+  place_id: ChIJYaJJcfhP0xQRIV24GCbi8S0
+  category: restaurant
+  brand_key: komagene-etsiz-cig-kofte
+  active: true
+  tracked: false
+  user_ratings_total: 69
+- slug: lumpa
+  display_name: Lumpa
+  place_id: ChIJj1UviydG0xQRa2WWtXk6Vyg
+  category: dessert_restaurant
+  brand_key: lumpa
+  active: true
+  tracked: false
+  user_ratings_total: 69
+- slug: samata-cafe
+  display_name: Şamata Cafe
+  place_id: ChIJz9foq5pP0xQRTZ6GraiI3-A
+  category: hookah_bar
+  brand_key: samata-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 69
+- slug: simitci-sarayi
+  display_name: Simitçi Sarayı
+  place_id: ChIJpUx4IylP0xQRRasX9R0LDek
+  category: cafe
+  brand_key: simitci-sarayi
+  active: true
+  tracked: false
+  user_ratings_total: 67
+- slug: usta-donerci-taurus-avm
+  display_name: Usta Dönerci - Taurus Avm
+  place_id: ChIJe-EkJVFF0xQR0aO4LXbx_Lc
+  category: fast_food_restaurant
+  brand_key: usta-donerci-taurus-avm
+  active: true
+  tracked: false
+  user_ratings_total: 66
+- slug: gel-de-yeme
+  display_name: Gel de Yeme
+  place_id: ChIJgblnJK1I0xQRGiH-Ae8MIp4
+  category: turkish_restaurant
+  brand_key: gel-de-yeme
+  active: true
+  tracked: false
+  user_ratings_total: 66
+- slug: godiva-next-level-avm
+  display_name: Godiva Next Level AVM
+  place_id: ChIJsycVTmNP0xQRZ06mkx30TcE
+  category: cafe
+  brand_key: godiva-next-level-avm
+  active: true
+  tracked: false
+  user_ratings_total: 66
+- slug: misal-nargile-cafe
+  display_name: Misal Nargile Cafe
+  place_id: ChIJFwsR2lFP0xQRxHxymWxR0cQ
+  category: cafe
+  brand_key: misal-nargile-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 65
+- slug: hybridhub
+  display_name: HYBRIDHUB
+  place_id: ChIJP19QcXRP0xQRcaEyoZqkrxg
+  category: unknown
+  brand_key: hybridhub
+  active: true
+  tracked: false
+  user_ratings_total: 65
+- slug: pasta-cikolata-mutfagi
+  display_name: Pasta & Çikolata Mutfağı
+  place_id: ChIJk6oUSclP0xQRKXNYmVA2Iik
+  category: pastry_shop
+  brand_key: pasta-cikolata-mutfagi
+  active: true
+  tracked: false
+  user_ratings_total: 65
+- slug: the-juicy-lucy-burger-cukurambar
+  display_name: The Juicy Lucy Burger (çukurambar)
+  place_id: ChIJ7VsgIKlJ0xQRUQwZOZWdf_U
+  category: hamburger_restaurant
+  brand_key: the-juicy-lucy-burger-cukurambar
+  active: true
+  tracked: false
+  user_ratings_total: 64
+- slug: dois-doner-bahcelievler
+  display_name: Dois Döner Bahçelievler
+  place_id: ChIJUQjNVmdP0xQRQS0H22Mf5Hk
+  category: fast_food_restaurant
+  brand_key: dois-doner-bahcelievler
+  active: true
+  tracked: false
+  user_ratings_total: 64
+- slug: freddo-coffee-shop-sogutozu
+  display_name: Freddo Coffee shop söğütözü
+  place_id: ChIJV_zqgrFJ0xQRqlIWSKVqIok
+  category: cafe
+  brand_key: freddo-coffee-shop
+  active: true
+  tracked: false
+  user_ratings_total: 64
+- slug: little-king-pizza
+  display_name: Little King Pizza
+  place_id: ChIJZe3QUGFP0xQRaOyf3hJWbsM
+  category: pizza_restaurant
+  brand_key: little-king-pizza
+  active: true
+  tracked: false
+  user_ratings_total: 64
+- slug: muze-cafe
+  display_name: MÜZE CAFE
+  place_id: ChIJkfAxIqhI0xQRm48oFJKIJJE
+  category: cafe
+  brand_key: muze-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 64
+- slug: komagene-etsiz-cig-kofte-chijfvlj
+  display_name: Komagene Etsiz Çiğ Köfte
+  place_id: ChIJfVLjNHVH0xQRaPpDutjSbiE
+  category: restaurant
+  brand_key: komagene-etsiz-cig-kofte
+  active: true
+  tracked: false
+  user_ratings_total: 63
+- slug: fried-meister-chijacn9
+  display_name: Fried Meister
+  place_id: ChIJAcn9j19H0xQR8F3Pn3vUsY8
+  category: restaurant
+  brand_key: fried-meister
+  active: true
+  tracked: false
+  user_ratings_total: 61
+- slug: can-pide-kebap
+  display_name: Can Pide Kebap
+  place_id: ChIJjT21NVBP0xQR8E7rNXfVEoI
+  category: restaurant
+  brand_key: can-pide-kebap
+  active: true
+  tracked: false
+  user_ratings_total: 61
+- slug: yemek-ev-yemekleri-sulu-yemek-izgara-kahvalti-et-yemekleri-kofte-restoran-cadde-nin-lezzeti
+  display_name: Yemek & Ev Yemekleri & Sulu Yemek & Izgara & Kahvaltı& Et Yemekleri
+    & Köfte& Restoran Cadde'nin Lezzeti
+  place_id: ChIJUY4RZrJF0xQR1KlIAOH-sj4
+  category: turkish_restaurant
+  brand_key: yemek-ev-yemekleri-sulu-yemek-izgara-kahvalti-et-yemekleri-kofte-restoran-cadde-nin-lezzeti
+  active: true
+  tracked: false
+  user_ratings_total: 60
+- slug: torian-art-cafe
+  display_name: Torian Art Cafe
+  place_id: ChIJjexJqHNP0xQRZIrJX_Pieqw
+  category: cafe
+  brand_key: torian-art-cafe
+  active: true
+  tracked: false
+  user_ratings_total: 60
+- slug: unal-unlu-mamulleri
+  display_name: Ünal Unlu Mamulleri
+  place_id: ChIJoTLniapI0xQRN48XGQ64Lpg
+  category: restaurant
+  brand_key: unal-unlu-mamulleri
+  active: true
+  tracked: false
+  user_ratings_total: 60
+- slug: dedem-sandwich
+  display_name: Dedem Sandwich
+  place_id: ChIJ7YYFTlBP0xQRI7X6oaiguNU
+  category: fast_food_restaurant
+  brand_key: dedem-sandwich
+  active: true
+  tracked: false
+  user_ratings_total: 59
+- slug: coffee-de-madrid-koc-ikiz-kuleleri
+  display_name: Coffee de Madrid Koç İkiz Kuleleri
+  place_id: ChIJRcBqpKJJ0xQRntuSEWohZ_o
+  category: coffee_shop
+  brand_key: coffee-de-madrid-koc-ikiz-kuleleri
+  active: true
+  tracked: false
+  user_ratings_total: 59
+- slug: odtu-ziyafet-doner-kumpir
+  display_name: ODTÜ Ziyafet Döner Kumpir
+  place_id: ChIJg6paYxZG0xQR50QPnq6SNhM
+  category: turkish_restaurant
+  brand_key: odtu-ziyafet-doner-kumpir
+  active: true
+  tracked: false
+  user_ratings_total: 59
+- slug: mackbear-cigdem
+  display_name: Mackbear Çiğdem
+  place_id: ChIJkw_Ky5JH0xQRfVvD8bAXpd8
+  category: restaurant
+  brand_key: mackbear-cigdem
+  active: true
+  tracked: false
+  user_ratings_total: 59
+- slug: caytaze-taurus
+  display_name: Çaytaze Taurus
+  place_id: ChIJv_HBzqJF0xQRHlZH10_vH5g
+  category: cafe
+  brand_key: caytaze-taurus
+  active: true
+  tracked: false
+  user_ratings_total: 59
+- slug: firinci-orhan
+  display_name: Fırıncı Orhan
+  place_id: ChIJHbIBePhF0xQR6keXVwo1n7k
+  category: restaurant
+  brand_key: firinci-orhan
+  active: true
+  tracked: false
+  user_ratings_total: 58
+- slug: gua-coffee-company-bestepe
+  display_name: GUA Coffee Company Beştepe
+  place_id: ChIJc1viU15P0xQR1TBV_xSukyQ
+  category: cafe
+  brand_key: gua-coffee-company-bestepe
+  active: true
+  tracked: false
+  user_ratings_total: 58
+- slug: polen-tantuni-next-level
+  display_name: Polen Tantuni - Next Level
+  place_id: ChIJAWL-NLhH0xQRG9jQbORC2Z8
+  category: kebab_shop
+  brand_key: polen-tantuni-next-level
+  active: true
+  tracked: false
+  user_ratings_total: 57
+- slug: demli-cafe-lounge
+  display_name: Demli Cafe Lounge
+  place_id: ChIJ_wQGag9H0xQRwzNHh31Abko
+  category: cafe
+  brand_key: demli-cafe-lounge
+  active: true
+  tracked: false
+  user_ratings_total: 57
+- slug: kule-sandvic
+  display_name: Kule Sandviç
+  place_id: ChIJs7zj2mpJ0xQRxbjWeAewhvs
+  category: sandwich_shop
+  brand_key: kule-sandvic
+  active: true
+  tracked: false
+  user_ratings_total: 57
+- slug: shisha-ankara-cafe-bistro
+  display_name: Shisha Ankara Cafe Bistro
+  place_id: ChIJyZEEZgBP0xQR9gBNLajkrtM
+  category: turkish_restaurant
+  brand_key: shisha-ankara-cafe-bistro
+  active: true
+  tracked: false
+  user_ratings_total: 57
+- slug: coffy-ankara-taurus-avm
+  display_name: Coffy Ankara Taurus Avm
+  place_id: ChIJ91l1cyKF0BQRbMuUwIgNHEc
+  category: coffee_shop
+  brand_key: coffy-ankara-taurus-avm
+  active: true
+  tracked: false
+  user_ratings_total: 55
+- slug: yorem-manti-ve-gozleme-evi
+  display_name: Yörem Mantı ve Gözleme Evi
+  place_id: ChIJvXCUOjpF0xQRQ4vkreFhMK8
+  category: restaurant
+  brand_key: yorem-manti-ve-gozleme-evi
+  active: true
+  tracked: false
+  user_ratings_total: 55
+- slug: pizzabulls-cukurambar-cankaya
+  display_name: Pizzabulls Çukurambar - Çankaya
+  place_id: ChIJ3YEYfwBH0xQRCTKqLIp4HBg
+  category: pizza_restaurant
+  brand_key: pizzabulls-cukurambar-cankaya
+  active: true
+  tracked: false
+  user_ratings_total: 54
+- slug: sr-doner-odtu-carsi
+  display_name: SR DÖNER Odtü Çarşı
+  place_id: ChIJ77c6XQZH0xQRhuzSyM4LAjo
+  category: fast_food_restaurant
+  brand_key: sr-doner-odtu-carsi
+  active: true
+  tracked: false
+  user_ratings_total: 54
+- slug: perisa-cafe-bistro
+  display_name: Perisa Cafe & Bistro
+  place_id: ChIJDyVXz_ZF0xQRt5mc8tU5KUA
+  category: pastry_shop
+  brand_key: perisa-cafe-bistro
+  active: true
+  tracked: false
+  user_ratings_total: 54
+- slug: leandre-coffee-more
+  display_name: Leandre Coffee&More
+  place_id: ChIJfzuZxeRH0xQR68XrR1RY4UA
+  category: coffee_shop
+  brand_key: leandre-coffee-more
+  active: true
+  tracked: false
+  user_ratings_total: 54
+- slug: bbq-station
+  display_name: BBQ Station
+  place_id: ChIJ57X8KgBH0xQRmI3sBOCxE9Q
+  category: restaurant
+  brand_key: bbq-station
+  active: true
+  tracked: false
+  user_ratings_total: 53
+- slug: bonelli-genel-mudurluk
+  display_name: Bonelli Genel Müdürlük
+  place_id: ChIJBfBxp_tF0xQRP7kEgetrPkQ
+  category: bakery
+  brand_key: bonelli-genel-mudurluk
+  active: true
+  tracked: false
+  user_ratings_total: 53
+- slug: uskudar-islak-hamburger-ve-sokak-lezzetleri
+  display_name: Üsküdar Islak Hamburger ve Sokak Lezzetleri
+  place_id: ChIJXaoci1dH0xQRWDPPaid-9AA
+  category: fast_food_restaurant
+  brand_key: uskudar-islak-hamburger-ve-sokak-lezzetleri
+  active: true
+  tracked: false
+  user_ratings_total: 53
+- slug: veysel-koyuncu-aspava
+  display_name: Veysel Koyuncu Aspava
+  place_id: ChIJwbu6pKdJ0xQRQv-Wq9bXxBY
+  category: restaurant
+  brand_key: veysel-koyuncu-aspava
+  active: true
+  tracked: false
+  user_ratings_total: 53
+- slug: meshur-adiyamanli-cig-kofteci-samet-usta
+  display_name: Meşhur Adıyamanlı Çiğ Köfteci Samet Usta
+  place_id: ChIJ3059ATRH0xQRSPNFinWE29w
+  category: turkish_restaurant
+  brand_key: meshur-adiyamanli-cig-kofteci-samet-usta
+  active: true
+  tracked: false
+  user_ratings_total: 52
+- slug: kete-unlu-mamulleri
+  display_name: Kete Unlu Mamulleri
+  place_id: ChIJweF11vVF0xQR8OS_1wnee70
+  category: restaurant
+  brand_key: kete-unlu-mamulleri
+  active: true
+  tracked: false
+  user_ratings_total: 52
+- slug: by-cevo-kokorec
+  display_name: By Cevo Kokoreç
+  place_id: ChIJ5yzmHyVH0xQRFPsobdXS-Xs
+  category: restaurant
+  brand_key: by-cevo-kokorec
+  active: true
+  tracked: false
+  user_ratings_total: 51
+- slug: zirve-pide-kebap-lahmacun
+  display_name: Zirve Pide Kebap Lahmacun
+  place_id: ChIJCQ6edK5F0xQRCygKwJaROco
+  category: turkish_restaurant
+  brand_key: zirve-pide-kebap-lahmacun
+  active: true
+  tracked: false
+  user_ratings_total: 51
+- slug: arabica-coffee-house-chijnfe3
+  display_name: Arabica Coffee House
+  place_id: ChIJNfe3UgBH0xQR8KCdJqfZSXA
+  category: coffee_shop
+  brand_key: arabica-coffee-house
+  active: true
+  tracked: false
+  user_ratings_total: 51
+- slug: urfali-beyzade-lahmacun-sokullu
+  display_name: URFALI BEYZADE LAHMACUN SOKULLU
+  place_id: ChIJ4Vjr4BtP0xQRGNzS4C5FPvg
+  category: restaurant
+  brand_key: urfali-beyzade-lahmacun-sokullu
+  active: true
+  tracked: false
+  user_ratings_total: 50
+- slug: bindiyar-unlu-mamuller-ve-kahvalti
+  display_name: Bindiyar Unlu Mamüller ve Kahvaltı
+  place_id: ChIJ5xjLfBdP0xQR7palwBCQtJA
+  category: bakery
+  brand_key: bindiyar-unlu-mamuller-ve-kahvalti
+  active: true
+  tracked: false
+  user_ratings_total: 50
+- slug: shelby-coffee
+  display_name: SHELBY COFFEE
+  place_id: ChIJIS18EVlP0xQRHqiWGXsAy1k
+  category: coffee_shop
+  brand_key: shelby-coffee
+  active: true
+  tracked: false
+  user_ratings_total: 50
+- slug: guher-manti-ev-yemekleri
+  display_name: Güher Mantı & Ev Yemekleri
+  place_id: ChIJgZDTAqNP0xQRT9hd1ix49yk
+  category: dumpling_restaurant
+  brand_key: guher-manti-ev-yemekleri
+  active: true
+  tracked: false
+  user_ratings_total: 50
+- slug: tattaze
+  display_name: Tattaze
+  place_id: ChIJmazVkydG0xQRgISl3sRn4-I
+  category: bakery
+  brand_key: tattaze
+  active: true
+  tracked: false
+  user_ratings_total: 50

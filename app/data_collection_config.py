@@ -30,8 +30,6 @@ class DiscoveryConfig(BaseModel):
     tracked_venue_limit: int = Field(gt=0)
     brand_stopwords: tuple[str, ...] = ()
     brand_aliases: dict[str, str] = Field(default_factory=dict)
-    stale_after_days: int = Field(gt=0)
-    stale_penalty: float = Field(ge=0)
     review_count_log_weight: float = Field(gt=0)
     search_cache_path: Path
     report_path: Path
